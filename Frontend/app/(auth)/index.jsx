@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
+import { Link } from "expo-router";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -62,9 +63,11 @@ export default function Login() {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+        <View style={styles.button}>
+          <Link style={styles.buttonText} href={"../mainMenu"}>
+            Login
+          </Link>
+        </View>
       </View>
     </View>
   );
