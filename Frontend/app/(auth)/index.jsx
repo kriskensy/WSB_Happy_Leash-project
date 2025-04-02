@@ -13,7 +13,7 @@ export default function Login() {
     <View style={styles.container}>
       <View style={styles.topIllustration}>
         <Image
-          source={require("../../assets/images/WelcomePageMainImage.png")}
+          source={require("../../assets/images/LoginImage.png")}
           style={styles.illustrationImage}
         />
       </View>
