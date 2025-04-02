@@ -14,7 +14,9 @@ export default function adoptionPanel() {
         >
           <Link href={"/index"}></Link>
         </Image>
-        <Text style={styles.title}>Dogs</Text>
+        <Link style={styles.title} href={"/adoptDogList"}>
+          Dogs
+        </Link>
       </View>
       <View style={styles.adpotionMenuContainer}>
         <Image
@@ -23,7 +25,9 @@ export default function adoptionPanel() {
         >
           <Link href={"/index"}></Link>
         </Image>
-        <Text style={styles.title}>Cats</Text>
+        <Link style={styles.title} href={"/adoptCatList"}>
+          Cats
+        </Link>
       </View>
       <View style={styles.adpotionMenuContainer}>
         <Image
@@ -32,7 +36,9 @@ export default function adoptionPanel() {
         >
           <Link href={"/index"}></Link>
         </Image>
-        <Text style={styles.title}>Other animals</Text>
+        <Link style={styles.title} href={"/adoptOtherAnimalList"}>
+          Other animals
+        </Link>
       </View>
     </View>
   );

@@ -47,6 +47,14 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: COLORS.primary,
   },
+  petImage: {
+    marginTop: 20,
+    width: width * 0.75,
+    height: width * 0.75,
+    borderRadius: (width * 0.2) / 2,
+    borderWidth: 3,
+    borderColor: COLORS.primary,
+  },
   card: {
     backgroundColor: COLORS.cardBackground,
     borderRadius: 16,
