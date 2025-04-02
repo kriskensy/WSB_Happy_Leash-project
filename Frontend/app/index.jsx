@@ -1,5 +1,5 @@
 import { View, TouchableOpacity } from "react-native";
-import styles from "../assets/styles/login.styles";
+import styles from "../assets/styles/main.styles";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 
