@@ -10,6 +10,11 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
   },
+  adpotionMenuContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   scrollViewStyle: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -21,6 +26,13 @@ const styles = StyleSheet.create({
   illustrationImage: {
     width: width * 0.75,
     height: width * 0.75,
+  },
+  adoptionPanelMenuImage: {
+    width: width * 0.35,
+    height: width * 0.35,
+    borderRadius: (width * 0.35) / 2,
+    borderWidth: 4,
+    borderBlockColor: COLORS.primary,
   },
   card: {
     backgroundColor: COLORS.cardBackground,
@@ -36,11 +48,15 @@ const styles = StyleSheet.create({
     marginTop: -24,
   },
   header: {
-    alignItems: "center",
-    marginBottom: 24,
+    fontSize: 35,
+    color: COLORS.textPrimary,
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: "center",
+    fontWeight: "700",
   },
   title: {
-    fontSize: 32,
+    fontSize: 25,
     fontWeight: "700",
     color: COLORS.textPrimary,
     marginBottom: 8,
