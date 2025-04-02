@@ -34,7 +34,7 @@ export default function mainMenu() {
       <View style={styles.button}>
         <Link
           style={[styles.homeViewButtonsText, styles.buttonText]}
-          href={"/(auth)/register"}
+          href={"/aboutTeam"}
         >
           About our team
         </Link>

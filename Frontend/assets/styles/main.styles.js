@@ -15,6 +15,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  aboutTeamContainer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "flex-start",
+  },
   scrollViewStyle: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -33,6 +38,14 @@ const styles = StyleSheet.create({
     borderRadius: (width * 0.35) / 2,
     borderWidth: 4,
     borderBlockColor: COLORS.primary,
+  },
+  profileImage: {
+    marginTop: 20,
+    width: width * 0.25,
+    height: width * 0.25,
+    borderRadius: (width * 0.25) / 2,
+    borderWidth: 3,
+    borderColor: COLORS.primary,
   },
   card: {
     backgroundColor: COLORS.cardBackground,
@@ -54,6 +67,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: "center",
     fontWeight: "700",
+  },
+  description: {
+    marginTop: 10,
+    color: COLORS.textSecondary,
+    fontSize: 20,
   },
   title: {
     fontSize: 25,
