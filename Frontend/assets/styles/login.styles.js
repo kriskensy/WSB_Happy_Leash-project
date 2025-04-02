@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     paddingHorizontal: 12,
   },
+  homeViewButtonsText: {
+    textAlign: "center",
+  },
   inputIcon: {
     marginRight: 10,
   },

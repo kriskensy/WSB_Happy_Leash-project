@@ -1,19 +1,29 @@
-import { Text, View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import styles from "../assets/styles/login.styles";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>1111</Text>
-      <Link href={"/(auth)"}>Zaloguj sie</Link>
-      <Link href={"/(auth)/register"}>Zarejestruj sie</Link>
+    <View style={styles.container}>
+      <View style={styles.topIllustration}>
+        <Image
+          source={require("../assets/images/WelcomePageMainImage.png")}
+          style={styles.illustrationImage}
+        />
+      </View>
+      <Link
+        style={[styles.button, styles.homeViewButtonsText, styles.buttonText]}
+        href={"/(auth)"}
+      >
+        Login
+      </Link>
+      <Link
+        style={[styles.button, styles.homeViewButtonsText, styles.buttonText]}
+        href={"/(auth)/register"}
+      >
+        Register
+      </Link>
     </View>
   );
 }
