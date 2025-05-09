@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\Backend.csproj": {}
+    "C:\\Programming\\_Studia WSB-NLU\\dotNET courses\\Mobile Aplications\\WSB_Happy_Leash-project\\Backend\\Backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\Backend.csproj": {
+    "C:\\Programming\\_Studia WSB-NLU\\dotNET courses\\Mobile Aplications\\WSB_Happy_Leash-project\\Backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\Backend.csproj",
+        "projectUniqueName": "C:\\Programming\\_Studia WSB-NLU\\dotNET courses\\Mobile Aplications\\WSB_Happy_Leash-project\\Backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\Backend.csproj",
-        "packagesPath": "C:\\Users\\wojew\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\obj\\",
+        "projectPath": "C:\\Programming\\_Studia WSB-NLU\\dotNET courses\\Mobile Aplications\\WSB_Happy_Leash-project\\Backend\\Backend.csproj",
+        "packagesPath": "C:\\Users\\Kris\\.nuget\\packages\\",
+        "outputPath": "C:\\Programming\\_Studia WSB-NLU\\dotNET courses\\Mobile Aplications\\WSB_Happy_Leash-project\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\wojew\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Kris\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -27,7 +27,6 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "C:\\Users\\wojew\\Downloads": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -60,6 +59,12 @@
               "target": "Package",
               "version": "[9.0.4, )"
             },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[9.0.4, )"
@@ -69,6 +74,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.4, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[9.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -94,7 +103,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
