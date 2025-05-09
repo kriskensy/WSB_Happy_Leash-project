@@ -1,0 +1,54 @@
+# Build folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code settings
+.vscode/
+
+# Rider
+.idea/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+
+# Logs and database
+*.log
+*.ldf
+*.mdf
+
+# Compiled files
+*.dll
+*.exe
+*.pdb
+
+# Cache files
+*.cache
+*.db
+*.db-shm
+*.db-wal
+
+# ASP.NET files
+*.publish.xml
+
+# Secrets (example)
+secrets.json
+
+# Temporary files
+*.tmp
+*.bak
+*.old
+*.orig
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
