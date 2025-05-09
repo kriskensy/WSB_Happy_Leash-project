@@ -1,15 +1,51 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Alert, View, Text, TextInput, TouchableOpacity } from "react-native";
 import styles from "../../assets/styles/main.styles";
 import { useState } from "react";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    if (!login || !password) {
+      Alert.alert("Błąd", "Wprowadź login i hasło.");
+      return;
+    }
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append("login", login);
+      formData.append("password", password);
+
+      const response = await fetch("http://10.0.2.2:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        Alert.alert("Błąd logowania", data.message || "Nieznany błąd.");
+        return;
+      }
+
+      Alert.alert("Sukces", data.message);
+      router.push("../mainMenu");
+    } catch (error) {
+      Alert.alert("Błąd", "Nie można połączyć się z serwerem.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topIllustration}>
@@ -19,7 +55,7 @@ export default function Login() {
         />
       </View>
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>Login</Text>
         <View style={styles.inputContainer}>
           <Ionicons
             name="mail-outline"
@@ -29,10 +65,10 @@ export default function Login() {
           />
           <TextInput
             style={styles.input}
-            placeholder="Enter your email"
+            placeholder="Enter your login"
             placeholderTextColor={COLORS.placeholderText}
-            value={email}
-            onChangeText={setEmail}
+            value={login}
+            onChangeText={setLogin}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -63,11 +99,10 @@ export default function Login() {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.button}>
-          <Link style={styles.buttonText} href={"../mainMenu"}>
-            Login
-          </Link>
-        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
