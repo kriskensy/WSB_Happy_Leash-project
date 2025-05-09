@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WSB_Happy_Leash_project.Data.Models
 {
@@ -26,16 +27,22 @@ namespace WSB_Happy_Leash_project.Data.Models
         [Required]
         [ForeignKey("PetType")]
         public int PetTypeId { get; set; }
-        public PetType PetType { get; set; }
+
+        [JsonIgnore]
+        public PetType? PetType { get; set; }
 
         [ForeignKey("Breed")]
         public int? BreedId { get; set; }
-        public Breed Breed { get; set; }
+
+        [JsonIgnore]
+        public Breed? Breed { get; set; }
 
         public string PictureURL { get; set; }
 
-        public ICollection<HealthRecord> HealthRecords { get; set; }
-        public ICollection<PetTag> PetTags { get; set; }
+        [JsonIgnore]
+        public ICollection<HealthRecord> HealthRecords { get; set; } = new List<HealthRecord>();
+        [JsonIgnore]
+        public ICollection<PetTag> PetTags { get; set; } = new List<PetTag>();
     }
 
 }
