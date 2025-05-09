@@ -9,5 +9,7 @@ namespace WSB_Happy_Leash_project.Data.Context
         {
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<Pet> Pets { get; set; }
+        public DbSet<AdoptionRequest> AdoptionRequests { get; set; }
     }
 }
