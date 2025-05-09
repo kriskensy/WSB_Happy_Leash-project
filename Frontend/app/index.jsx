@@ -52,7 +52,7 @@ export default function Index() {
       <View style={styles.button}>
         <Link
           style={[styles.homeViewButtonsText, styles.buttonText]}
-          href={"/(auth)"}
+          href={"/(auth)/login"}
         >
           Login
         </Link>
