@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "pFaYqAl+AgE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\Backend.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\wojew\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.3\\microsoft.aspnetcore.openapi.9.0.3.nupkg.sha512",
+    "C:\\Users\\wojew\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
