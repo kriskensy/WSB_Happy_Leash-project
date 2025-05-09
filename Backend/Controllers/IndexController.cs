@@ -11,5 +11,10 @@ namespace Backend.Controllers
         {
             return Ok(new { message = "Wiadomość z backendu" });
         }
+        [HttpGet("test")]
+public IActionResult Test()
+{
+    return Ok("Test działa");
+}
     }
 }
