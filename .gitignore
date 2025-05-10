@@ -1,0 +1,96 @@
+# ==============================
+# BACKEND (.NET)
+# ==============================
+
+# Build output
+Backend/bin/
+Backend/obj/
+
+# User secrets
+Backend/appsettings.json
+Backend/appsettings.*.json
+
+# .NET environment
+*.user
+*.vspscc
+*.vssscc
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / Visual Studio / VSCode
+.vscode/
+.idea/
+*.sln.ide
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Logs and temp
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+*.patch
+
+# ==============================
+# FRONTEND (React Native / Expo)
+# ==============================
+
+# Dependency directories
+Frontend/node_modules/
+
+# Build output
+Frontend/dist/
+Frontend/build/
+Frontend/out/
+Frontend/web-build/
+
+# Expo / Metro bundler
+Frontend/.expo/
+Frontend/expo-env.d.ts
+.expo-shared/
+
+# Logs
+Frontend/npm-debug.log*
+Frontend/yarn-debug.log*
+Frontend/yarn-error.log*
+
+# Environment files
+Frontend/.env
+Frontend/.env.*.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# TypeScript
+Frontend/tsconfig.tsbuildinfo
+
+# ==============================
+# GENERAL
+# ==============================
+
+# System
+*.swp
+*.swo
+*.swn
+*.tmp
+*.bak
+*.log
+*.orig
+*.rej
+
+# IDEs (again, just in case)
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
