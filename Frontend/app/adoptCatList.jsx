@@ -1,13 +1,26 @@
 import { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import styles from "../assets/styles/main.styles";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 
 export default function AdoptCatList() {
   const [allCats, setAllCats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  // Fetch data from the API
+  // Przenosi do szczegółów zwierzaka
+  const handlePetDetails = (id) => {
+    router.push({ pathname: "/petDetails", params: { petId: id } });
+  };
+
+  // Pobiera koty z API
   const fetchCats = async () => {
     try {
       const response = await fetch("http://10.0.2.2:5000/api/pet/type/3"); // 3 = koty
@@ -28,6 +41,12 @@ export default function AdoptCatList() {
     <View style={styles.petContainer}>
       <Image style={styles.petImage} source={{ uri: item.pictureURL }} />
       <Text style={styles.subtitle}>{item.name}</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handlePetDetails(item.id)}
+      >
+        <Text style={styles.buttonText}>More Info About ME!</Text>
+      </TouchableOpacity>
     </View>
   );
 
