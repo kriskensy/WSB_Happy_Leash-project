@@ -1,10 +1,11 @@
+using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using WSB_Happy_Leash_project.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
 {
@@ -13,11 +14,15 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DbContext") 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbContext")
         ?? throw new InvalidOperationException("Connection string 'DbContext' not found.")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // lub builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<JwtService>();
+
+DotNetEnv.Env.Load();
 
 var app = builder.Build();
 
@@ -27,10 +32,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); // lub app.MapOpenApi();
 }
 
-app.UseCors("AllowAllOrigins"); 
+app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 
-app.MapControllers(); 
+app.MapControllers();
 
 app.Run();

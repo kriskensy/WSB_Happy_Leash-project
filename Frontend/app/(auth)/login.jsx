@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const [login, setLogin] = useState("");
@@ -39,10 +40,13 @@ export default function Login() {
         return;
       }
 
+      // Save the token in session storage
+      await AsyncStorage.setItem("userToken", data.userToken);
+
       Alert.alert("Sukces", data.message);
       router.push("../mainMenu");
     } catch (error) {
-      Alert.alert("Błąd", "Nie można połączyć się z serwerem.");
+      Alert.alert("Błąd", error.message || "Nieznany błąd.");
     }
   };
 

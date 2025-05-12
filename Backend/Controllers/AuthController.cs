@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WSB_Happy_Leash_project.Data.Context;
 using System.Security.Cryptography;
 using WSB_Happy_Leash_project.Data.Models;
+using Backend.Services;
 
 namespace Backend.Controllers
 {
@@ -11,9 +12,11 @@ namespace Backend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public AuthController(AppDbContext context)
+        private readonly JwtService _jwtService;
+        public AuthController(AppDbContext context, JwtService jwtService)
         {
             _context = context;
+            _jwtService = jwtService;
         }
 
         [HttpPost("login")]
@@ -30,11 +33,11 @@ namespace Backend.Controllers
                 return NotFound(new { message = "User not found" });
             }
 
+            System.Console.WriteLine(_jwtService.GenerateToken(user));
             return Ok(new
             {
                 message = "Login successful",
-                user = new { user.FirstName, user.LastName },
-                profilePicture = user.ProfilePictureURL
+                userToken = _jwtService.GenerateToken(user),
             });
         }
 
