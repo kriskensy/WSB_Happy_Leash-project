@@ -1,41 +1,42 @@
-import { View, Text, FlatList } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import styles from "../assets/styles/main.styles";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
 
-export default function adoptOtherAnimalList() {
-  const allAnimals = [
-    {
-      id: 0,
-      petName: "Kicek",
-      image: require("../assets/images/pets/rabbit1.jpg"),
-    },
-    {
-      id: 1,
-      petName: "Kręty",
-      image: require("../assets/images/pets/snake1.jpg"),
-    },
-    {
-      id: 2,
-      petName: "Kicek",
-      image: require("../assets/images/pets/rabbit1.jpg"),
-    },
-    {
-      id: 3,
-      petName: "Kręty",
-      image: require("../assets/images/pets/snake1.jpg"),
-    },
-  ];
+export default function AdoptOtherAnimalList() {
+  const [allAnimals, setAllAnimals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch other animals (e.g. rabbits, snakes)
+  const fetchOtherAnimals = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/2"); // 2 = inne zwierzęta
+      const data = await response.json();
+      setAllAnimals(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching other animals:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOtherAnimals();
+  }, []);
+
   const renderItem = ({ item }) => (
-    <View>
-      <Image style={styles.petImage} source={item.image} />
-      <Text style={styles.subtitle}>{item.petName}</Text>
+    <View style={styles.petContainer}>
+      <Image style={styles.petImage} source={{ uri: item.pictureURL }} />
+      <Text style={styles.subtitle}>{item.name}</Text>
     </View>
   );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Ours Other Animals</Text>
-      <View style={styles.adpotionMenuContainer}>
+      <Text style={styles.header}>Other Animals</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
         <FlatList
           data={allAnimals}
           renderItem={renderItem}
@@ -43,7 +44,7 @@ export default function adoptOtherAnimalList() {
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         />
-      </View>
+      )}
     </View>
   );
 }

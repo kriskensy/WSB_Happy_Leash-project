@@ -10,7 +10,7 @@ export default function AdoptCatList() {
   // Fetch data from the API
   const fetchCats = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/pet");
+      const response = await fetch("http://10.0.2.2:5000/api/pet/type/3"); // 3 = koty
       const data = await response.json();
       setAllCats(data);
       setLoading(false);

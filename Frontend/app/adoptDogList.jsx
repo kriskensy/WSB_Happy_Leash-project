@@ -1,41 +1,42 @@
-import { View, Text, FlatList } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import styles from "../assets/styles/main.styles";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
 
-export default function adoptDogList() {
-  const allDogs = [
-    {
-      id: 0,
-      petName: "Szczekuś",
-      image: require("../assets/images/pets/dog1.jpg"),
-    },
-    {
-      id: 1,
-      petName: "Gryzak",
-      image: require("../assets/images/pets/dog2.jpg"),
-    },
-    {
-      id: 2,
-      petName: "Szczekuś",
-      image: require("../assets/images/pets/dog1.jpg"),
-    },
-    {
-      id: 3,
-      petName: "Gryzak",
-      image: require("../assets/images/pets/dog2.jpg"),
-    },
-  ];
+export default function AdoptDogList() {
+  const [allDogs, setAllDogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data from the API
+  const fetchDogs = async () => {
+    try {
+      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/1"); // 1 = psy
+      const data = await response.json();
+      setAllDogs(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching pets:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDogs();
+  }, []);
+
   const renderItem = ({ item }) => (
-    <View>
-      <Image style={styles.petImage} source={item.image} />
-      <Text style={styles.subtitle}>{item.petName}</Text>
+    <View style={styles.petContainer}>
+      <Image style={styles.petImage} source={{ uri: item.pictureURL }} />
+      <Text style={styles.subtitle}>{item.name}</Text>
     </View>
   );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Ours Dogs</Text>
-      <View style={styles.adpotionMenuContainer}>
+      <Text style={styles.header}>Our Dogs</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
         <FlatList
           data={allDogs}
           renderItem={renderItem}
@@ -43,7 +44,7 @@ export default function adoptDogList() {
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         />
-      </View>
+      )}
     </View>
   );
 }
