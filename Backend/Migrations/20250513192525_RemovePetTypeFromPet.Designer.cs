@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WSB_Happy_Leash_project.Data.Context;
 
@@ -11,9 +12,11 @@ using WSB_Happy_Leash_project.Data.Context;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513192525_RemovePetTypeFromPet")]
+    partial class RemovePetTypeFromPet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,6 +137,9 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PetTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PictureURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -144,6 +150,8 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BreedId");
+
+                    b.HasIndex("PetTypeId");
 
                     b.ToTable("Pets");
                 });
@@ -314,6 +322,10 @@ namespace Backend.Migrations
                         .WithMany("Pets")
                         .HasForeignKey("BreedId");
 
+                    b.HasOne("WSB_Happy_Leash_project.Data.Models.PetType", null)
+                        .WithMany("Pets")
+                        .HasForeignKey("PetTypeId");
+
                     b.Navigation("Breed");
                 });
 
@@ -351,6 +363,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("WSB_Happy_Leash_project.Data.Models.PetType", b =>
                 {
                     b.Navigation("Breeds");
+
+                    b.Navigation("Pets");
                 });
 
             modelBuilder.Entity("WSB_Happy_Leash_project.Data.Models.Tag", b =>

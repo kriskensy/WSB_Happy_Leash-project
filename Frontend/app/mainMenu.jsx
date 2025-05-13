@@ -73,6 +73,15 @@ export default function MainMenu() {
         <Text style={styles.buttonText}>About our team</Text>
       </TouchableOpacity>
 
+      {isUser && (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleNavigate("/(auth)/editProfile")}
+        >
+          <Text style={styles.buttonText}>Edit Profile</Text>
+        </TouchableOpacity>
+      )}
+
       {isAdmin && (
         <TouchableOpacity
           style={styles.button}

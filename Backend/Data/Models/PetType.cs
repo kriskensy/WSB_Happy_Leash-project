@@ -18,8 +18,8 @@ namespace WSB_Happy_Leash_project.Data.Models
 
                 [JsonIgnore]
                 public ICollection<Breed> Breeds { get; set; } = new List<Breed>();
-                [JsonIgnore]
-                public ICollection<Pet> Pets { get; set; } = new List<Pet>();
+                // [JsonIgnore]
+                // public ICollection<Pet> Pets { get; set; } = new List<Pet>();
 
 
 

@@ -26,12 +26,12 @@ namespace WSB_Happy_Leash_project.Data.Models
 
                 public string Notes { get; set; }
 
-                [Required]
-                [ForeignKey("PetType")]
-                public int PetTypeId { get; set; }
+                // [Required]
+                // [ForeignKey("PetType")]
+                // public int PetTypeId { get; set; }
 
-                [JsonIgnore]
-                public PetType? PetType { get; set; }
+                // [JsonIgnore]
+                // public PetType? PetType { get; set; }
 
                 [ForeignKey("Breed")]
                 public int? BreedId { get; set; }

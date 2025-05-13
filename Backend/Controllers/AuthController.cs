@@ -83,6 +83,35 @@ namespace Backend.Controllers
                 new { message = "User created successfully" });
         }
 
+        // GET: api/user/{id}
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(item => item.Id == id);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+            
+            //bez zwracania hasła
+            return Ok(new 
+            {
+                id = user.Id,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                login = user.Login,
+                email = user.Email,
+                phoneNumber = user.PhoneNumber,
+                address = user.Address,
+                city = user.City,
+                postalCode = user.PostalCode,
+                country = user.Country,
+                profilePictureURL = user.ProfilePictureURL,
+                userType = user.UserType.ToString()
+            });
+        }
+
+
         [HttpPut("edit/{id}")]
         public async Task<IActionResult> Edit([FromForm] int id, [FromForm] RegisterRequest request)
         {
