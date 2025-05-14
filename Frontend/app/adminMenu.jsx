@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import styles from "../assets/styles/main.styles";
+import adminStyles from "../assets/styles/admin.styles";
 import { Image } from "expo-image";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
@@ -9,9 +10,10 @@ import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
  
 export default function AdminMenu() {
-  const [token, setToken] = useState(null);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  // const [token, setToken] = useState(null);
+  // const [firstName, setFirstName] = useState("");
+  // const [lastName, setLastName] = useState("");
+  const [user, setUser] = useState({ firstName: "", lastName: ""});
   const router = useRouter();
   const menuItems = [
     {
@@ -66,17 +68,44 @@ export default function AdminMenu() {
     {
       title: "Users",
       icon: "people",
-      dataRoute: "api/User",
+      dataRoute: "api/Auth/user",
       finalDestination: "/users",
       description: "Manage user accounts",
     },
   ];
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = await AsyncStorage.getItem("userToken");
+
+      if(!token) return;
+
+      try{
+        const decoded = jwtDecode(token);
+        setUser({
+          firstName: decoded.firstName || "",
+          lastName: decoded.lastName || "",
+        });
+      } catch (ex) {
+        setUser({firstName: "", lastName: ""});
+      }
+    };
+
+    fetchUser();
+  }, []);
  
+  //TODO coś tu nie gra z tą funkcją nawigacyjną?
 const handleRedirect = async (item) => {
   try {
     const token = await AsyncStorage.getItem("userToken");
+
+    if(!token) {
+      Alert.alert("Error!", "No token found. Please log in again.");
+      router.push("/login");
+      return;
+    }
     
-    console.log("Próbuję przekierować na:", item.finalDestination);
+    console.log("przekierowanie na:", item.finalDestination);
     
     const response = await fetch(`http://10.0.2.2:5000/${item.dataRoute}`, {
       headers: {
@@ -88,18 +117,19 @@ const handleRedirect = async (item) => {
     console.log(`Status: ${response.status}, OK: ${response.ok}`);
     
     if (!response.ok) {
-      Alert.alert("Błąd", "Nie udało się pobrać danych");
+      Alert.alert("Error!", "Failed to retrieve data.");
       return;
     }
-    
+
     const data = await response.json();
     console.log("Response data:", data);
+
+    router.push(item.finalDestination);
+    Alert.alert("Succes", "ale dlaczego wracamy do logowania?");
     
-    //nawigacja dopiero po pobraniu danych
-    // router.push(item.finalDestination || "/");
   } catch (error) {
     console.error("Error details:", error);
-    Alert.alert("Błąd", error.message || "Nieznany błąd.");
+    Alert.alert("Error!", error.message || "Unknown error.");
   }
 };
 
@@ -107,7 +137,7 @@ const handleRedirect = async (item) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.topIllustration}>
         <Text style={styles.title}>
-          Welcome {firstName} {lastName}!
+          Welcome {user.firstName} {user.lastName}!
         </Text>
         <Image
           source={require("../assets/images/AdminPanelImage.png")}
@@ -122,12 +152,17 @@ const handleRedirect = async (item) => {
             key={index}
             style={styles.adminMenuItem}
             onPress={() => handleRedirect(item)}
+            // onPress={() => router.push(item.finalDestination)}
           >
-            <Ionicons name={item.icon} size={32} color={COLORS.primary} />
-            <Text style={styles.adminMenuItemTitle}>{item.title}</Text>
-            <Text style={styles.adminMenuItemDescription}>
-              {item.description}
-            </Text>
+            <View style={adminStyles.menuItemRow}>
+              <Ionicons name={item.icon} size={36} color={COLORS.primary} />
+              <View style={adminStyles.menuItemTextContainer}>
+                <Text style={styles.adminMenuItemTitle}>{item.title}</Text>
+                <Text style={styles.adminMenuItemDescription}>
+                {item.description}
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -135,9 +170,9 @@ const handleRedirect = async (item) => {
       <TouchableOpacity
         style={[
           styles.button,
-          { backgroundColor: COLORS.secondary, marginTop: 20 },
+          { backgroundColor: COLORS.primary, marginTop: 20 },
         ]}
-        onPress={() => router.push("/")}
+        onPress={() => router.push("/mainMenu")}
       >
         <Text style={styles.buttonText}>Back to Main Menu</Text>
       </TouchableOpacity>

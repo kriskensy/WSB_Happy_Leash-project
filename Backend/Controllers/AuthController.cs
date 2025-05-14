@@ -83,7 +83,7 @@ namespace Backend.Controllers
                 new { message = "User created successfully" });
         }
 
-        // GET: api/user/{id} //TODO dodana metoda
+        // GET: api/user/{id} //TODO ta metoda została dodana, żeby ogarniała dane do widoku edycji konta dla usera. Aktualnie działa.
         [HttpGet("user/{id}")]
         public async Task<IActionResult> GetUser(int id)
         {

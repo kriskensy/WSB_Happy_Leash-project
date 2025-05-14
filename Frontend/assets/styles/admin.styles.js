@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import COLORS from '../../constants/colors';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const adminStyles = StyleSheet.create({
   adminHeader: {
@@ -106,6 +107,24 @@ const adminStyles = StyleSheet.create({
     color: COLORS.textSecondary,
     textAlign: 'center',
   },
+  menuItemRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  },
+  menuItemTextContainer: {
+    marginLeft: 12, // odstęp od ikony
+    marginBottom: 10,
+    flex: 1,
+  },
+  adminMenuItemTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  adminMenuItemDescription: {
+    fontSize: 14,
+    color: COLORS.textPrimary,
+  },
+
 });
 
 export default adminStyles;

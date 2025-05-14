@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-//TODO
+//TODO czy corsy są poprawnie napisane?
 builder.Services.AddCors(options => 
 {
     options.AddPolicy("ReactNativePolicy", policy => 

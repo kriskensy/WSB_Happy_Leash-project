@@ -47,7 +47,7 @@ export default function PetTypeList() {
       const token = await AsyncStorage.getItem("userToken");
       const url = "http://10.0.2.2:5000/api/PetType";
 
-      //TODO
+      //TODO tylko logi wstawione
       console.log("Token:", token);
       console.log("Requesting (DELETE):", url);
 
