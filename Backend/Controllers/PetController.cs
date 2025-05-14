@@ -30,22 +30,6 @@ namespace Backend.Controllers
             return await _context.Pets.ToListAsync();
         }
 
-        // // GET: api/Pet/type/1
-        // [HttpGet("type/{petTypeId}")]
-        // public async Task<ActionResult<IEnumerable<Pet>>> GetPetsByType(int petTypeId)
-        // {
-        //     var pets = await _context.Pets
-        //         .Where(p => p.PetTypeId == petTypeId)
-        //         .ToListAsync();
-
-        //     if (pets == null || pets.Count == 0)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return pets;
-        // }
-
         // GET: api/Pet/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Pet>> GetPet(int id)

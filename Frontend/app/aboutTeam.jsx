@@ -18,7 +18,7 @@ export default function aboutTeam() {
       lastName: "Kensy",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam hendrerit magna sit amet eros placerat, ac volutpat odio laoreet. Nam ac lacinia orci, at tincidunt nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam hendrerit magna sit amet eros placerat, ac volutpat odio laoreet. Nam ac lacinia orci, at tincidunt nisl.",
-      image: require("../assets/images/RabbitImage.png"),
+      image: require("../assets/images/profileKris.jpg"),
     },
   ];
   const renderItem = ({ item }) => (
