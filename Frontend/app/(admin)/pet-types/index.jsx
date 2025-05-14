@@ -17,16 +17,10 @@ export default function PetTypeList() {
     fetchPetTypes();
   }, []);
 
-  const fetchPetTypes = async () => {
+    const fetchPetTypes = async () => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
-      const url = "http://10.0.2.2:5000/api/PetType";
-
-      //TODO 
-      console.log("Token:", token);
-      console.log("Requesting:", url);
-
       const response = await fetch("http://10.0.2.2:5000/api/PetType", {
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +132,7 @@ export default function PetTypeList() {
       
       <TouchableOpacity
         style={[styles.button, { backgroundColor: COLORS.secondary }]}
-        onPress={() => router.push("/admin-menu")}
+        onPress={() => router.push("/adminMenu")}
       >
         <Text style={styles.buttonText}>Back to Admin Menu</Text>
       </TouchableOpacity>

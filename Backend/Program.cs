@@ -25,11 +25,18 @@ builder.Services.AddCors(options =>
     });
 });
 
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("AllowAllOrigins", policy =>
-//         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-// });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET"))),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbContext")
@@ -49,11 +56,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); // lub app.MapOpenApi();
 }
 
-
-// app.UseCors("AllowAllOrigins");
 app.UseCors("ReactNativePolicy");
-// app.UseAuthentication();
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
 

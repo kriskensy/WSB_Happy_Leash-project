@@ -13,8 +13,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize(Roles = "Admin")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public class TagController : ControllerBase
     {
         private readonly AppDbContext _context;

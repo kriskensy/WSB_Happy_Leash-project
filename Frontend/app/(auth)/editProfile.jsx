@@ -42,7 +42,6 @@ export default function EditProfile() {
         const storedToken = await AsyncStorage.getItem("userToken");
         if (storedToken) {
           const decodedToken = jwtDecode(storedToken);
-          // console.log("Decoded token:", decodedToken);
  
           setFirstName(decodedToken.firstName);
           setLastName(decodedToken.lastName);
