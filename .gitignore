@@ -95,3 +95,4 @@ Frontend/tsconfig.tsbuildinfo
 *.ntvs*
 *.njsproj
 *.sln
+node_modules

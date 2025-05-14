@@ -557,3 +557,4 @@ C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug
 C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\Sprache.dll
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\DotNetEnv.dll
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\Sprache.dll
+C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

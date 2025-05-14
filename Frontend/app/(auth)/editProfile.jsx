@@ -15,7 +15,7 @@ import COLORS from "../../constants/colors";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-
+ 
 export default function EditProfile() {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
@@ -32,44 +32,28 @@ export default function EditProfile() {
   const [country, setCountry] = useState("");
   const [profilePictureURL, setProfilePictureURL] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
+ 
   const router = useRouter();
-
+ 
   //pobranie usera
   useEffect(() => {
     const loadUserData = async () => {
       try {
         const storedToken = await AsyncStorage.getItem("userToken");
-        
         if (storedToken) {
-          const decoded = jwtDecode(storedToken);
-          setUserId(decoded.nameid);
-          
-          //pobranie usera z API
-          const response = await fetch(`http://10.0.2.2:5000/api/auth/user/${decoded.nameid}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${storedToken}`,
-            },
-          });
-          
-          if (response.ok) {
-            const userData = await response.json();
-            
-            //dane do formularza
-            setFirstName(userData.firstName);
-            setLastName(userData.lastName);
-            setLogin(userData.login);
-            setEmail(userData.email);
-            setPhoneNumber(userData.phoneNumber || "");
-            setAddress(userData.address || "");
-            setCity(userData.city || "");
-            setPostalCode(userData.postalCode || "");
-            setCountry(userData.country || "");
-            setProfilePictureURL(userData.profilePictureURL || "");
-          } else {
-            Alert.alert("Error", "Failed to retrieve user data.");
-          }
+          const decodedToken = jwtDecode(storedToken);
+          // console.log("Decoded token:", decodedToken);
+ 
+          setFirstName(decodedToken.firstName);
+          setLastName(decodedToken.lastName);
+          setLogin(decodedToken.login);
+          setEmail(decodedToken.email);
+          setPhoneNumber(decodedToken.phoneNumber || "");
+          setAddress(decodedToken.address || "");
+          setCity(decodedToken.city || "");
+          setPostalCode(decodedToken.postalCode || "");
+          setCountry(decodedToken.country || "");
+          setProfilePictureURL(decodedToken.profilePictureURL || "");
         } else {
           router.replace("/(auth)/login");
           return;
@@ -81,10 +65,10 @@ export default function EditProfile() {
         setLoading(false);
       }
     };
-
+ 
     loadUserData();
   }, []);
-
+ 
   const handleUpdateProfile = async () => {
     if (!login || !email || !firstName || !lastName) {
       Alert.alert(
@@ -93,13 +77,13 @@ export default function EditProfile() {
       );
       return;
     }
-
+ 
     //porównanie czy wpisane hasło jest takie samo jak poprzednie
     if (password && password !== repeatedPassword) {
       Alert.alert("Error", "The passwords are not identical.");
       return;
     }
-
+ 
     try {
       setLoading(true);
       const formData = new URLSearchParams();
@@ -113,32 +97,35 @@ export default function EditProfile() {
       formData.append("postalCode", postalCode);
       formData.append("country", country);
       formData.append("profilePictureURL", profilePictureURL);
-      
+ 
       //jeśli hasło wpisane to też dołącza
       if (password) {
         formData.append("password", password);
       }
-
+ 
       const token = await AsyncStorage.getItem("userToken");
-      
-      const response = await fetch(`http://10.0.2.2:5000/api/auth/edit/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData.toString(),
-      });
-
+ 
+      const response = await fetch(
+        `http://10.0.2.2:5000/api/auth/edit/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData.toString(),
+        }
+      );
+ 
       const data = await response.json();
-
+ 
       if (!response.ok) {
         Alert.alert("Update error", data.message || "Unknown error");
         return;
       }
-
+ 
       Alert.alert("Success", "The profile has been successfully updated.", [
-        { text: "OK", onPress: () => router.back() }
+        { text: "OK", onPress: () => router.back() },
       ]);
     } catch (error) {
       Alert.alert("Error", "Cannot connect to the server.");
@@ -146,7 +133,7 @@ export default function EditProfile() {
       setLoading(false);
     }
   };
-
+ 
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: "center" }]}>
@@ -154,7 +141,7 @@ export default function EditProfile() {
       </View>
     );
   }
-
+ 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.topIllustration}>
@@ -172,7 +159,7 @@ export default function EditProfile() {
           />
         )}
       </View>
-
+ 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>First Name *</Text>
         <View style={styles.inputContainer}>
@@ -189,7 +176,7 @@ export default function EditProfile() {
             placeholder="First name"
           />
         </View>
-
+ 
         <Text style={styles.label}>Last Name *</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -205,7 +192,7 @@ export default function EditProfile() {
             placeholder="Last name"
           />
         </View>
-
+ 
         <Text style={styles.label}>Login *</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -221,7 +208,7 @@ export default function EditProfile() {
             placeholder="Login"
           />
         </View>
-
+ 
         <Text style={styles.label}>Email *</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -238,7 +225,7 @@ export default function EditProfile() {
             keyboardType="email-address"
           />
         </View>
-
+ 
         <Text style={styles.label}>New Password (optional)</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -265,7 +252,7 @@ export default function EditProfile() {
             />
           </TouchableOpacity>
         </View>
-
+ 
         <Text style={styles.label}>Repeat New Password</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -282,7 +269,7 @@ export default function EditProfile() {
             secureTextEntry={!showPassword}
           />
         </View>
-
+ 
         <Text style={styles.label}>Phone Number</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -299,7 +286,7 @@ export default function EditProfile() {
             keyboardType="phone-pad"
           />
         </View>
-
+ 
         <Text style={styles.label}>Address</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -315,7 +302,7 @@ export default function EditProfile() {
             placeholder="Address"
           />
         </View>
-
+ 
         <Text style={styles.label}>City</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -331,7 +318,7 @@ export default function EditProfile() {
             placeholder="City"
           />
         </View>
-
+ 
         <Text style={styles.label}>Postal Code</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -347,7 +334,7 @@ export default function EditProfile() {
             placeholder="00-000"
           />
         </View>
-
+ 
         <Text style={styles.label}>Country</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -363,7 +350,7 @@ export default function EditProfile() {
             placeholder="Country"
           />
         </View>
-
+ 
         <Text style={styles.label}>Profile Picture URL</Text>
         <View style={styles.inputContainer}>
           <Ionicons
@@ -379,13 +366,13 @@ export default function EditProfile() {
             placeholder="https://..."
           />
         </View>
-
+ 
         <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
           <Text style={styles.buttonText}>Update Profile</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.button, { backgroundColor: COLORS.secondary }]} 
+ 
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: COLORS.secondary }]}
           onPress={() => router.back()}
         >
           <Text style={styles.buttonText}>Cancel</Text>
@@ -394,3 +381,5 @@ export default function EditProfile() {
     </ScrollView>
   );
 }
+ 
+ 

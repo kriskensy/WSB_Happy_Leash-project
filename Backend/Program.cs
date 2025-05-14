@@ -1,17 +1,35 @@
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 using WSB_Happy_Leash_project.Data.Context;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddCors(options =>
+//TODO
+builder.Services.AddCors(options => 
 {
-    options.AddPolicy("AllowAllOrigins", policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.AddPolicy("ReactNativePolicy", policy => 
+    {
+        policy.WithOrigins(
+            "http://localhost:8081",    // iOS Simulator
+            "http://10.0.2.2:8081"      // Android Emulator
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
 });
+
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("AllowAllOrigins", policy =>
+//         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+// });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbContext")
@@ -19,7 +37,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // lub builder.Services.AddOpenApi();
-
 builder.Services.AddScoped<JwtService>();
 
 DotNetEnv.Env.Load();
@@ -32,10 +49,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); // lub app.MapOpenApi();
 }
 
-app.UseCors("AllowAllOrigins");
 
+// app.UseCors("AllowAllOrigins");
+app.UseCors("ReactNativePolicy");
+// app.UseAuthentication();
+// app.UseAuthorization();
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 app.Run();
