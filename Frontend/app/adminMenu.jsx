@@ -8,68 +8,68 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
- 
+
 export default function AdminMenu() {
   // const [token, setToken] = useState(null);
   // const [firstName, setFirstName] = useState("");
   // const [lastName, setLastName] = useState("");
-  const [user, setUser] = useState({ firstName: "", lastName: ""});
+  const [user, setUser] = useState({ firstName: "", lastName: "" });
   const router = useRouter();
   const menuItems = [
     {
       title: "Pet Types",
       icon: "paw",
       dataRoute: "api/PetType",
-      finalDestination: "/pet-types",
+      finalDestination: "/(admin)/(pet-types)/",
       description: "Manage animal types",
     },
     {
       title: "Breeds",
       icon: "list",
       dataRoute: "api/Breed",
-      finalDestination: "/breeds", 
+      finalDestination: "/(admin)/(breeds)",
       description: "Manage pet breeds",
     },
     {
       title: "Pets",
       icon: "paw-outline",
       dataRoute: "api/Pet",
-      finalDestination: "/pets",
+      finalDestination: "/(admin)/(pets)/",
       description: "Manage pet listings",
     },
     {
       title: "Health Records",
       icon: "medkit",
       dataRoute: "api/HealthRecord",
-      finalDestination: "/health-records",
+      finalDestination: "/(admin)/(health-records)",
       description: "Manage health records",
     },
     {
       title: "Adoption Requests",
       icon: "heart",
       dataRoute: "api/AdoptionRequest",
-      finalDestination: "/adoption-requests",
+      finalDestination: "/(admin)/(adoption-requests)",
       description: "Manage adoption applications",
     },
     {
       title: "Tags",
       icon: "pricetag",
       dataRoute: "api/Tag",
-      finalDestination: "/tags",
+      finalDestination: "/(admin)/(tags)",
       description: "Manage pet tags",
     },
     {
       title: "Pet Tags",
       icon: "bookmark",
       dataRoute: "api/PetTag",
-      finalDestination: "/pet-tags",
+      finalDestination: "/(admin)/(pet-tags)",
       description: "Manage pet tag assignments",
     },
     {
       title: "Users",
       icon: "people",
       dataRoute: "api/Auth/user",
-      finalDestination: "/users",
+      finalDestination: "/(admin)/(users)",
       description: "Manage user accounts",
     },
   ];
@@ -78,60 +78,59 @@ export default function AdminMenu() {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem("userToken");
 
-      if(!token) return;
+      if (!token) return;
 
-      try{
+      try {
         const decoded = jwtDecode(token);
         setUser({
           firstName: decoded.firstName || "",
           lastName: decoded.lastName || "",
         });
       } catch (ex) {
-        setUser({firstName: "", lastName: ""});
+        setUser({ firstName: "", lastName: "" });
       }
     };
 
     fetchUser();
   }, []);
- 
+
   //TODO coś tu nie gra z tą funkcją nawigacyjną?
-const handleRedirect = async (item) => {
-  try {
-    const token = await AsyncStorage.getItem("userToken");
+  const handleRedirect = async (item) => {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
 
-    if(!token) {
-      Alert.alert("Error!", "No token found. Please log in again.");
-      router.push("/login");
-      return;
+      if (!token) {
+        Alert.alert("Error!", "No token found. Please log in again.");
+        router.push("/login");
+        return;
+      }
+
+      console.log("przekierowanie na:", item.finalDestination);
+
+      const response = await fetch(`http://10.0.2.2:5000/${item.dataRoute}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(`Status: ${response.status}, OK: ${response.ok}`);
+
+      if (!response.ok) {
+        Alert.alert("Error!", "Failed to retrieve data.");
+        return;
+      }
+
+      console.log("Dane pochodzą z:", item.dataRoute);
+      const data = await response.json();
+      console.log("Response data:", data);
+
+      router.push(item.finalDestination);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
     }
-    
-    console.log("przekierowanie na:", item.finalDestination);
-    
-    const response = await fetch(`http://10.0.2.2:5000/${item.dataRoute}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    console.log(`Status: ${response.status}, OK: ${response.ok}`);
-    
-    if (!response.ok) {
-      Alert.alert("Error!", "Failed to retrieve data.");
-      return;
-    }
-
-    const data = await response.json();
-    console.log("Response data:", data);
-
-    router.push(item.finalDestination);
-    Alert.alert("Succes", "ale dlaczego wracamy do logowania?");
-    
-  } catch (error) {
-    console.error("Error details:", error);
-    Alert.alert("Error!", error.message || "Unknown error.");
-  }
-};
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -145,7 +144,7 @@ const handleRedirect = async (item) => {
         />
         <Text style={styles.title}>Admin Dashboard</Text>
       </View>
- 
+
       <View style={styles.adminMenuGrid}>
         {menuItems.map((item, index) => (
           <TouchableOpacity
@@ -159,14 +158,14 @@ const handleRedirect = async (item) => {
               <View style={adminStyles.menuItemTextContainer}>
                 <Text style={styles.adminMenuItemTitle}>{item.title}</Text>
                 <Text style={styles.adminMenuItemDescription}>
-                {item.description}
+                  {item.description}
                 </Text>
               </View>
             </View>
           </TouchableOpacity>
         ))}
       </View>
- 
+
       <TouchableOpacity
         style={[
           styles.button,
@@ -178,4 +177,4 @@ const handleRedirect = async (item) => {
       </TouchableOpacity>
     </ScrollView>
   );
-};
+}
