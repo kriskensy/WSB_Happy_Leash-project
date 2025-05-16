@@ -11,7 +11,7 @@ import {
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import ListItem from "../(components)/ListItem";
 import COLORS from "../../../constants/colors";
@@ -71,26 +71,31 @@ export default function PetList() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={adminStyles.loaderContainer}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={adminStyles.container}>
       <AdminHeader title="Pets" showBack={false} />
+
       <TouchableOpacity
-        style={styles.button}
+        style={adminStyles.mainButton}
         onPress={() => router.push("/pets/create")}
+        accessibilityLabel="Add new pet"
+        accessibilityRole="button"
       >
-        <Text style={styles.buttonText}>Add New Pet</Text>
+        <Text style={adminStyles.mainButtonText}>Add New Pet</Text>
       </TouchableOpacity>
+
       <FlatList
         data={pets}
         keyExtractor={(item) => item.id.toString()}
+        style={adminStyles.list}
         renderItem={({ item }) => (
-          <View style={styles.listItemWithActions}>
+          <View style={adminStyles.listItemWithActions}>
             <ListItem
               title={item.name}
               subtitle={`Type: ${item.petTypeName} | Breed: ${
@@ -106,16 +111,20 @@ export default function PetList() {
                 )
               }
             />
-            <View style={styles.actionButtons}>
+            <View style={adminStyles.actionButtons}>
               <TouchableOpacity
-                style={styles.actionButton}
+                style={adminStyles.actionButton}
                 onPress={() => router.push(`/pets/edit/${item.id}`)}
+                accessibilityLabel={`Edit pet ${item.name}`}
+                accessibilityRole="button"
               >
                 <Ionicons name="pencil" size={20} color={COLORS.primary} />
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.actionButton}
+                style={adminStyles.actionButton}
                 onPress={() => confirmDelete(item.id, item.name)}
+                accessibilityLabel={`Delete pet ${item.name}`}
+                accessibilityRole="button"
               >
                 <Ionicons name="trash" size={20} color={COLORS.danger} />
               </TouchableOpacity>
@@ -123,14 +132,17 @@ export default function PetList() {
           </View>
         )}
         ListEmptyComponent={
-          <Text style={styles.emptyListText}>No pets found</Text>
+          <Text style={adminStyles.emptyListText}>No pets found</Text>
         }
       />
+
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: COLORS.secondary }]}
-        onPress={() => router.push("/admin-menu")}
+        style={adminStyles.mainButton}
+        onPress={() => router.push("../adminMenu")}
+        accessibilityLabel="Back to admin menu"
+        accessibilityRole="button"
       >
-        <Text style={styles.buttonText}>Back to Admin Menu</Text>
+        <Text style={adminStyles.mainButtonText}>Back to Admin Menu</Text>
       </TouchableOpacity>
     </View>
   );

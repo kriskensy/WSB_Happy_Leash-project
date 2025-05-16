@@ -1,8 +1,15 @@
 import { StyleSheet } from 'react-native';
 import COLORS from '../../constants/colors';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const adminStyles = StyleSheet.create({
+  // Kontener główny
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    padding: 20,
+  },
+
+  // Nagłówek
   adminHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -18,34 +25,25 @@ const adminStyles = StyleSheet.create({
   backButton: {
     padding: 5,
   },
-  listItem: {
-    flexDirection: 'row',
+
+  // Przycisk główny
+  mainButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 14,
+    borderRadius: 8,
     alignItems: 'center',
-    padding: 15,
-    backgroundColor: COLORS.cardBackground,
-    borderRadius: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: COLORS.border,
+    marginVertical: 12,
   },
-  listItemContent: {
-    flex: 1,
-  },
-  listItemTitle: {
+  mainButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
   },
-  listItemSubtitle: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    marginTop: 2,
-  },
-  emptyListText: {
-    textAlign: 'center',
-    marginTop: 20,
-    color: COLORS.textSecondary,
-    fontSize: 16,
+
+  // Lista i elementy listy
+  list: {
+    marginTop: 8,
+    marginBottom: 16,
   },
   listItemWithActions: {
     flexDirection: 'row',
@@ -55,30 +53,48 @@ const adminStyles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 1,
     borderColor: COLORS.border,
+    padding: 15,
   },
+  listItemContent: {
+    flex: 1,
+  },
+  listItemTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  emptyListText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: COLORS.textSecondary,
+    fontSize: 16,
+  },
+
+  // Akcje (edytuj/usuń)
   actionButtons: {
     flexDirection: 'row',
-    padding: 10,
+    marginLeft: 'auto',
+    // justifyContent: 'flex-end',
+    // flex: 0,
   },
   actionButton: {
     padding: 5,
     marginLeft: 5,
+    borderRadius: 6,
+    backgroundColor: COLORS.lightGray,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  detailLabel: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    marginTop: 10,
+
+  // Loader
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  detailValue: {
-    fontSize: 16,
-    color: COLORS.textPrimary,
-    fontWeight: '500',
-    marginBottom: 5,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    marginTop: 15,
-  },
+
+  // Grid menu admina
   adminMenuGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -95,36 +111,27 @@ const adminStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
   },
-  adminMenuItemTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginTop: 5,
-    marginBottom: 2,
-  },
-  adminMenuItemDescription: {
-    fontSize: 12,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-  },
   menuItemRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   menuItemTextContainer: {
-    marginLeft: 12, // odstęp od ikony
+    marginLeft: 12,
     marginBottom: 10,
     flex: 1,
   },
   adminMenuItemTitle: {
     fontWeight: 'bold',
     fontSize: 16,
+    color: COLORS.textPrimary,
+    marginTop: 5,
+    marginBottom: 2,
   },
   adminMenuItemDescription: {
     fontSize: 14,
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
+    textAlign: 'center',
   },
-
 });
 
 export default adminStyles;

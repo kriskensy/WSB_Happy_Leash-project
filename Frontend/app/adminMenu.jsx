@@ -94,7 +94,6 @@ export default function AdminMenu() {
     fetchUser();
   }, []);
 
-  //TODO coś tu nie gra z tą funkcją nawigacyjną?
   const handleRedirect = async (item) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -151,7 +150,6 @@ export default function AdminMenu() {
             key={index}
             style={styles.adminMenuItem}
             onPress={() => handleRedirect(item)}
-            // onPress={() => router.push(item.finalDestination)}
           >
             <View style={adminStyles.menuItemRow}>
               <Ionicons name={item.icon} size={36} color={COLORS.primary} />

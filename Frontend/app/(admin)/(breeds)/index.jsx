@@ -1,3 +1,152 @@
+// import { useEffect, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   FlatList,
+//   ActivityIndicator,
+//   Alert,
+// } from "react-native";
+// import { useRouter } from "expo-router";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { Ionicons } from "@expo/vector-icons";
+// import styles from "../../../assets/styles/main.styles";
+// import AdminHeader from "../(components)/AdminHeader";
+// import ListItem from "../(components)/ListItem";
+// import COLORS from "../../../constants/colors";
+
+// export default function BreedList() {
+//   const [breeds, setBreeds] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     fetchBreeds();
+//   }, []);
+
+//   const fetchBreeds = async () => {
+//     try {
+//       setLoading(true);
+//       const token = await AsyncStorage.getItem("userToken");
+//       const response = await fetch("http://10.0.2.2:5000/api/Breed", {
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       if (response.ok) {
+//         const data = await response.json();
+//         setBreeds(data);
+//       } else {
+//         Alert.alert("Error", "Failed to load breeds");
+//       }
+//     } catch (error) {
+//       console.error("Error fetching breeds:", error);
+//       Alert.alert("Error", "An unexpected error occurred");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleDeleteBreed = async (id) => {
+//     try {
+//       const token = await AsyncStorage.getItem("userToken");
+//       const response = await fetch(`http://10.0.2.2:5000/api/Breed/${id}`, {
+//         method: "DELETE",
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       if (response.ok) {
+//         Alert.alert("Success", "Breed deleted successfully");
+//         fetchBreeds(); // Refresh the list
+//       } else {
+//         Alert.alert("Error", "Failed to delete breed");
+//       }
+//     } catch (error) {
+//       console.error("Error deleting breed:", error);
+//       Alert.alert("Error", "An unexpected error occurred");
+//     }
+//   };
+
+//   const confirmDelete = (id, breedName) => {
+//     Alert.alert(
+//       "Confirm Delete",
+//       `Are you sure you want to delete "${breedName}"?`,
+//       [
+//         { text: "Cancel", style: "cancel" },
+//         {
+//           text: "Delete",
+//           onPress: () => handleDeleteBreed(id),
+//           style: "destructive",
+//         },
+//       ]
+//     );
+//   };
+
+//   if (loading) {
+//     return (
+//       <View style={[styles.container, { justifyContent: "center" }]}>
+//         <ActivityIndicator size="large" color={COLORS.primary} />
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       <AdminHeader title="Breeds" showBack={false} />
+
+//       <TouchableOpacity
+//         style={styles.button}
+//         onPress={() => router.push("/breeds/create")}
+//       >
+//         <Text style={styles.buttonText}>Add New Breed</Text>
+//       </TouchableOpacity>
+
+//       <FlatList
+//         data={breeds}
+//         keyExtractor={(item) => item.id.toString()}
+//         renderItem={({ item }) => (
+//           <View style={styles.listItemWithActions}>
+//             <ListItem
+//               title={item.name}
+//               subtitle={`Type: ${item.petTypeName}`}
+//               onPress={() => router.push(`/breeds/${item.id}`)}
+//             />
+//             <View style={styles.actionButtons}>
+//               <TouchableOpacity
+//                 style={styles.actionButton}
+//                 onPress={() => router.push(`/breeds/edit/${item.id}`)}
+//               >
+//                 <Ionicons name="pencil" size={20} color={COLORS.primary} />
+//               </TouchableOpacity>
+//               <TouchableOpacity
+//                 style={styles.actionButton}
+//                 onPress={() => confirmDelete(item.id, item.name)}
+//               >
+//                 <Ionicons name="trash" size={20} color={COLORS.danger} />
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//         )}
+//         ListEmptyComponent={
+//           <Text style={styles.emptyListText}>No breeds found</Text>
+//         }
+//       />
+
+//       <TouchableOpacity
+//         style={[styles.button, { backgroundColor: COLORS.primary }]}
+//         onPress={() => router.push("/admin-menu")}
+//       >
+//         <Text style={styles.buttonText}>Back to Admin Menu</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+
+
 import { useEffect, useState } from "react";
 import {
   View,
@@ -10,7 +159,7 @@ import {
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import ListItem from "../(components)/ListItem";
 import COLORS from "../../../constants/colors";
@@ -61,7 +210,7 @@ export default function BreedList() {
 
       if (response.ok) {
         Alert.alert("Success", "Breed deleted successfully");
-        fetchBreeds(); // Refresh the list
+        fetchBreeds();
       } else {
         Alert.alert("Error", "Failed to delete breed");
       }
@@ -88,43 +237,50 @@ export default function BreedList() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={adminStyles.loaderContainer}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={adminStyles.container}>
       <AdminHeader title="Breeds" showBack={false} />
 
       <TouchableOpacity
-        style={styles.button}
+        style={adminStyles.mainButton}
         onPress={() => router.push("/breeds/create")}
+        accessibilityLabel="Add new breed"
+        accessibilityRole="button"
       >
-        <Text style={styles.buttonText}>Add New Breed</Text>
+        <Text style={adminStyles.mainButtonText}>Add New Breed</Text>
       </TouchableOpacity>
 
       <FlatList
         data={breeds}
         keyExtractor={(item) => item.id.toString()}
+        style={adminStyles.list}
         renderItem={({ item }) => (
-          <View style={styles.listItemWithActions}>
+          <View style={adminStyles.listItemWithActions}>
             <ListItem
               title={item.name}
               subtitle={`Type: ${item.petTypeName}`}
               onPress={() => router.push(`/breeds/${item.id}`)}
             />
-            <View style={styles.actionButtons}>
+            <View style={adminStyles.actionButtons}>
               <TouchableOpacity
-                style={styles.actionButton}
+                style={adminStyles.actionButton}
                 onPress={() => router.push(`/breeds/edit/${item.id}`)}
+                accessibilityLabel={`Edit breed ${item.name}`}
+                accessibilityRole="button"
               >
                 <Ionicons name="pencil" size={20} color={COLORS.primary} />
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.actionButton}
+                style={adminStyles.actionButton}
                 onPress={() => confirmDelete(item.id, item.name)}
+                accessibilityLabel={`Delete breed ${item.name}`}
+                accessibilityRole="button"
               >
                 <Ionicons name="trash" size={20} color={COLORS.danger} />
               </TouchableOpacity>
@@ -132,15 +288,17 @@ export default function BreedList() {
           </View>
         )}
         ListEmptyComponent={
-          <Text style={styles.emptyListText}>No breeds found</Text>
+          <Text style={adminStyles.emptyListText}>No breeds found</Text>
         }
       />
 
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: COLORS.secondary }]}
-        onPress={() => router.push("/admin-menu")}
+        style={adminStyles.mainButton}
+        onPress={() => router.push("../adminMenu")}
+        accessibilityLabel="Back to admin menu"
+        accessibilityRole="button"
       >
-        <Text style={styles.buttonText}>Back to Admin Menu</Text>
+        <Text style={adminStyles.mainButtonText}>Back to Admin Menu</Text>
       </TouchableOpacity>
     </View>
   );

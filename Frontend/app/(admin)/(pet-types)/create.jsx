@@ -38,7 +38,7 @@ export default function CreatePetType() {
 
       if (response.ok) {
         Alert.alert("Success", "Pet type created successfully", [
-          { text: "OK", onPress: () => router.push("/pet-types") },
+          { text: "OK", onPress: () => router.push("/(admin)/pet-types") },
         ]);
       } else {
         const errorData = await response.json();
@@ -81,7 +81,7 @@ export default function CreatePetType() {
           styles.button,
           { backgroundColor: COLORS.secondary, marginTop: 10 },
         ]}
-        onPress={() => router.push("/pet-types")}
+        onPress={() => router.push("/(admin)/(pet-types)")}
         disabled={loading}
       >
         <Text style={styles.buttonText}>Cancel</Text>
