@@ -97,7 +97,7 @@ export default function CreatePetTag() {
         <AdminHeader title="Add Pet Tag" />
         <Text style={styles.pickerLabel}>Pet:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={petId}
             onValueChange={setPetId}
             style={styles.picker}
@@ -105,11 +105,11 @@ export default function CreatePetTag() {
             {pets.map((pet) => (
               <Picker.Item key={pet.id} label={pet.name} value={pet.id} />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
         <Text style={styles.pickerLabel}>Tag:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={tagId}
             onValueChange={setTagId}
             style={styles.picker}
@@ -117,7 +117,7 @@ export default function CreatePetTag() {
             {tags.map((tag) => (
               <Picker.Item key={tag.id} label={tag.name} value={tag.id} />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
         <TouchableOpacity
           style={styles.button}

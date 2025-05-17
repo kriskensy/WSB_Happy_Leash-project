@@ -17,7 +17,6 @@
 //   );
 // }
 
-
 import { Stack, useSegments, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -32,7 +31,7 @@ function AdminProtection({ children }) {
 
   useEffect(() => {
     const checkAdminAccess = async () => {
-      const isAdminRoute = segments[0] === '(admin)';
+      const isAdminRoute = segments[0] === "(admin)";
       if (!isAdminRoute) return;
 
       const token = await AsyncStorage.getItem("userToken");
@@ -43,7 +42,7 @@ function AdminProtection({ children }) {
 
       try {
         const decoded = jwtDecode(token);
-        if (decoded.userType !== "Admin") {
+        if (decoded.role !== "Admin") {
           router.replace("/");
         }
       } catch (error) {

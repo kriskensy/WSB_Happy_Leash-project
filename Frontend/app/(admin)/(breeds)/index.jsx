@@ -146,7 +146,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from "react";
 import {
   View,
@@ -195,6 +194,15 @@ export default function BreedList() {
       Alert.alert("Error", "An unexpected error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRedirect = async () => {
+    try {
+      router.push("/(admin)/(breeds)/create");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
     }
   };
 
@@ -249,7 +257,7 @@ export default function BreedList() {
 
       <TouchableOpacity
         style={adminStyles.mainButton}
-        onPress={() => router.push("/breeds/create")}
+        onPress={() => handleRedirect()}
         accessibilityLabel="Add new breed"
         accessibilityRole="button"
       >

@@ -140,7 +140,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from "react";
 import {
   View,
@@ -191,6 +190,14 @@ export default function PetTagList() {
     }
   };
 
+  const handleRedirect = async () => {
+    try {
+      router.push("/(admin)/(pet-tags)/create");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeletePetTag = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -238,7 +245,7 @@ export default function PetTagList() {
 
       <TouchableOpacity
         style={adminStyles.mainButton}
-        onPress={() => router.push("/pet-tags/create")}
+        onPress={() => handleRedirect()}
         accessibilityLabel="Add pet tag"
         accessibilityRole="button"
       >
@@ -279,7 +286,9 @@ export default function PetTagList() {
           </View>
         )}
         ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No pet-tag relations found</Text>
+          <Text style={adminStyles.emptyListText}>
+            No pet-tag relations found
+          </Text>
         }
       />
 

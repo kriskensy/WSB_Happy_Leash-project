@@ -128,7 +128,7 @@ export default function CreateAdoptionRequest() {
 
         <Text style={styles.pickerLabel}>Pet:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={petId}
             onValueChange={(itemValue) => setPetId(itemValue)}
             style={styles.picker}
@@ -136,11 +136,11 @@ export default function CreateAdoptionRequest() {
             {pets.map((pet) => (
               <Picker.Item key={pet.id} label={pet.name} value={pet.id} />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
 
         <Text style={styles.pickerLabel}>User:</Text>
-        <View style={styles.pickerContainer}>
+        {/* <View style={styles.pickerContainer}>
           <Picker
             selectedValue={userId}
             onValueChange={(itemValue) => setUserId(itemValue)}
@@ -154,7 +154,7 @@ export default function CreateAdoptionRequest() {
               />
             ))}
           </Picker>
-        </View>
+        </View> */}
 
         <FormField
           label="Message"

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Picker } from "@react-native-picker/picker";
+//import { Picker } from "@react-native-picker/picker";
 import styles from "../../../assets/styles/main.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
@@ -113,7 +113,7 @@ export default function CreateBreed() {
         />
 
         <Text style={styles.pickerLabel}>Pet Type:</Text>
-        <View style={styles.pickerContainer}>
+        {/* <View style={styles.pickerContainer}>
           <Picker
             selectedValue={typeId}
             onValueChange={(itemValue) => setTypeId(itemValue)}
@@ -123,7 +123,7 @@ export default function CreateBreed() {
               <Picker.Item key={type.id} label={type.name} value={type.id} />
             ))}
           </Picker>
-        </View>
+        </View> */}
 
         <FormField
           label="Description"

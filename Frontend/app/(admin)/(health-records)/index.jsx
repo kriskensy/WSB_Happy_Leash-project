@@ -156,7 +156,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from "react";
 import {
   View,
@@ -207,7 +206,14 @@ export default function HealthRecordList() {
       setLoading(false);
     }
   };
-
+  const handleRedirect = async () => {
+    try {
+      router.push("/(admin)/(health-records)/create");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeleteHealthRecord = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -267,7 +273,7 @@ export default function HealthRecordList() {
 
       <TouchableOpacity
         style={adminStyles.mainButton}
-        onPress={() => router.push("/health-records/create")}
+        onPress={() => handleRedirect()}
         accessibilityLabel="Add new health record"
         accessibilityRole="button"
       >

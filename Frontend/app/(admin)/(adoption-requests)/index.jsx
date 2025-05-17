@@ -162,7 +162,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from "react";
 import {
   View,
@@ -214,6 +213,14 @@ export default function AdoptionRequestList() {
     }
   };
 
+  const handleRedirect = async () => {
+    try {
+      router.push("/(admin)/(adoption-requests)/create");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeleteAdoptionRequest = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -273,7 +280,7 @@ export default function AdoptionRequestList() {
 
       <TouchableOpacity
         style={adminStyles.mainButton}
-        onPress={() => router.push("/adoption-requests/create")}
+        onPress={() => handleRedirect()}
         accessibilityLabel="Add new adoption request"
         accessibilityRole="button"
       >
@@ -318,7 +325,9 @@ export default function AdoptionRequestList() {
           </View>
         )}
         ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No adoption requests found</Text>
+          <Text style={adminStyles.emptyListText}>
+            No adoption requests found
+          </Text>
         }
       />
 

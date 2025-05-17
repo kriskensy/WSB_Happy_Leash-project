@@ -136,7 +136,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from "react";
 import {
   View,
@@ -168,7 +167,7 @@ export default function UserList() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch("http://10.0.2.2:5000/api/User", {
+      const response = await fetch("http://10.0.2.2:5000/api/auth/users", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -183,6 +182,14 @@ export default function UserList() {
     }
   };
 
+  const handleRedirect = async () => {
+    try {
+      router.push("/(admin)/(users)/create");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeleteUser = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -222,7 +229,7 @@ export default function UserList() {
 
       <TouchableOpacity
         style={adminStyles.mainButton}
-        onPress={() => router.push("/users/create")}
+        onPress={() => handleRedirect()}
         accessibilityLabel="Add new user"
         accessibilityRole="button"
       >

@@ -68,7 +68,7 @@ export default function AdminMenu() {
     {
       title: "Users",
       icon: "people",
-      dataRoute: "api/Auth/user",
+      dataRoute: "api/Auth/users",
       finalDestination: "/(admin)/(users)",
       description: "Manage user accounts",
     },
@@ -105,7 +105,7 @@ export default function AdminMenu() {
       }
 
       console.log("przekierowanie na:", item.finalDestination);
-
+      console.log("Prubuję wziąść dane z :", item.dataRoute);
       const response = await fetch(`http://10.0.2.2:5000/${item.dataRoute}`, {
         headers: {
           "Content-Type": "application/json",

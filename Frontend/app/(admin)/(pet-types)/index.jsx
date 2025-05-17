@@ -85,6 +85,16 @@ export default function PetTypeList() {
       ]
     );
   };
+  //********************************************************************************** */
+  const handleRedirect = async () => {
+    try {
+      router.push("/(admin)/(pet-types)/create");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
+  //********************************************************************************** */
 
   if (loading) {
     return (
@@ -100,7 +110,7 @@ export default function PetTypeList() {
 
       <TouchableOpacity
         style={adminStyles.mainButton}
-        onPress={() => router.push("create")}
+        onPress={() => handleRedirect()}
         accessibilityLabel="Add new pet type"
         accessibilityRole="button"
       >
@@ -155,5 +165,3 @@ export default function PetTypeList() {
     </View>
   );
 }
-
-

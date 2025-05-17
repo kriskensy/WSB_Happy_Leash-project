@@ -41,6 +41,16 @@ namespace Backend.Controllers
             });
         }
 
+
+        // GET: api/users
+        [HttpGet("users")]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            System.Console.WriteLine("GetUsers");
+            return await _context.Users.ToListAsync();
+        }
+
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterRequest request)
         {
@@ -92,9 +102,9 @@ namespace Backend.Controllers
             {
                 return NotFound(new { message = "User not found" });
             }
-            
+
             //bez zwracania hasła
-            return Ok(new 
+            return Ok(new
             {
                 id = user.Id,
                 firstName = user.FirstName,

@@ -133,7 +133,7 @@ export default function CreatePet() {
           iconName="paw-outline"
         />
         <Text style={styles.pickerLabel}>Type:</Text>
-        <View style={styles.pickerContainer}>
+        {/* <View style={styles.pickerContainer}>
           <Picker
             selectedValue={typeId}
             onValueChange={setTypeId}
@@ -143,10 +143,10 @@ export default function CreatePet() {
               <Picker.Item key={type.id} label={type.name} value={type.id} />
             ))}
           </Picker>
-        </View>
+        </View> */}
         <Text style={styles.pickerLabel}>Breed:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={breedId}
             onValueChange={setBreedId}
             style={styles.picker}
@@ -154,7 +154,7 @@ export default function CreatePet() {
             {breeds.map((breed) => (
               <Picker.Item key={breed.id} label={breed.name} value={breed.id} />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
         <FormField
           label="Age"

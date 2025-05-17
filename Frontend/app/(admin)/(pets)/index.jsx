@@ -44,6 +44,14 @@ export default function PetList() {
     }
   };
 
+  const handleRedirect = async () => {
+    try {
+      router.push("/(admin)/(pets)/create");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeletePet = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -83,7 +91,7 @@ export default function PetList() {
 
       <TouchableOpacity
         style={adminStyles.mainButton}
-        onPress={() => router.push("/pets/create")}
+        onPress={() => handleRedirect()}
         accessibilityLabel="Add new pet"
         accessibilityRole="button"
       >
