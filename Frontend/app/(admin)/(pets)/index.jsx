@@ -44,6 +44,15 @@ export default function PetList() {
     }
   };
 
+  const handleRedirectToEdit = async (id) => {
+    try {
+      router.push(`/(admin)/(pets)/edit/${id}`);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
+
   const handleRedirect = async () => {
     try {
       router.push("/(admin)/(pets)/create");
@@ -122,7 +131,7 @@ export default function PetList() {
             <View style={adminStyles.actionButtons}>
               <TouchableOpacity
                 style={adminStyles.actionButton}
-                onPress={() => router.push(`/pets/edit/${item.id}`)}
+                onPress={() => handleRedirectToEdit(item.id)}
                 accessibilityLabel={`Edit pet ${item.name}`}
                 accessibilityRole="button"
               >

@@ -198,6 +198,15 @@ export default function PetTagList() {
       Alert.alert("Error!", error.message || "Unknown error.");
     }
   };
+
+  const handleRedirectToEdit = async (id) => {
+    try {
+      router.push(`/(admin)/(pet-tags)/edit/${id}`);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeletePetTag = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -266,7 +275,7 @@ export default function PetTagList() {
             <View style={adminStyles.actionButtons}>
               <TouchableOpacity
                 style={adminStyles.actionButton}
-                onPress={() => router.push(`/pet-tags/edit/${item.id}`)}
+                onPress={() => handleRedirectToEdit(item.id)}
                 accessibilityLabel={`Edit tag for ${item.petName}`}
                 accessibilityRole="button"
               >

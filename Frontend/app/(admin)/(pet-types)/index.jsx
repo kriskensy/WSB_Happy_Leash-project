@@ -96,6 +96,15 @@ export default function PetTypeList() {
   };
   //********************************************************************************** */
 
+  const handleRedirectToEdit = async (id) => {
+    try {
+      router.push(`/(admin)/(pet-types)/edit/${id}`);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
+
   if (loading) {
     return (
       <View style={adminStyles.loaderContainer}>
@@ -132,7 +141,7 @@ export default function PetTypeList() {
             <View style={adminStyles.actionButtons}>
               <TouchableOpacity
                 style={adminStyles.actionButton}
-                onPress={() => router.push(`../(pet-types)/(edit)/${item.id}`)}
+                onPress={() => handleRedirectToEdit(item.id)}
                 accessibilityLabel={`Edit ${item.name}`}
                 accessibilityRole="button"
               >

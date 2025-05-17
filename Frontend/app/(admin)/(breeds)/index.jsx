@@ -206,6 +206,15 @@ export default function BreedList() {
     }
   };
 
+  const handleRedirectToEdit = async (id) => {
+    try {
+      router.push(`(admin)/(breeds)/edit/${id}`);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
+
   const handleDeleteBreed = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -278,7 +287,7 @@ export default function BreedList() {
             <View style={adminStyles.actionButtons}>
               <TouchableOpacity
                 style={adminStyles.actionButton}
-                onPress={() => router.push(`/breeds/edit/${item.id}`)}
+                onPress={() => handleRedirectToEdit(item.id)}
                 accessibilityLabel={`Edit breed ${item.name}`}
                 accessibilityRole="button"
               >

@@ -221,6 +221,15 @@ export default function AdoptionRequestList() {
       Alert.alert("Error!", error.message || "Unknown error.");
     }
   };
+
+  const handleRedirectToEdit = async (id) => {
+    try {
+      router.push(`/(admin)/(adoption-requests)/edit/${id}`);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeleteAdoptionRequest = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -303,9 +312,7 @@ export default function AdoptionRequestList() {
             <View style={adminStyles.actionButtons}>
               <TouchableOpacity
                 style={adminStyles.actionButton}
-                onPress={() =>
-                  router.push(`/adoption-requests/edit/${item.id}`)
-                }
+                onPress={() => handleRedirectToEdit(item.id)}
                 accessibilityLabel={`Edit request for ${item.petName}`}
                 accessibilityRole="button"
               >

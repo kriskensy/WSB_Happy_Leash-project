@@ -214,6 +214,15 @@ export default function HealthRecordList() {
       Alert.alert("Error!", error.message || "Unknown error.");
     }
   };
+
+  const handleRedirectToEdit = async (id) => {
+    try {
+      router.push(`/(admin)/(health-records)/edit/${id}`);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeleteHealthRecord = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -296,7 +305,7 @@ export default function HealthRecordList() {
             <View style={adminStyles.actionButtons}>
               <TouchableOpacity
                 style={adminStyles.actionButton}
-                onPress={() => router.push(`/health-records/edit/${item.id}`)}
+                onPress={() => handleRedirectToEdit(item.id)}
                 accessibilityLabel={`Edit health record for ${item.petName}`}
                 accessibilityRole="button"
               >

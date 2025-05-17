@@ -144,7 +144,7 @@ export default function EditHealthRecord() {
 
         <Text style={styles.pickerLabel}>Pet:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={petId}
             onValueChange={setPetId}
             style={styles.picker}
@@ -152,12 +152,12 @@ export default function EditHealthRecord() {
             {pets.map((pet) => (
               <Picker.Item key={pet.id} label={pet.name} value={pet.id} />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
 
         <Text style={styles.pickerLabel}>Vet:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={vetId}
             onValueChange={setVetId}
             style={styles.picker}
@@ -169,7 +169,7 @@ export default function EditHealthRecord() {
                 value={vet.id}
               />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
 
         <Text style={styles.pickerLabel}>Record Date:</Text>

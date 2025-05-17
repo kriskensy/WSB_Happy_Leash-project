@@ -147,7 +147,7 @@ export default function EditPet() {
         />
         <Text style={styles.pickerLabel}>Type:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={typeId}
             onValueChange={setTypeId}
             style={styles.picker}
@@ -155,11 +155,11 @@ export default function EditPet() {
             {petTypes.map((type) => (
               <Picker.Item key={type.id} label={type.name} value={type.id} />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
         <Text style={styles.pickerLabel}>Breed:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
+          {/* <Picker
             selectedValue={breedId}
             onValueChange={setBreedId}
             style={styles.picker}
@@ -167,7 +167,7 @@ export default function EditPet() {
             {breeds.map((breed) => (
               <Picker.Item key={breed.id} label={breed.name} value={breed.id} />
             ))}
-          </Picker>
+          </Picker> */}
         </View>
         <FormField
           label="Age"

@@ -38,9 +38,12 @@ export default function EditUser() {
       try {
         setLoading(true);
         const token = await AsyncStorage.getItem("userToken");
-        const response = await fetch(`http://10.0.2.2:5000/api/User/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await fetch(
+          `http://10.0.2.2:5000/api/auth/user/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (response.ok) {
           const user = await response.json();
           setFirstName(user.firstName);
@@ -87,7 +90,7 @@ export default function EditUser() {
     try {
       setSaving(true);
       const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch(`http://10.0.2.2:5000/api/User/${id}`, {
+      const response = await fetch(`http://10.0.2.2:5000/api/auth/edit/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

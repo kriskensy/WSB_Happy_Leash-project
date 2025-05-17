@@ -190,6 +190,15 @@ export default function UserList() {
       Alert.alert("Error!", error.message || "Unknown error.");
     }
   };
+
+  const handleRedirectToEdit = async (id) => {
+    try {
+      router.push(`/(admin)/(users)/edit/${id}`);
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
   const handleDeleteUser = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -258,7 +267,7 @@ export default function UserList() {
             <View style={adminStyles.actionButtons}>
               <TouchableOpacity
                 style={adminStyles.actionButton}
-                onPress={() => router.push(`/users/edit/${item.id}`)}
+                onPress={() => handleRedirectToEdit(item.id)}
                 accessibilityLabel={`Edit user ${item.firstName} ${item.lastName}`}
                 accessibilityRole="button"
               >
