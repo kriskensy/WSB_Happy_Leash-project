@@ -7,29 +7,44 @@ import {
   ActivityIndicator,
   ScrollView,
   Image,
+  Modal,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Picker } from "@react-native-picker/picker";
 // import * as ImagePicker from "expo-image-picker";
 import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
+import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
 
 export default function CreatePet() {
   const [name, setName] = useState("");
-  const [typeId, setTypeId] = useState("");
-  const [breedId, setBreedId] = useState("");
   const [age, setAge] = useState("");
-  const [description, setDescription] = useState("");
-  const [adopted, setAdopted] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
+  const [weight, setWeight] = useState("");
+  const [gender, setGender] = useState("0");
+  const [notes, setNotes] = useState("");
+  const [breedId, setBreedId] = useState("");
+  const [pictureURL, setPictureURL] = useState("");
+  const [typeId, setTypeId] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [petTypes, setPetTypes] = useState([]);
   const [breeds, setBreeds] = useState([]);
+  const [filteredBreeds, setFilteredBreeds] = useState([]);
+  const [showTypeModal, setShowTypeModal] = useState(false);
+  const [showBreedModal, setShowBreedModal] = useState(false);
+  const [showGenderModal, setShowGenderModal] = useState(false);
+
   const router = useRouter();
+
+  const genderOptions = [
+    { id: "0", name: "Male" },
+    { id: "1", name: "Female" },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,12 +62,20 @@ export default function CreatePet() {
           const breedsData = await breedsRes.json();
           setPetTypes(typesData);
           setBreeds(breedsData);
-          if (typesData.length > 0) setTypeId(typesData[0].id);
-          if (breedsData.length > 0) setBreedId(breedsData[0].id);
+          if (typesData.length > 0) {
+            setTypeId(typesData[0].id);
+            const initialFilteredBreeds = breedsData.filter(
+              (breed) => breed.typeId === typesData[0].id
+            );
+            setFilteredBreeds(initialFilteredBreeds);
+            if (initialFilteredBreeds.length > 0) {
+              setBreedId(initialFilteredBreeds[0].id);
+            }
+          }
         } else {
           Alert.alert("Error", "Failed to load pet types or breeds");
         }
-      } catch {
+      } catch (error) {
         Alert.alert("Error", "An unexpected error occurred");
       } finally {
         setFetchingData(false);
@@ -61,56 +84,93 @@ export default function CreatePet() {
     fetchData();
   }, []);
 
-  const handleImagePick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-    if (!result.canceled && result.assets.length > 0) {
-      setImageUrl(result.assets[0].uri);
+  useEffect(() => {
+    if (typeId !== undefined && breeds.length > 0) {
+
+      //konwersja do tego samego typu danych
+      const numericTypeId = Number(typeId);
+
+      //filtrowanie z jawną konwersją
+      const filtered = breeds.filter((breed) => Number(breed.petTypeId) === numericTypeId);
+
+      setFilteredBreeds(filtered);
+      // Reset breedId jeśli nie pasuje do nowego typu
+      if (filtered.length > 0 && !filtered.some((breed) => breed.id === breedId)) {
+        setBreedId(filtered[0].id);
+      }
     }
-  };
+  }, [typeId, breeds]);
+
+  //TODO brakuje dodawania zdjęcia zwierzaka do rekordu
+  
+  // const handleImagePick = async () => {
+  //   try {
+  //     const result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       quality: 1,
+  //     });
+  //     if (!result.canceled && result.assets && result.assets.length > 0) {
+  //       setPictureURL(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     Alert.alert("Error", "Could not select image");
+  //   }
+  // };
 
   const handleSubmit = async () => {
-    if (!name || !typeId || !breedId || !age) {
-      Alert.alert(
-        "Error",
-        "All fields except description and image are required"
-      );
+    if (!name || !breedId || !age || !weight) {
+      Alert.alert("Error", "Name, breed, age and weight are required");
       return;
     }
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
+      const petData = {
+        name,
+        age: parseInt(age, 10),
+        weight: parseFloat(weight),
+        gender: parseInt(gender, 10),
+        notes,
+        pictureURL,
+        breedId,
+      };
       const response = await fetch("http://10.0.2.2:5000/api/Pet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name,
-          typeId,
-          breedId,
-          age: parseInt(age, 10),
-          description,
-          adopted,
-          imageUrl,
-        }),
+        body: JSON.stringify(petData),
       });
       if (response.ok) {
         Alert.alert("Success", "Pet created successfully", [
-          { text: "OK", onPress: () => router.push("/pets") },
+          { text: "OK", onPress: () => router.push("/(admin)/(pets)") },
         ]);
       } else {
-        Alert.alert("Error", "Failed to create pet");
+        const errorText = await response.text();
+        Alert.alert("Error", errorText || "Failed to create pet");
       }
-    } catch {
+    } catch (error) {
       Alert.alert("Error", "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
+  };
+
+  const getTypeName = (id) => {
+    const type = petTypes.find((t) => t.id === id);
+    return type ? type.name : "Select Pet Type";
+  };
+
+  const getBreedName = (id) => {
+    const breed = breeds.find((b) => b.id === id);
+    return breed ? breed.name : "Select Breed";
+  };
+
+  const getGenderName = (id) => {
+    const option = genderOptions.find((g) => g.id === id);
+    return option ? option.name : "Select Gender";
   };
 
   if (fetchingData) {
@@ -125,6 +185,7 @@ export default function CreatePet() {
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
         <AdminHeader title="Create Pet" />
+
         <FormField
           label="Name"
           value={name}
@@ -132,89 +193,222 @@ export default function CreatePet() {
           placeholder="Enter pet name"
           iconName="paw-outline"
         />
+
         <Text style={styles.pickerLabel}>Type:</Text>
-        {/* <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={typeId}
-            onValueChange={setTypeId}
-            style={styles.picker}
-          >
-            {petTypes.map((type) => (
-              <Picker.Item key={type.id} label={type.name} value={type.id} />
-            ))}
-          </Picker>
-        </View> */}
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowTypeModal(true)}
+          accessibilityLabel="Select pet type"
+          accessible
+        >
+          <Text>{getTypeName(typeId)}</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={showTypeModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowTypeModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={petTypes}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setTypeId(item.id);
+                      setShowTypeModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setShowTypeModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close pet type selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <Text style={styles.pickerLabel}>Breed:</Text>
-        <View style={styles.pickerContainer}>
-          {/* <Picker
-            selectedValue={breedId}
-            onValueChange={setBreedId}
-            style={styles.picker}
-          >
-            {breeds.map((breed) => (
-              <Picker.Item key={breed.id} label={breed.name} value={breed.id} />
-            ))}
-          </Picker> */}
-        </View>
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowBreedModal(true)}
+          accessibilityLabel="Select pet breed"
+          accessible
+        >
+          <Text>{getBreedName(breedId)}</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={showBreedModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowBreedModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={filteredBreeds}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setBreedId(item.id);
+                      setShowBreedModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+                ListEmptyComponent={
+                  <Text style={{ padding: 20, textAlign: "center" }}>
+                    No breeds available for selected type
+                  </Text>
+                }
+              />
+              <TouchableOpacity
+                onPress={() => setShowBreedModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close breed selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <FormField
           label="Age"
           value={age}
-          onChangeText={setAge}
+          onChangeText={(text) => setAge(text.replace(/[^0-9]/g, ""))}
           placeholder="Enter age"
           iconName="calendar-outline"
           keyboardType="numeric"
         />
+
         <FormField
-          label="Description"
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Enter description"
+          label="Weight"
+          value={weight}
+          onChangeText={(text) => setWeight(text.replace(/[^0-9.]/g, ""))}
+          placeholder="Enter weight"
+          iconName="fitness-outline"
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.pickerLabel}>Gender:</Text>
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowGenderModal(true)}
+          accessibilityLabel="Select gender"
+          accessible
+        >
+          <Text>{getGenderName(gender)}</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={showGenderModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowGenderModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={genderOptions}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setGender(item.id);
+                      setShowGenderModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setShowGenderModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close gender selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <FormField
+          label="Notes"
+          value={notes}
+          onChangeText={setNotes}
+          placeholder="Enter notes about this pet"
           iconName="document-text-outline"
           multiline={true}
           numberOfLines={3}
         />
-        <View style={styles.checkboxContainer}>
-          <TouchableOpacity
-            style={styles.checkbox}
-            onPress={() => setAdopted(!adopted)}
-          >
-            {adopted && <View style={styles.checkboxInner} />}
-          </TouchableOpacity>
-          <Text style={styles.checkboxLabel}>Adopted</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.imagePickerButton}
+
+        {/* <TouchableOpacity
+          style={styles.button}
           onPress={handleImagePick}
+          accessibilityLabel="Pick image"
+          accessible
         >
           <Text style={styles.buttonText}>Pick Image</Text>
         </TouchableOpacity>
-        {imageUrl ? (
-          <Image
-            source={{ uri: imageUrl }}
-            style={{
-              width: 100,
-              height: 100,
-              marginVertical: 10,
-              borderRadius: 8,
-            }}
-          />
-        ) : null}
+
+        {pictureURL ? (
+          <View style={{ alignItems: "center", marginVertical: 10 }}>
+            <Image
+              source={{ uri: pictureURL }}
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 8,
+              }}
+            />
+          </View>
+        ) : null} */}
+
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
           disabled={loading}
+          accessibilityLabel="Create pet"
+          accessible
         >
-          <Text style={styles.buttonText}>Create Pet</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color={COLORS.white} />
+          ) : (
+            <Text style={styles.buttonText}>Create Pet</Text>
+          )}
         </TouchableOpacity>
+
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push("/pets")}
+          style={adminStyles.mainButton}
+          onPress={() => router.push("/(admin)/(pets)")}
           disabled={loading}
+          accessibilityLabel="Cancel"
+          accessible
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

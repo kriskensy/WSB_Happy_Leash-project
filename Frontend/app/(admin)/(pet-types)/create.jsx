@@ -9,6 +9,7 @@ import {
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
@@ -38,7 +39,7 @@ export default function CreatePetType() {
 
       if (response.ok) {
         Alert.alert("Success", "Pet type created successfully", [
-          { text: "OK", onPress: () => router.push("/(admin)/pet-types") },
+          { text: "OK", onPress: () => router.push("/(admin)/(pet-types)") },
         ]);
       } else {
         const errorData = await response.json();
@@ -77,14 +78,11 @@ export default function CreatePetType() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: COLORS.secondary, marginTop: 10 },
-        ]}
+        style={adminStyles.mainButton}
         onPress={() => router.push("/(admin)/(pet-types)")}
         disabled={loading}
       >
-        <Text style={styles.buttonText}>Cancel</Text>
+        <Text style={adminStyles.mainButtonText}>Cancel</Text>
       </TouchableOpacity>
     </View>
   );

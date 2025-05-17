@@ -12,6 +12,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import * as ImagePicker from "expo-image-picker";
 import styles from "../../../../assets/styles/main.styles";
+import adminStyles from "../../../../assets/styles/admin.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
 import COLORS from "../../../../constants/colors";

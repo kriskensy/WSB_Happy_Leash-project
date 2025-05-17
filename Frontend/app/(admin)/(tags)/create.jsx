@@ -10,6 +10,7 @@ import {
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
@@ -41,7 +42,7 @@ export default function CreateTag() {
 
       if (response.ok) {
         Alert.alert("Success", "Tag created successfully", [
-          { text: "OK", onPress: () => router.push("/tags") },
+          { text: "OK", onPress: () => router.push("/(admin)/(tags)") },
         ]);
       } else {
         const errorData = await response.json();
@@ -81,14 +82,11 @@ export default function CreateTag() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push("/tags")}
+          style={adminStyles.mainButton}
+          onPress={() => router.push("/(admin)/(tags)")}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

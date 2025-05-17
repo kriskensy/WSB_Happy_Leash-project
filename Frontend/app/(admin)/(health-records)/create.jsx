@@ -6,78 +6,77 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Modal,
+  FlatList,
+  Pressable,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Picker } from "@react-native-picker/picker";
-// import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
+import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
 
 export default function CreateHealthRecord() {
   const [petId, setPetId] = useState("");
-  const [vetId, setVetId] = useState("");
   const [recordDate, setRecordDate] = useState(new Date());
   const [description, setDescription] = useState("");
-  const [vaccinationStatus, setVaccinationStatus] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [vetName, setVetName] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [pets, setPets] = useState([]);
-  const [vets, setVets] = useState([]);
+  const [showPetModal, setShowPetModal] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
-    const fetchRequiredData = async () => {
+    const fetchPets = async () => {
       try {
         setFetchingData(true);
         const token = await AsyncStorage.getItem("userToken");
-
         const petsResponse = await fetch("http://10.0.2.2:5000/api/Pet", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        const vetsResponse = await fetch("http://10.0.2.2:5000/api/User/vets", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (petsResponse.ok && vetsResponse.ok) {
+        if (petsResponse.ok) {
           const petsData = await petsResponse.json();
-          const vetsData = await vetsResponse.json();
-
           setPets(petsData);
-          setVets(vetsData);
           if (petsData.length > 0) setPetId(petsData[0].id);
-          if (vetsData.length > 0) setVetId(vetsData[0].id);
         } else {
-          Alert.alert("Error", "Failed to load required data");
+          Alert.alert("Error", "Failed to load pets");
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching pets:", error);
         Alert.alert("Error", "An unexpected error occurred");
       } finally {
         setFetchingData(false);
       }
     };
-
-    fetchRequiredData();
+    fetchPets();
   }, []);
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateConfirm = (date) => {
+    setRecordDate(date);
     setShowDatePicker(false);
-    if (selectedDate) {
-      setRecordDate(selectedDate);
-    }
   };
 
   const handleSubmit = async () => {
-    if (!petId || !vetId) {
-      Alert.alert("Error", "Pet and Vet are required");
+
+//petId w ten sposób aby również Id = 0 było poprawnie obsłużone
+    if (
+      petId === null ||
+      petId === undefined || 
+      petId === "" || 
+      !recordDate || 
+      !description.trim() || 
+      !vetName.trim()) {
+      Alert.alert("Error", "All fields are required");
       return;
     }
-
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
@@ -89,16 +88,15 @@ export default function CreateHealthRecord() {
         },
         body: JSON.stringify({
           petId,
-          vetId,
           recordDate: recordDate.toISOString(),
           description,
-          vaccinationStatus,
+          vetName,
         }),
       });
 
       if (response.ok) {
         Alert.alert("Success", "Health record created successfully", [
-          { text: "OK", onPress: () => router.push("/health-records") },
+          { text: "OK", onPress: () => router.push("/(admin)/(health-records)") },
         ]);
       } else {
         const errorData = await response.json();
@@ -110,6 +108,11 @@ export default function CreateHealthRecord() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getPetName = (id) => {
+    const pet = pets.find((p) => p.id === id);
+    return pet ? pet.name : "Select Pet";
   };
 
   if (fetchingData) {
@@ -126,51 +129,68 @@ export default function CreateHealthRecord() {
         <AdminHeader title="Create Health Record" />
 
         <Text style={styles.pickerLabel}>Pet:</Text>
-        <View style={styles.pickerContainer}>
-          {/* <Picker
-            selectedValue={petId}
-            onValueChange={setPetId}
-            style={styles.picker}
-          >
-            {pets.map((pet) => (
-              <Picker.Item key={pet.id} label={pet.name} value={pet.id} />
-            ))}
-          </Picker> */}
-        </View>
-
-        <Text style={styles.pickerLabel}>Vet:</Text>
-        <View style={styles.pickerContainer}>
-          {/* <Picker
-            selectedValue={vetId}
-            onValueChange={setVetId}
-            style={styles.picker}
-          >
-            {vets.map((vet) => (
-              <Picker.Item
-                key={vet.id}
-                label={`${vet.firstName} ${vet.lastName}`}
-                value={vet.id}
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowPetModal(true)}
+          accessibilityLabel="Select pet"
+          accessible
+        >
+          <Text>{getPetName(petId)}</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={showPetModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowPetModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={pets}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setPetId(item.id);
+                      setShowPetModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
               />
-            ))}
-          </Picker> */}
-        </View>
+              <TouchableOpacity
+                onPress={() => setShowPetModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close pet selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
         <Text style={styles.pickerLabel}>Record Date:</Text>
         <TouchableOpacity
           style={styles.dateInput}
           onPress={() => setShowDatePicker(true)}
+          accessibilityLabel="Select record date"
+          accessible
         >
           <Text>{recordDate.toLocaleDateString()}</Text>
         </TouchableOpacity>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={recordDate}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-          />
-        )}
+        <DateTimePickerModal
+          isVisible={showDatePicker}
+          mode="date"
+          date={recordDate}
+          onConfirm={handleDateConfirm}
+          onCancel={() => setShowDatePicker(false)}
+          display={Platform.OS === "ios" ? "inline" : "default"}
+        />
 
         <FormField
           label="Description"
@@ -182,20 +202,20 @@ export default function CreateHealthRecord() {
           numberOfLines={4}
         />
 
-        <View style={styles.checkboxContainer}>
-          <TouchableOpacity
-            style={styles.checkbox}
-            onPress={() => setVaccinationStatus(!vaccinationStatus)}
-          >
-            {vaccinationStatus && <View style={styles.checkboxInner} />}
-          </TouchableOpacity>
-          <Text style={styles.checkboxLabel}>Vaccination Completed</Text>
-        </View>
+        <FormField
+          label="Vet Name"
+          value={vetName}
+          onChangeText={setVetName}
+          placeholder="Enter vet name"
+          iconName="person-outline"
+        />
 
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
           disabled={loading}
+          accessibilityLabel="Create health record"
+          accessible
         >
           {loading ? (
             <ActivityIndicator size="small" color={COLORS.white} />
@@ -205,14 +225,13 @@ export default function CreateHealthRecord() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push("/health-records")}
+          style={adminStyles.mainButton}
+          onPress={() => router.push("/(admin)/(health-records)")}
           disabled={loading}
+          accessibilityLabel="Cancel"
+          accessible
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

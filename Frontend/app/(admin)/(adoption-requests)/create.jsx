@@ -11,7 +11,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { Picker } from "@react-native-picker/picker";
 import styles from "../../../assets/styles/main.styles";
-
+import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
@@ -96,7 +96,7 @@ export default function CreateAdoptionRequest() {
 
       if (response.ok) {
         Alert.alert("Success", "Adoption request created successfully", [
-          { text: "OK", onPress: () => router.push("/adoption-requests") },
+          { text: "OK", onPress: () => router.push("/(admin)/(adoption-requests)") },
         ]);
       } else {
         const errorData = await response.json();
@@ -189,14 +189,11 @@ export default function CreateAdoptionRequest() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push("/adoption-requests")}
+          style={adminStyles.mainButton}
+          onPress={() => router.push("/(admin)/(adoption-requests)")}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

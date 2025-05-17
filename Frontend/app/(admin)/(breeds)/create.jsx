@@ -6,11 +6,15 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Modal,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//import { Picker } from "@react-native-picker/picker";
 import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
+import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
@@ -18,10 +22,10 @@ import COLORS from "../../../constants/colors";
 export default function CreateBreed() {
   const [name, setName] = useState("");
   const [typeId, setTypeId] = useState("");
-  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [petTypes, setPetTypes] = useState([]);
+  const [showTypeModal, setShowTypeModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,9 +34,7 @@ export default function CreateBreed() {
         setFetchingData(true);
         const token = await AsyncStorage.getItem("userToken");
         const response = await fetch("http://10.0.2.2:5000/api/PetType", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
@@ -40,6 +42,8 @@ export default function CreateBreed() {
           setPetTypes(data);
           if (data.length > 0) setTypeId(data[0].id);
         } else {
+          const errorText = await response.text();
+          console.log("Error fetching pet types:", response.status, errorText);
           Alert.alert("Error", "Failed to load pet types");
         }
       } catch (error) {
@@ -68,16 +72,12 @@ export default function CreateBreed() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name,
-          typeId,
-          description,
-        }),
+        body: JSON.stringify({ name, typeId}),
       });
 
       if (response.ok) {
         Alert.alert("Success", "Breed created successfully", [
-          { text: "OK", onPress: () => router.push("/breeds") },
+          { text: "OK", onPress: () => router.push("/(admin)/(breeds)") },
         ]);
       } else {
         const errorData = await response.json();
@@ -89,6 +89,11 @@ export default function CreateBreed() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getTypeName = (id) => {
+    const type = petTypes.find((t) => t.id === id);
+    return type ? type.name : "Select Pet Type";
   };
 
   if (fetchingData) {
@@ -113,32 +118,58 @@ export default function CreateBreed() {
         />
 
         <Text style={styles.pickerLabel}>Pet Type:</Text>
-        {/* <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={typeId}
-            onValueChange={(itemValue) => setTypeId(itemValue)}
-            style={styles.picker}
-          >
-            {petTypes.map((type) => (
-              <Picker.Item key={type.id} label={type.name} value={type.id} />
-            ))}
-          </Picker>
-        </View> */}
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowTypeModal(true)}
+          accessibilityLabel="Select pet type"
+          accessible
+        >
+          <Text>{getTypeName(typeId)}</Text>
+        </TouchableOpacity>
 
-        <FormField
-          label="Description"
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Enter description (optional)"
-          iconName="document-text-outline"
-          multiline={true}
-          numberOfLines={3}
-        />
+        <Modal
+          visible={showTypeModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowTypeModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={petTypes}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setTypeId(item.id);
+                      setShowTypeModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setShowTypeModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close pet type selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
           disabled={loading}
+          accessibilityLabel="Create breed"
+          accessible
         >
           {loading ? (
             <ActivityIndicator size="small" color={COLORS.white} />
@@ -148,14 +179,13 @@ export default function CreateBreed() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push("/breeds")}
+          style={adminStyles.mainButton}
+          onPress={() => router.push("/(admin)/(breeds)")}
           disabled={loading}
+          accessibilityLabel="Cancel"
+          accessible
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

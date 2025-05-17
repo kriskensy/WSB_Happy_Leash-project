@@ -6,11 +6,15 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Modal,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Picker } from "@react-native-picker/picker";
 import styles from "../../../assets/styles/main.styles";
+import adminStyles from "../../../assets/styles/admin.styles";
+import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import COLORS from "../../../constants/colors";
 
@@ -21,6 +25,8 @@ export default function CreatePetTag() {
   const [fetchingData, setFetchingData] = useState(true);
   const [pets, setPets] = useState([]);
   const [tags, setTags] = useState([]);
+  const [showPetModal, setShowPetModal] = useState(false);
+  const [showTagModal, setShowTagModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,28 +34,45 @@ export default function CreatePetTag() {
       try {
         setFetchingData(true);
         const token = await AsyncStorage.getItem("userToken");
+
         const petsRes = await fetch("http://10.0.2.2:5000/api/Pet", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const tagsRes = await fetch("http://10.0.2.2:5000/api/Tag", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         if (petsRes.ok && tagsRes.ok) {
           const petsData = await petsRes.json();
           const tagsData = await tagsRes.json();
-          setPets(petsData);
-          setTags(tagsData);
-          if (petsData.length > 0) setPetId(petsData[0].id);
-          if (tagsData.length > 0) setTagId(tagsData[0].id);
+
+          
+          const processedPets = petsData.map((pet) => ({
+            ...pet,
+            id: Number(pet.id),
+          }));
+          const processedTags = tagsData.map((tag) => ({
+            ...tag,
+            id: Number(tag.id),
+          }));
+
+          setPets(processedPets);
+          setTags(processedTags);
+
+          if (processedPets.length > 0) setPetId(processedPets[0].id);
+          if (processedTags.length > 0) setTagId(processedTags[0].id);
         } else {
           Alert.alert("Error", "Failed to load pets or tags");
         }
-      } catch {
+      } catch (error) {
+        console.error("Error fetching data:", error);
         Alert.alert("Error", "An unexpected error occurred");
       } finally {
         setFetchingData(false);
       }
     };
+
     fetchData();
   }, []);
 
@@ -61,26 +84,45 @@ export default function CreatePetTag() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
+
+      const payload = {
+        petId: Number(petId),
+        tagId: Number(tagId),
+      };
+
       const response = await fetch("http://10.0.2.2:5000/api/PetTag", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ petId, tagId }),
+        body: JSON.stringify(payload),
       });
+
       if (response.ok) {
         Alert.alert("Success", "Pet tag added", [
-          { text: "OK", onPress: () => router.push("/pet-tags") },
+          { text: "OK", onPress: () => router.push("/(admin)/(pet-tags)") },
         ]);
       } else {
-        Alert.alert("Error", "Failed to create pet-tag relation");
+        const errorData = await response.json();
+        Alert.alert("Error", errorData.message || "Failed to create pet-tag relation");
       }
-    } catch {
+    } catch (error) {
+      console.error("Error creating pet tag:", error);
       Alert.alert("Error", "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
+  };
+
+  const getPetName = (id) => {
+    const pet = pets.find((p) => Number(p.id) === Number(id));
+    return pet ? pet.name : "Select Pet";
+  };
+
+  const getTagName = (id) => {
+    const tag = tags.find((t) => Number(t.id) === Number(id));
+    return tag ? tag.name : "Select Tag";
   };
 
   if (fetchingData) {
@@ -95,46 +137,121 @@ export default function CreatePetTag() {
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
         <AdminHeader title="Add Pet Tag" />
+
         <Text style={styles.pickerLabel}>Pet:</Text>
-        <View style={styles.pickerContainer}>
-          {/* <Picker
-            selectedValue={petId}
-            onValueChange={setPetId}
-            style={styles.picker}
-          >
-            {pets.map((pet) => (
-              <Picker.Item key={pet.id} label={pet.name} value={pet.id} />
-            ))}
-          </Picker> */}
-        </View>
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowPetModal(true)}
+          accessibilityLabel="Select pet"
+          accessible
+        >
+          <Text>{getPetName(petId)}</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={showPetModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowPetModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={pets}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setPetId(item.id);
+                      setShowPetModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPetModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close pet selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <Text style={styles.pickerLabel}>Tag:</Text>
-        <View style={styles.pickerContainer}>
-          {/* <Picker
-            selectedValue={tagId}
-            onValueChange={setTagId}
-            style={styles.picker}
-          >
-            {tags.map((tag) => (
-              <Picker.Item key={tag.id} label={tag.name} value={tag.id} />
-            ))}
-          </Picker> */}
-        </View>
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowTagModal(true)}
+          accessibilityLabel="Select tag"
+          accessible
+        >
+          <Text>{getTagName(tagId)}</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={showTagModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowTagModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={tags}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setTagId(item.id);
+                      setShowTagModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setShowTagModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close tag selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
           disabled={loading}
+          accessibilityLabel="Add pet tag"
+          accessible
         >
-          <Text style={styles.buttonText}>Add</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color={COLORS.white} />
+          ) : (
+            <Text style={styles.buttonText}>Add</Text>
+          )}
         </TouchableOpacity>
+
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push("/pet-tags")}
+          style={adminStyles.mainButton}
+          onPress={() => router.push("/(admin)/(pet-tags)")}
           disabled={loading}
+          accessibilityLabel="Cancel"
+          accessible
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
