@@ -78,8 +78,38 @@ namespace Backend.Controllers
         // POST: api/Pet
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Pet>> PostPet(Pet pet)
+        public async Task<ActionResult<Pet>> PostPet([FromForm] PetDto dto, IFormFile Picture)
         {
+            var pet = new Pet
+            {
+                Name = dto.Name,
+                Age = dto.Age,
+                Weight = dto.Weight,
+                Gender = dto.Gender,
+                Notes = dto.Notes,
+                BreedId = dto.BreedId
+            };
+
+            // Jeśli przesłano zdjęcie — zapisujemy je
+            if (Picture != null && Picture.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Picture.FileName);
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Picture.CopyToAsync(stream);
+                }
+
+                // Zapisz ścieżkę do bazy (np. względna ścieżka URL)
+                pet.PictureURL = $"/uploads/{fileName}";
+            }
+
             _context.Pets.Add(pet);
             await _context.SaveChangesAsync();
 

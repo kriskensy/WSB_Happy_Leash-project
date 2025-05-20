@@ -20,6 +20,7 @@ import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
+import * as ImagePicker from "expo-image-picker";
 
 export default function CreatePet() {
   const [name, setName] = useState("");
@@ -38,6 +39,7 @@ export default function CreatePet() {
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [showBreedModal, setShowBreedModal] = useState(false);
   const [showGenderModal, setShowGenderModal] = useState(false);
+  const [image, setImage] = useState(null);
 
   const router = useRouter();
 
@@ -86,23 +88,27 @@ export default function CreatePet() {
 
   useEffect(() => {
     if (typeId !== undefined && breeds.length > 0) {
-
       //konwersja do tego samego typu danych
       const numericTypeId = Number(typeId);
 
       //filtrowanie z jawną konwersją
-      const filtered = breeds.filter((breed) => Number(breed.petTypeId) === numericTypeId);
+      const filtered = breeds.filter(
+        (breed) => Number(breed.petTypeId) === numericTypeId
+      );
 
       setFilteredBreeds(filtered);
       // Reset breedId jeśli nie pasuje do nowego typu
-      if (filtered.length > 0 && !filtered.some((breed) => breed.id === breedId)) {
+      if (
+        filtered.length > 0 &&
+        !filtered.some((breed) => breed.id === breedId)
+      ) {
         setBreedId(filtered[0].id);
       }
     }
   }, [typeId, breeds]);
 
   //TODO brakuje dodawania zdjęcia zwierzaka do rekordu
-  
+
   // const handleImagePick = async () => {
   //   try {
   //     const result = await ImagePicker.launchImageLibraryAsync({
@@ -126,35 +132,68 @@ export default function CreatePet() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
-      const petData = {
-        name,
-        age: parseInt(age, 10),
-        weight: parseFloat(weight),
-        gender: parseInt(gender, 10),
-        notes,
-        pictureURL,
-        breedId,
-      };
-      const response = await fetch("http://10.0.2.2:5000/api/Pet", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(petData),
-      });
-      if (response.ok) {
-        Alert.alert("Success", "Pet created successfully", [
-          { text: "OK", onPress: () => router.push("/(admin)/(pets)") },
-        ]);
-      } else {
-        const errorText = await response.text();
-        Alert.alert("Error", errorText || "Failed to create pet");
+
+      const formData = new FormData();
+      formData.append("Name", name);
+      formData.append("Age", parseInt(age, 10));
+      formData.append("Weight", parseFloat(weight));
+      formData.append("Gender", parseInt(gender, 10));
+      formData.append("Notes", notes);
+      formData.append("BreedId", breedId);
+
+      // dodaj obraz jeśli jest wybrany
+      if (pictureURL) {
+        formData.append("Picture", {
+          uri: pictureURL,
+          name: "photo.jpg",
+          type: "image/jpeg",
+        });
+
+        const response = await fetch("http://10.0.2.2:5000/api/Pet", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (response.ok) {
+          Alert.alert("Success", "Pet created successfully", [
+            { text: "OK", onPress: () => router.push("/(admin)/(pets)") },
+          ]);
+        } else {
+          const errorText = await response.text();
+          Alert.alert("Error", errorText || "Failed to create pet");
+        }
       }
     } catch (error) {
       Alert.alert("Error", "An unexpected error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  //obsługa wyboru zdjęcia
+  const handleChoseImage = async () => {
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+
+    console.log(pickerResult);
+    handleImagePicked(pickerResult);
+  };
+
+  // wywołanie metody zapisującej zdjęcie jeśli operacją wybierania zdjęcia się powiodła
+  const handleImagePicked = async (pickerResult) => {
+    try {
+      if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
+        const uri = pickerResult.assets[0].uri;
+        setPictureURL(uri); // dołączane później do FormData
+      }
+    } catch (e) {
+      console.log(e);
+      Alert.alert("Błąd", "Nie udało się wczytać zdjęcia");
     }
   };
 
@@ -386,6 +425,21 @@ export default function CreatePet() {
             />
           </View>
         ) : null} */}
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={{ width: 300, height: 300, borderRadius: 10 }}
+          />
+        )}
+        <TouchableOpacity
+          style={adminStyles.mainButton}
+          onPress={() => handleChoseImage()}
+          disabled={loading}
+          accessibilityLabel="Cancel"
+          accessible
+        >
+          <Text style={adminStyles.mainButtonText}>Chose pet Image</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
