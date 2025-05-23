@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSB_Happy_Leash_project.Data.Context;
+using WSB_Happy_Leash_project.Data.DTO;
 using WSB_Happy_Leash_project.Data.Models;
 
 namespace Backend.Controllers
@@ -25,9 +26,19 @@ namespace Backend.Controllers
 
         // GET: api/Breed
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Breed>>> GetBreeds()
+        public async Task<ActionResult<IEnumerable<BreedDto>>> GetBreeds()
         {
-            return await _context.Breeds.ToListAsync();
+            var breeds = await _context.Breeds
+                .Include(b => b.PetType)
+                .Select(b => new BreedDto
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    PetTypeName = b.PetType != null ? b.PetType.Name : "Unknown"
+                })
+                .ToListAsync();
+
+            return breeds;
         }
 
         // GET: api/Breed/5

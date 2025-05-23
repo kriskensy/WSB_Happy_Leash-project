@@ -72,16 +72,23 @@ export default function CreateBreed() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ name, typeId}),
+        body: JSON.stringify({ name, petTypeId: typeId }),
       });
+      const data = await response.json();
+      console.log(data); // upewnij się, że `id`, który wysyłasz, istnieje
 
       if (response.ok) {
         Alert.alert("Success", "Breed created successfully", [
           { text: "OK", onPress: () => router.push("/(admin)/(breeds)") },
         ]);
       } else {
-        const errorData = await response.json();
-        Alert.alert("Error", errorData.message || "Failed to create breed");
+        const errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          Alert.alert("Error", errorData.message || "Failed to create breed");
+        } catch {
+          Alert.alert("Error", errorText || "Failed to create breed");
+        }
       }
     } catch (error) {
       console.error("Error creating breed:", error);
