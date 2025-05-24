@@ -6,12 +6,15 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Modal,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Picker } from "@react-native-picker/picker";
 import styles from "../../../../assets/styles/main.styles";
 import adminStyles from "../../../../assets/styles/admin.styles";
+import modalStyles from "../../../../assets/styles/modal.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
 import COLORS from "../../../../constants/colors";
@@ -27,6 +30,8 @@ export default function EditAdoptionRequest() {
   const [saving, setSaving] = useState(false);
   const [pets, setPets] = useState([]);
   const [users, setUsers] = useState([]);
+  const [showPetModal, setShowPetModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -35,43 +40,31 @@ export default function EditAdoptionRequest() {
         setLoading(true);
         const token = await AsyncStorage.getItem("userToken");
 
-        // Fetch pets
-        const petsResponse = await fetch("http://10.0.2.2:5000/api/Pet", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const [petsRes, usersRes, adoptionRes] = await Promise.all([
+          fetch("http://10.0.2.2:5000/api/Pet", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch("http://10.0.2.2:5000/api/auth/Users", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`http://10.0.2.2:5000/api/AdoptionRequest/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-        // Fetch users
-        const usersResponse = await fetch("http://10.0.2.2:5000/api/User", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // Fetch adoption request
-        const adoptionRequestResponse = await fetch(
-          `http://10.0.2.2:5000/api/AdoptionRequest/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (petsResponse.ok && usersResponse.ok && adoptionRequestResponse.ok) {
-          const petsData = await petsResponse.json();
-          const usersData = await usersResponse.json();
-          const adoptionRequestData = await adoptionRequestResponse.json();
+        if (petsRes.ok && usersRes.ok && adoptionRes.ok) {
+          const petsData = await petsRes.json();
+          const usersData = await usersRes.json();
+          const adoptionData = await adoptionRes.json();
 
           setPets(petsData);
           setUsers(usersData);
 
-          setPetId(adoptionRequestData.petId);
-          setUserId(adoptionRequestData.userId);
-          setMessage(adoptionRequestData.message || "");
-          setRequestDate(adoptionRequestData.requestDate);
-          setIsApproved(adoptionRequestData.isApproved);
+          setPetId(adoptionData.petId);
+          setUserId(adoptionData.userId);
+          setMessage(adoptionData.message || "");
+          setRequestDate(adoptionData.requestDate);
+          setIsApproved(adoptionData.isApproved);
         } else {
           Alert.alert("Error", "Failed to load required data");
           router.back();
@@ -120,7 +113,7 @@ export default function EditAdoptionRequest() {
         Alert.alert("Success", "Adoption request updated successfully", [
           {
             text: "OK",
-            onPress: () => router.push(`/adoption-requests/${id}`),
+            onPress: () => router.push(`/(admin)/(adoption-requests)`),
           },
         ]);
       } else {
@@ -151,36 +144,109 @@ export default function EditAdoptionRequest() {
       <View style={styles.container}>
         <AdminHeader title="Edit Adoption Request" />
 
+        {/* PET MODAL SELECT */}
         <Text style={styles.pickerLabel}>Pet:</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={petId}
-            onValueChange={(itemValue) => setPetId(itemValue)}
-            style={styles.picker}
-          >
-            {pets.map((pet) => (
-              <Picker.Item key={pet.id} label={pet.name} value={pet.id} />
-            ))}
-          </Picker>
-        </View>
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowPetModal(true)}
+        >
+          <Text>{pets.find((p) => p.id === petId)?.name || "Select Pet"}</Text>
+        </TouchableOpacity>
 
-        <Text style={styles.pickerLabel}>User:</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={userId}
-            onValueChange={(itemValue) => setUserId(itemValue)}
-            style={styles.picker}
-          >
-            {users.map((user) => (
-              <Picker.Item
-                key={user.id}
-                label={`${user.firstName} ${user.lastName}`}
-                value={user.id}
+        <Modal
+          visible={showPetModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowPetModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={pets}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setPetId(item.id);
+                      setShowPetModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+                ListEmptyComponent={
+                  <Text style={{ padding: 20, textAlign: "center" }}>
+                    No pets available
+                  </Text>
+                }
               />
-            ))}
-          </Picker>
-        </View>
+              <TouchableOpacity
+                onPress={() => setShowPetModal(false)}
+                style={modalStyles.modalCloseButton}
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
+        {/* USER MODAL SELECT */}
+        <Text style={styles.pickerLabel}>User:</Text>
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowUserModal(true)}
+        >
+          <Text>
+            {users.find((u) => u.id === userId)
+              ? `${users.find((u) => u.id === userId).firstName} ${
+                  users.find((u) => u.id === userId).lastName
+                }`
+              : "Select User"}
+          </Text>
+        </TouchableOpacity>
+
+        <Modal
+          visible={showUserModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowUserModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={users}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setUserId(item.id);
+                      setShowUserModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                  >
+                    <Text>
+                      {item.firstName} {item.lastName}
+                    </Text>
+                  </Pressable>
+                )}
+                ListEmptyComponent={
+                  <Text style={{ padding: 20, textAlign: "center" }}>
+                    No users available
+                  </Text>
+                }
+              />
+              <TouchableOpacity
+                onPress={() => setShowUserModal(false)}
+                style={modalStyles.modalCloseButton}
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* MESSAGE & APPROVAL */}
         <FormField
           label="Message"
           value={message}
@@ -201,6 +267,7 @@ export default function EditAdoptionRequest() {
           <Text style={styles.checkboxLabel}>Approved</Text>
         </View>
 
+        {/* ACTION BUTTONS */}
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
@@ -218,7 +285,7 @@ export default function EditAdoptionRequest() {
             styles.button,
             { backgroundColor: COLORS.secondary, marginTop: 10 },
           ]}
-          onPress={() => router.push(`/adoption-requests/${id}`)}
+          onPress={() => router.push(`/(admin)/(adoption-requests)`)}
           disabled={saving}
         >
           <Text style={styles.buttonText}>Cancel</Text>

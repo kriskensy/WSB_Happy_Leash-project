@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSB_Happy_Leash_project.Data.Context;
+using WSB_Happy_Leash_project.Data.DTO;
 using WSB_Happy_Leash_project.Data.Models;
 
 namespace Backend.Controllers
@@ -25,60 +21,61 @@ namespace Backend.Controllers
 
         // GET: api/Pet
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pet>>> GetPets()
+        public async Task<ActionResult<IEnumerable<PetDto>>> GetPets()
         {
-            return await _context.Pets.ToListAsync();
+            var pets = await _context.Pets
+                .Include(p => p.Breed)
+                .ThenInclude(b => b.PetType)
+                .Select(p => new PetDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Age = p.Age,
+                    Weight = p.Weight,
+                    Gender = p.Gender,
+                    Notes = p.Notes,
+                    PictureURL = p.PictureURL,
+                    BreedId = p.BreedId,
+                    BreedName = p.Breed != null ? p.Breed.Name : string.Empty,
+                    PetTypeName = p.Breed != null && p.Breed.PetType != null ? p.Breed.PetType.Name : string.Empty
+                })
+                .ToListAsync();
+
+            return Ok(pets);
         }
 
         // GET: api/Pet/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pet>> GetPet(int id)
+        public async Task<ActionResult<PetDto>> GetPet(int id)
         {
-            var pet = await _context.Pets.FindAsync(id);
+            var pet = await _context.Pets
+                .Include(p => p.Breed)
+                .ThenInclude(b => b.PetType)
+                .Where(p => p.Id == id)
+                .Select(p => new PetDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Age = p.Age,
+                    Weight = p.Weight,
+                    Gender = p.Gender,
+                    Notes = p.Notes,
+                    PictureURL = p.PictureURL,
+                    BreedId = p.BreedId,
+                    BreedName = p.Breed != null ? p.Breed.Name : string.Empty,
+                    PetTypeName = p.Breed != null && p.Breed.PetType != null ? p.Breed.PetType.Name : string.Empty
+                })
+                .FirstOrDefaultAsync();
 
             if (pet == null)
-            {
                 return NotFound();
-            }
 
-            return pet;
-        }
-
-        // PUT: api/Pet/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPet(int id, Pet pet)
-        {
-            if (id != pet.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(pet).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PetExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(pet);
         }
 
         // POST: api/Pet
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Pet>> PostPet([FromForm] PetDto dto, IFormFile Picture)
+        public async Task<ActionResult> PostPet([FromForm] PetDto dto, IFormFile? Picture)
         {
             var pet = new Pet
             {
@@ -87,33 +84,58 @@ namespace Backend.Controllers
                 Weight = dto.Weight,
                 Gender = dto.Gender,
                 Notes = dto.Notes,
-                BreedId = dto.BreedId
+                BreedId = dto.BreedId,
+                PictureURL = string.Empty
             };
 
-            // Jeśli przesłano zdjęcie — zapisujemy je
             if (Picture != null && Picture.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Picture.FileName);
-                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-
-                if (!Directory.Exists(uploadPath))
-                    Directory.CreateDirectory(uploadPath);
-
-                var filePath = Path.Combine(uploadPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await Picture.CopyToAsync(stream);
-                }
-
-                // Zapisz ścieżkę do bazy (np. względna ścieżka URL)
+                var fileName = Guid.NewGuid() + Path.GetExtension(Picture.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                Directory.CreateDirectory(path);
+                var filePath = Path.Combine(path, fileName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await Picture.CopyToAsync(stream);
                 pet.PictureURL = $"/uploads/{fileName}";
             }
 
             _context.Pets.Add(pet);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPet", new { id = pet.Id }, pet);
+            return CreatedAtAction(nameof(GetPet), new { id = pet.Id }, null);
+        }
+
+        // PUT: api/Pet/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPet(int id, [FromForm] PetDto dto, IFormFile? Picture)
+        {
+            if (dto.Id != null && id != dto.Id)
+                return BadRequest("Mismatched ID");
+
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
+                return NotFound();
+
+            pet.Name = dto.Name;
+            pet.Age = dto.Age;
+            pet.Weight = dto.Weight;
+            pet.Gender = dto.Gender;
+            pet.Notes = dto.Notes;
+            pet.BreedId = dto.BreedId;
+
+            if (Picture != null && Picture.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(Picture.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                Directory.CreateDirectory(path);
+                var filePath = Path.Combine(path, fileName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await Picture.CopyToAsync(stream);
+                pet.PictureURL = $"/uploads/{fileName}";
+            }
+
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         // DELETE: api/Pet/5
@@ -122,19 +144,14 @@ namespace Backend.Controllers
         {
             var pet = await _context.Pets.FindAsync(id);
             if (pet == null)
-            {
                 return NotFound();
-            }
 
             _context.Pets.Remove(pet);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        private bool PetExists(int id)
-        {
-            return _context.Pets.Any(e => e.Id == id);
-        }
+        private bool PetExists(int id) =>
+            _context.Pets.Any(p => p.Id == id);
     }
 }

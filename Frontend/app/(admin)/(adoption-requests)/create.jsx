@@ -46,26 +46,29 @@ export default function CreateAdoptionRequest() {
         });
 
         // Fetch users
-        const usersResponse = await fetch("http://10.0.2.2:5000/api/User", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const usersResponse = await fetch(
+          "http://10.0.2.2:5000/api/auth/Users",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (petsResponse.ok && usersResponse.ok) {
           const petsData = await petsResponse.json();
           const usersData = await usersResponse.json();
-          
-          const processedPets = petsData.map(pet => ({
+
+          const processedPets = petsData.map((pet) => ({
             ...pet,
-            id: Number(pet.id)
+            id: Number(pet.id),
           }));
-          
-          const processedUsers = usersData.map(user => ({
+
+          const processedUsers = usersData.map((user) => ({
             ...user,
-            id: Number(user.id)
+            id: Number(user.id),
           }));
-          
+
           setPets(processedPets);
           setUsers(processedUsers);
 
@@ -91,12 +94,13 @@ export default function CreateAdoptionRequest() {
 
   const handleSubmit = async () => {
     if (
-      petId === undefined || 
+      petId === undefined ||
       petId === null ||
       petId === "" ||
-      userId === undefined || 
-      userId === null || 
-      userId === "") {
+      userId === undefined ||
+      userId === null ||
+      userId === ""
+    ) {
       Alert.alert("Error", "Pet and User are required");
       return;
     }
@@ -104,17 +108,17 @@ export default function CreateAdoptionRequest() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
-      
+
       const adoptionData = {
         petId: Number(petId),
         userId: Number(userId),
         message: message.trim() || null,
         requestDate: new Date().toISOString(),
-        isApproved
+        isApproved,
       };
-      
+
       console.log("Submitting adoption request:", adoptionData);
-      
+
       const response = await fetch("http://10.0.2.2:5000/api/AdoptionRequest", {
         method: "POST",
         headers: {
@@ -126,10 +130,12 @@ export default function CreateAdoptionRequest() {
 
       if (response.ok) {
         Alert.alert("Success", "Adoption request created successfully", [
-          { text: "OK", onPress: () => router.push("/(admin)/(adoption-requests)") },
+          {
+            text: "OK",
+            onPress: () => router.push("/(admin)/(adoption-requests)"),
+          },
         ]);
       } else {
-
         const text = await response.text();
         let errorMessage = "Failed to create adoption request";
         try {
@@ -151,12 +157,12 @@ export default function CreateAdoptionRequest() {
   };
 
   const getPetName = (id) => {
-    const pet = pets.find(p => Number(p.id) === Number(id));
+    const pet = pets.find((p) => Number(p.id) === Number(id));
     return pet ? pet.name : "Select Pet";
   };
 
   const getUserName = (id) => {
-    const user = users.find(u => Number(u.id) === Number(id));
+    const user = users.find((u) => Number(u.id) === Number(id));
     return user ? `${user.firstName} ${user.lastName}` : "Select User";
   };
 
@@ -182,7 +188,7 @@ export default function CreateAdoptionRequest() {
         >
           <Text>{getPetName(petId)}</Text>
         </TouchableOpacity>
-        
+
         <Modal
           visible={showPetModal}
           transparent
@@ -208,7 +214,9 @@ export default function CreateAdoptionRequest() {
                   </Pressable>
                 )}
                 ListEmptyComponent={
-                  <Text style={{ padding: 20, textAlign: 'center' }}>No pets available</Text>
+                  <Text style={{ padding: 20, textAlign: "center" }}>
+                    No pets available
+                  </Text>
                 }
               />
               <TouchableOpacity
@@ -232,7 +240,7 @@ export default function CreateAdoptionRequest() {
         >
           <Text>{getUserName(userId)}</Text>
         </TouchableOpacity>
-        
+
         <Modal
           visible={showUserModal}
           transparent
@@ -254,11 +262,15 @@ export default function CreateAdoptionRequest() {
                     accessibilityLabel={`Select ${item.firstName} ${item.lastName}`}
                     accessible
                   >
-                    <Text>{item.firstName} {item.lastName}</Text>
+                    <Text>
+                      {item.firstName} {item.lastName}
+                    </Text>
                   </Pressable>
                 )}
                 ListEmptyComponent={
-                  <Text style={{ padding: 20, textAlign: 'center' }}>No users available</Text>
+                  <Text style={{ padding: 20, textAlign: "center" }}>
+                    No users available
+                  </Text>
                 }
               />
               <TouchableOpacity

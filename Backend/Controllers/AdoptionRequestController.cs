@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSB_Happy_Leash_project.Data.Context;
+using WSB_Happy_Leash_project.Data.DTO;
 using WSB_Happy_Leash_project.Data.Models;
 
 namespace Backend.Controllers
@@ -23,88 +19,106 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // GET: api/AdoptionRequest
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AdoptionRequest>>> GetAdoptionRequests()
+        public async Task<ActionResult<IEnumerable<AdoptionRequestDto>>> GetAdoptionRequests()
         {
-            return await _context.AdoptionRequests.ToListAsync();
+            var requests = await _context.AdoptionRequests
+                .Include(a => a.Pet)
+                .Include(a => a.User)
+                .Select(a => new AdoptionRequestDto
+                {
+                    Id = a.Id,
+                    PetId = a.PetId,
+                    UserId = a.UserId,
+                    Message = a.Message,
+                    RequestDate = a.RequestDate,
+                    IsApproved = a.IsApproved,
+                    PetName = a.Pet != null ? a.Pet.Name : null,
+                    UserName = a.User != null ? a.User.FirstName + " " + a.User.LastName : null
+                })
+                .ToListAsync();
+
+            return Ok(requests);
         }
 
-        // GET: api/AdoptionRequest/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AdoptionRequest>> GetAdoptionRequest(int id)
+        public async Task<ActionResult<AdoptionRequestDto>> GetAdoptionRequest(int id)
         {
-            var adoptionRequest = await _context.AdoptionRequests.FindAsync(id);
+            var request = await _context.AdoptionRequests
+                .Include(a => a.Pet)
+                .Include(a => a.User)
+                .Where(a => a.Id == id)
+                .Select(a => new AdoptionRequestDto
+                {
+                    Id = a.Id,
+                    PetId = a.PetId,
+                    UserId = a.UserId,
+                    Message = a.Message,
+                    RequestDate = a.RequestDate,
+                    IsApproved = a.IsApproved,
+                    PetName = a.Pet != null ? a.Pet.Name : null,
+                    UserName = a.User != null ? a.User.FirstName + " " + a.User.LastName : null
+                })
+                .FirstOrDefaultAsync();
 
-            if (adoptionRequest == null)
-            {
+            if (request == null)
                 return NotFound();
-            }
 
-            return adoptionRequest;
+            return Ok(request);
         }
 
-        // PUT: api/AdoptionRequest/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdoptionRequest(int id, AdoptionRequest adoptionRequest)
-        {
-            if (id != adoptionRequest.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(adoptionRequest).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdoptionRequestExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/AdoptionRequest
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AdoptionRequest>> PostAdoptionRequest(AdoptionRequest adoptionRequest)
+        public async Task<ActionResult<AdoptionRequestDto>> PostAdoptionRequest(AdoptionRequestDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var adoptionRequest = new AdoptionRequest
+            {
+                PetId = dto.PetId,
+                UserId = dto.UserId,
+                Message = dto.Message,
+                RequestDate = DateTime.UtcNow,
+                IsApproved = dto.IsApproved
+            };
+
             _context.AdoptionRequests.Add(adoptionRequest);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAdoptionRequest", new { id = adoptionRequest.Id }, adoptionRequest);
+            dto.Id = adoptionRequest.Id;
+            return CreatedAtAction(nameof(GetAdoptionRequest), new { id = adoptionRequest.Id }, dto);
         }
 
-        // DELETE: api/AdoptionRequest/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdoptionRequest(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAdoptionRequest(int id, AdoptionRequestDto dto)
         {
+            if (id != dto.Id)
+                return BadRequest("ID mismatch");
+
             var adoptionRequest = await _context.AdoptionRequests.FindAsync(id);
             if (adoptionRequest == null)
-            {
                 return NotFound();
-            }
 
-            _context.AdoptionRequests.Remove(adoptionRequest);
+            adoptionRequest.PetId = dto.PetId;
+            adoptionRequest.UserId = dto.UserId;
+            adoptionRequest.Message = dto.Message;
+            adoptionRequest.IsApproved = dto.IsApproved;
+
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        private bool AdoptionRequestExists(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAdoptionRequest(int id)
         {
-            return _context.AdoptionRequests.Any(e => e.Id == id);
+            var request = await _context.AdoptionRequests.FindAsync(id);
+            if (request == null)
+                return NotFound();
+
+            _context.AdoptionRequests.Remove(request);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
