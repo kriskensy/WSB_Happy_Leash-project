@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSB_Happy_Leash_project.Data.Context;
+using WSB_Happy_Leash_project.Data.DTO;
 using WSB_Happy_Leash_project.Data.Models;
 
 namespace Backend.Controllers
@@ -26,78 +21,77 @@ namespace Backend.Controllers
 
         // GET: api/PetType
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PetType>>> GetPetTypes()
+        public async Task<ActionResult<IEnumerable<PetTypeDto>>> GetPetTypes()
         {
-            return await _context.PetTypes.ToListAsync();
+            var types = await _context.PetTypes
+                .Select(pt => new PetTypeDto
+                {
+                    Id = pt.Id,
+                    Name = pt.Name
+                })
+                .ToListAsync();
+
+            return Ok(types);
         }
 
         // GET: api/PetType/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PetType>> GetPetType(int id)
+        public async Task<ActionResult<PetTypeDto>> GetPetType(int id)
         {
-            var petType = await _context.PetTypes.FindAsync(id);
-
-            if (petType == null)
-            {
+            var pt = await _context.PetTypes.FindAsync(id);
+            if (pt == null)
                 return NotFound();
-            }
 
-            return petType;
+            var dto = new PetTypeDto
+            {
+                Id = pt.Id,
+                Name = pt.Name
+            };
+
+            return Ok(dto);
         }
 
         // PUT: api/PetType/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPetType(int id, PetType petType)
+        public async Task<IActionResult> PutPetType(int id, [FromBody] PetTypeDto dto)
         {
-            if (id != petType.Id)
-            {
-                return BadRequest();
-            }
+            if (dto.Id != null && dto.Id != id)
+                return BadRequest("Mismatched ID");
 
-            _context.Entry(petType).State = EntityState.Modified;
+            var pt = await _context.PetTypes.FindAsync(id);
+            if (pt == null)
+                return NotFound();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PetTypeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            pt.Name = dto.Name;
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         // POST: api/PetType
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PetType>> PostPetType(PetType petType)
+        public async Task<IActionResult> PostPetType([FromBody] PetTypeDto dto)
         {
-            _context.PetTypes.Add(petType);
+            var newPt = new PetType
+            {
+                Name = dto.Name
+            };
+
+            _context.PetTypes.Add(newPt);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPetType", new { id = petType.Id }, petType);
+            return CreatedAtAction(nameof(GetPetType), new { id = newPt.Id }, null);
         }
 
         // DELETE: api/PetType/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePetType(int id)
         {
-            var petType = await _context.PetTypes.FindAsync(id);
-            if (petType == null)
-            {
+            var pt = await _context.PetTypes.FindAsync(id);
+            if (pt == null)
                 return NotFound();
-            }
 
-            _context.PetTypes.Remove(petType);
+            _context.PetTypes.Remove(pt);
             await _context.SaveChangesAsync();
 
             return NoContent();

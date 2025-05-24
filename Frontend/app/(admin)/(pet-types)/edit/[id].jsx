@@ -71,7 +71,7 @@ export default function EditPetType() {
 
       if (response.ok) {
         Alert.alert("Success", "Pet type updated successfully", [
-          { text: "OK", onPress: () => router.push(`/pet-types/${id}`) },
+          { text: "OK", onPress: () => router.push(`/(admin)/(pet-types)/`) },
         ]);
       } else {
         const errorData = await response.json();
@@ -122,7 +122,7 @@ export default function EditPetType() {
           styles.button,
           { backgroundColor: COLORS.secondary, marginTop: 10 },
         ]}
-        onPress={() => router.push(`/pet-types/${id}`)}
+        onPress={() => router.push(`/(admin)/(pet-types)/`)}
         disabled={saving}
       >
         <Text style={styles.buttonText}>Cancel</Text>

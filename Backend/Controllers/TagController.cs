@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSB_Happy_Leash_project.Data.Context;
+using WSB_Happy_Leash_project.Data.DTO;
 using WSB_Happy_Leash_project.Data.Models;
 
 namespace Backend.Controllers
@@ -25,65 +21,67 @@ namespace Backend.Controllers
 
         // GET: api/Tag
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tag>>> GetTags()
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetTags()
         {
-            return await _context.Tags.ToListAsync();
+            var tags = await _context.Tags
+                .Select(t => new TagDto
+                {
+                    Id = t.Id,
+                    Name = t.Name
+                })
+                .ToListAsync();
+
+            return Ok(tags);
         }
 
         // GET: api/Tag/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tag>> GetTag(int id)
+        public async Task<ActionResult<TagDto>> GetTag(int id)
         {
             var tag = await _context.Tags.FindAsync(id);
 
             if (tag == null)
-            {
                 return NotFound();
-            }
 
-            return tag;
+            var dto = new TagDto
+            {
+                Id = tag.Id,
+                Name = tag.Name
+            };
+
+            return Ok(dto);
         }
 
         // PUT: api/Tag/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTag(int id, Tag tag)
+        public async Task<IActionResult> PutTag(int id, [FromBody] TagDto dto)
         {
-            if (id != tag.Id)
-            {
-                return BadRequest();
-            }
+            if (dto.Id != null && dto.Id != id)
+                return BadRequest("Mismatched ID");
 
-            _context.Entry(tag).State = EntityState.Modified;
+            var tag = await _context.Tags.FindAsync(id);
+            if (tag == null)
+                return NotFound();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TagExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            tag.Name = dto.Name;
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         // POST: api/Tag
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tag>> PostTag(Tag tag)
+        public async Task<IActionResult> PostTag([FromBody] TagDto dto)
         {
-            _context.Tags.Add(tag);
+            var newTag = new Tag
+            {
+                Name = dto.Name
+            };
+
+            _context.Tags.Add(newTag);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTag", new { id = tag.Id }, tag);
+            return CreatedAtAction(nameof(GetTag), new { id = newTag.Id }, null);
         }
 
         // DELETE: api/Tag/5
@@ -92,9 +90,7 @@ namespace Backend.Controllers
         {
             var tag = await _context.Tags.FindAsync(id);
             if (tag == null)
-            {
                 return NotFound();
-            }
 
             _context.Tags.Remove(tag);
             await _context.SaveChangesAsync();
