@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSB_Happy_Leash_project.Data.Context;
+using WSB_Happy_Leash_project.Data.DTO;
 using WSB_Happy_Leash_project.Data.Models;
 
 namespace Backend.Controllers
@@ -23,88 +19,98 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // GET: api/HealthRecord
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HealthRecord>>> GetHealthRecords()
+        public async Task<ActionResult<IEnumerable<HealthRecordDto>>> GetHealthRecords()
         {
-            return await _context.HealthRecords.ToListAsync();
+            var records = await _context.HealthRecords
+                .Include(r => r.Pet)
+                .Select(r => new HealthRecordDto
+                {
+                    Id = r.Id,
+                    PetId = r.PetId,
+                    Description = r.Description,
+                    RecordDate = r.RecordDate,
+                    VetName = r.VetName,
+                    PetName = r.Pet != null ? r.Pet.Name : null
+                })
+                .ToListAsync();
+
+            return Ok(records);
         }
 
-        // GET: api/HealthRecord/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HealthRecord>> GetHealthRecord(int id)
+        public async Task<ActionResult<HealthRecordDto>> GetHealthRecord(int id)
         {
-            var healthRecord = await _context.HealthRecords.FindAsync(id);
+            var record = await _context.HealthRecords
+                .Include(r => r.Pet)
+                .Where(r => r.Id == id)
+                .Select(r => new HealthRecordDto
+                {
+                    Id = r.Id,
+                    PetId = r.PetId,
+                    Description = r.Description,
+                    RecordDate = r.RecordDate,
+                    VetName = r.VetName,
+                    PetName = r.Pet != null ? r.Pet.Name : null
+                })
+                .FirstOrDefaultAsync();
 
-            if (healthRecord == null)
-            {
+            if (record == null)
                 return NotFound();
-            }
 
-            return healthRecord;
+            return Ok(record);
         }
 
-        // PUT: api/HealthRecord/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutHealthRecord(int id, HealthRecord healthRecord)
+        [HttpPost]
+        public async Task<ActionResult> PostHealthRecord([FromBody] HealthRecordDto dto)
         {
-            if (id != healthRecord.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(healthRecord).State = EntityState.Modified;
-
-            try
+            var record = new HealthRecord
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!HealthRecordExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                PetId = dto.PetId,
+                Description = dto.Description,
+                RecordDate = dto.RecordDate,
+                VetName = dto.VetName
+            };
 
+            _context.HealthRecords.Add(record);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetHealthRecord), new { id = record.Id }, null);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutHealthRecord(int id, [FromBody] HealthRecordDto dto)
+        {
+            if (dto.Id != null && dto.Id != id)
+                return BadRequest("Mismatched ID");
+
+            var record = await _context.HealthRecords.FindAsync(id);
+            if (record == null)
+                return NotFound();
+
+            record.PetId = dto.PetId;
+            record.Description = dto.Description;
+            record.RecordDate = dto.RecordDate;
+            record.VetName = dto.VetName;
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        // POST: api/HealthRecord
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<HealthRecord>> PostHealthRecord(HealthRecord healthRecord)
-        {
-            _context.HealthRecords.Add(healthRecord);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetHealthRecord", new { id = healthRecord.Id }, healthRecord);
-        }
-
-        // DELETE: api/HealthRecord/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHealthRecord(int id)
         {
-            var healthRecord = await _context.HealthRecords.FindAsync(id);
-            if (healthRecord == null)
-            {
+            var record = await _context.HealthRecords.FindAsync(id);
+            if (record == null)
                 return NotFound();
-            }
 
-            _context.HealthRecords.Remove(healthRecord);
+            _context.HealthRecords.Remove(record);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        private bool HealthRecordExists(int id)
-        {
-            return _context.HealthRecords.Any(e => e.Id == id);
-        }
+        private bool HealthRecordExists(int id) =>
+            _context.HealthRecords.Any(e => e.Id == id);
     }
 }

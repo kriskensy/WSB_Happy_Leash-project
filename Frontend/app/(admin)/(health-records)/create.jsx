@@ -65,15 +65,15 @@ export default function CreateHealthRecord() {
   };
 
   const handleSubmit = async () => {
-
-//petId w ten sposób aby również Id = 0 było poprawnie obsłużone
+    //petId w ten sposób aby również Id = 0 było poprawnie obsłużone
     if (
       petId === null ||
-      petId === undefined || 
-      petId === "" || 
-      !recordDate || 
-      !description.trim() || 
-      !vetName.trim()) {
+      petId === undefined ||
+      petId === "" ||
+      !recordDate ||
+      !description.trim() ||
+      !vetName.trim()
+    ) {
       Alert.alert("Error", "All fields are required");
       return;
     }
@@ -88,7 +88,7 @@ export default function CreateHealthRecord() {
         },
         body: JSON.stringify({
           petId,
-          recordDate: recordDate.toISOString(),
+          recordDate: recordDate,
           description,
           vetName,
         }),
@@ -96,7 +96,10 @@ export default function CreateHealthRecord() {
 
       if (response.ok) {
         Alert.alert("Success", "Health record created successfully", [
-          { text: "OK", onPress: () => router.push("/(admin)/(health-records)") },
+          {
+            text: "OK",
+            onPress: () => router.push("/(admin)/(health-records)"),
+          },
         ]);
       } else {
         const errorData = await response.json();
