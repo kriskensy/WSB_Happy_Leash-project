@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import COLORS from "../../../constants/colors";
+import ListItem from "../(components)/ListItem";
 
 export default function PetTypeList() {
   const [petTypes, setPetTypes] = useState([]);
@@ -126,7 +127,7 @@ export default function PetTypeList() {
         <Text style={adminStyles.mainButtonText}>Add New Pet Type</Text>
       </TouchableOpacity>
 
-      <FlatList
+      {/* <FlatList
         data={petTypes}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
@@ -160,6 +161,34 @@ export default function PetTypeList() {
         )}
         ListEmptyComponent={
           <Text style={adminStyles.emptyListText}>No pet types found</Text>
+        }
+      /> */}
+      <FlatList
+        data={petTypes}
+        keyExtractor={(item) => item.id.toString()}
+        style={adminStyles.list}
+        renderItem={({ item }) => (
+          <ListItem
+            title={item.name}
+            subtitle={[
+              `Pet type: ${item.name}`
+            ]}
+            onPress={() => router.push(`/(pet-types)/${item.id}`)}
+            onEdit={() => handleRedirectToEdit(item.id)}
+            onDelete={() => confirmDelete(item.id, item.name)}
+            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
+            leftElement={
+              item.imageUrl && (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={{ width: 48, height: 48, borderRadius: 24 }}
+                />
+              )
+            }
+          />
+        )}
+        ListEmptyComponent={
+          <Text style={adminStyles.emptyListText}>No pets found</Text>
         }
       />
 

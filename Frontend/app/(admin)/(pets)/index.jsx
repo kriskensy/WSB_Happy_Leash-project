@@ -107,7 +107,7 @@ export default function PetList() {
         <Text style={adminStyles.mainButtonText}>Add New Pet</Text>
       </TouchableOpacity>
 
-      <FlatList
+      {/* <FlatList
         data={pets}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
@@ -147,6 +147,37 @@ export default function PetList() {
               </TouchableOpacity>
             </View>
           </View>
+        )}
+        ListEmptyComponent={
+          <Text style={adminStyles.emptyListText}>No pets found</Text>
+        }
+      /> */}
+
+      <FlatList
+        data={pets}
+        keyExtractor={(item) => item.id.toString()}
+        style={adminStyles.list}
+        renderItem={({ item }) => (
+          <ListItem
+            title={item.name}
+            subtitle={[
+              `Type: ${item.petTypeName}`,
+              `Breed: ${item.breedName}`,
+              `Adopted: ${item.adopted ? "Yes" : "No"}`
+            ]}
+            onPress={() => router.push(`/(pets)/${item.id}`)}
+            onEdit={() => handleRedirectToEdit(item.id)}
+            onDelete={() => confirmDelete(item.id, item.name)}
+            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
+            leftElement={
+              item.imageUrl && (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={{ width: 48, height: 48, borderRadius: 24 }}
+                />
+              )
+            }
+          />
         )}
         ListEmptyComponent={
           <Text style={adminStyles.emptyListText}>No pets found</Text>

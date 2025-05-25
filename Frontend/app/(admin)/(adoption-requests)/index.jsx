@@ -14,6 +14,7 @@ import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import ListItem from "../(components)/ListItem";
 import COLORS from "../../../constants/colors";
+import { formatDate } from "../../../utils/dateUtils";
 
 export default function AdoptionRequestList() {
   const [adoptionRequests, setAdoptionRequests] = useState([]);
@@ -66,6 +67,7 @@ export default function AdoptionRequestList() {
       Alert.alert("Error!", error.message || "Unknown error.");
     }
   };
+  
   const handleDeleteAdoptionRequest = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -131,46 +133,36 @@ export default function AdoptionRequestList() {
       >
         <Text style={adminStyles.mainButtonText}>Add New Adoption Request</Text>
       </TouchableOpacity>
-
       <FlatList
         data={adoptionRequests}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
         renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <ListItem
-              title={`${item.petName} - ${item.userName}`}
-              subtitle={`Status: ${
-                item.isApproved ? "Approved" : "Pending"
-              } - ${formatDate(item.requestDate)}`}
-              onPress={() => router.push(`/adoption-requests/${item.id}`)}
-            />
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit request for ${item.petName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() =>
-                  confirmDelete(item.id, item.petName, item.userName)
-                }
-                accessibilityLabel={`Delete request for ${item.petName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <ListItem
+            title={item.name}
+            subtitle={[
+              `Pet: ${item.petName}`,
+              `User: ${item.userName}`,
+              `Message: ${item.message}`,
+              `Request date: ${formatDate(item.requestDate)}`,
+              `Approved?: ${item.isApproved ? "Yes" : "No"}`              
+            ]}
+            onPress={() => router.push(`/(adoption-requests)/${item.id}`)}
+            onEdit={() => handleRedirectToEdit(item.id)}
+            onDelete={() => confirmDelete(item.id, item.name)}
+            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
+            leftElement={
+              item.imageUrl && (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={{ width: 48, height: 48, borderRadius: 24 }}
+                />
+              )
+            }
+          />
         )}
         ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>
-            No adoption requests found
-          </Text>
+          <Text style={adminStyles.emptyListText}>No adoption requests found</Text>
         }
       />
 

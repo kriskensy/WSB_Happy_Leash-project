@@ -169,14 +169,11 @@ export default function EditBreed() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push(`/breeds/${id}`)}
+          style={[adminStyles.mainButton, { marginTop: 10 }]}
+          onPress={() => router.push(`/(admin)/(breeds)`)}
           disabled={saving}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

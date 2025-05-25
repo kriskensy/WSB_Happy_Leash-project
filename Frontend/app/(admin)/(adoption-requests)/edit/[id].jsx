@@ -281,14 +281,11 @@ export default function EditAdoptionRequest() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
+          style={[adminStyles.mainButton, { marginTop: 10 }]}
           onPress={() => router.push(`/(admin)/(adoption-requests)`)}
           disabled={saving}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

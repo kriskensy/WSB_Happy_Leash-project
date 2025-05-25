@@ -59,6 +59,7 @@ namespace Backend.Controllers
                     Age = p.Age,
                     Weight = p.Weight,
                     Gender = p.Gender,
+                    GenderName = p.Gender.ToString(), //TODO dodane mapowanie
                     Notes = p.Notes,
                     PictureURL = p.PictureURL,
                     BreedId = p.BreedId,

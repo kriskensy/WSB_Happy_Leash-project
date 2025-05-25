@@ -131,7 +131,7 @@ export default function HealthRecordList() {
         <Text style={adminStyles.mainButtonText}>Add New Health Record</Text>
       </TouchableOpacity>
 
-      <FlatList
+      {/* <FlatList
         data={healthRecords}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
@@ -166,6 +166,37 @@ export default function HealthRecordList() {
         )}
         ListEmptyComponent={
           <Text style={adminStyles.emptyListText}>No health records found</Text>
+        }
+      /> */}
+      <FlatList
+        data={healthRecords}
+        keyExtractor={(item) => item.id.toString()}
+        style={adminStyles.list}
+        renderItem={({ item }) => (
+          <ListItem
+            title={item.name}
+            subtitle={[
+              `Pet: ${item.petName}`,
+              `Issue date: ${formatDate(item.recordDate)}`,
+              `Vet name: ${item.vetName}`,
+              `Description: ${item.description}`,
+            ]}
+            onPress={() => router.push(`/(health-records)/${item.id}`)}
+            onEdit={() => handleRedirectToEdit(item.id)}
+            onDelete={() => confirmDelete(item.id, item.name)}
+            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
+            leftElement={
+              item.imageUrl && (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={{ width: 48, height: 48, borderRadius: 24 }}
+                />
+              )
+            }
+          />
+        )}
+        ListEmptyComponent={
+          <Text style={adminStyles.emptyListText}>No pets found</Text>
         }
       />
 

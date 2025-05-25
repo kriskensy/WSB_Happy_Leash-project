@@ -236,14 +236,11 @@ export default function EditUser() {
           <Text style={styles.buttonText}>Update User</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push(`/users/${id}`)}
+          style={[adminStyles.mainButton, { marginTop: 10 }]}
+          onPress={() => router.push(`/(admin)/(users)`)}
           disabled={saving}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

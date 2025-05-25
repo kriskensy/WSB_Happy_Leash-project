@@ -135,14 +135,11 @@ export default function EditPetTag() {
           <Text style={styles.buttonText}>Update</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push(`/pet-tags/${id}`)}
+          style={[adminStyles.mainButton, { marginTop: 10 }]}
+          onPress={() => router.push(`/(admin)/(pet-tags)`)}
           disabled={saving}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={adminStyles.mainButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

@@ -119,7 +119,7 @@ export default function PetTagList() {
         <Text style={adminStyles.mainButtonText}>Add Pet Tag</Text>
       </TouchableOpacity>
 
-      <FlatList
+      {/* <FlatList
         data={petTags}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
@@ -156,6 +156,35 @@ export default function PetTagList() {
           <Text style={adminStyles.emptyListText}>
             No pet-tag relations found
           </Text>
+        }
+      /> */}
+      <FlatList
+        data={petTags}
+        keyExtractor={(item) => item.id.toString()}
+        style={adminStyles.list}
+        renderItem={({ item }) => (
+          <ListItem
+            title={item.name}
+            subtitle={[
+              `Pet: ${item.petName}`,
+              `Tag: ${item.tagName}`
+            ]}
+            onPress={() => router.push(`/(pet-tags)/${item.id}`)}
+            onEdit={() => handleRedirectToEdit(item.id)}
+            onDelete={() => confirmDelete(item.id, item.name)}
+            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
+            leftElement={
+              item.imageUrl && (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={{ width: 48, height: 48, borderRadius: 24 }}
+                />
+              )
+            }
+          />
+        )}
+        ListEmptyComponent={
+          <Text style={adminStyles.emptyListText}>No pets found</Text>
         }
       />
 

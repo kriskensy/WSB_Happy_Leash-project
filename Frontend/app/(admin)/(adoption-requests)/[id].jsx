@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import styles from "../../../assets/styles/main.styles";
 import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import COLORS from "../../../constants/colors";
+import { formatDate } from "../../../utils/dateUtils";
+import DetailRow from '../../../components/DetailRow';
 
 export default function AdoptionRequestDetails() {
   const { id } = useLocalSearchParams();
@@ -53,179 +54,48 @@ export default function AdoptionRequestDetails() {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      setLoading(true);
-      const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch(
-        `http://10.0.2.2:5000/api/AdoptionRequest/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        Alert.alert("Success", "Adoption request deleted successfully", [
-          { text: "OK", onPress: () => router.push("/adoption-requests") },
-        ]);
-      } else {
-        Alert.alert("Error", "Failed to delete adoption request");
-      }
-    } catch (error) {
-      console.error("Error deleting adoption request:", error);
-      Alert.alert("Error", "An unexpected error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const confirmDelete = () => {
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this adoption request?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", onPress: handleDelete, style: "destructive" },
-      ]
-    );
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
-  };
-
-  const handleApproveReject = async (isApproved) => {
-    try {
-      setLoading(true);
-      const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch(
-        `http://10.0.2.2:5000/api/AdoptionRequest/${id}/status`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ isApproved }),
-        }
-      );
-
-      if (response.ok) {
-        const statusText = isApproved ? "approved" : "rejected";
-        Alert.alert("Success", `Adoption request ${statusText} successfully`);
-        fetchAdoptionRequest(); // Refresh the data
-      } else {
-        Alert.alert("Error", "Failed to update adoption request status");
-      }
-    } catch (error) {
-      console.error("Error updating adoption request status:", error);
-      Alert.alert("Error", "An unexpected error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={[adminStyles.container, { justifyContent: "center" }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
+  if (!adoptionRequest) {
+    return null;
+  }
+
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <AdminHeader title="Adoption Request Details" />
-
-        <View style={styles.card}>
-          <Text style={styles.detailLabel}>ID:</Text>
-          <Text style={styles.detailValue}>{adoptionRequest.id}</Text>
-
-          <Text style={styles.detailLabel}>Pet:</Text>
-          <Text style={styles.detailValue}>{adoptionRequest.petName}</Text>
-
-          <Text style={styles.detailLabel}>User:</Text>
-          <Text
-            style={styles.detailValue}
-          >{`${adoptionRequest.userFirstName} ${adoptionRequest.userLastName}`}</Text>
-
-          <Text style={styles.detailLabel}>Message:</Text>
-          <Text style={styles.detailValue}>
-            {adoptionRequest.message || "No message provided"}
-          </Text>
-
-          <Text style={styles.detailLabel}>Request Date:</Text>
-          <Text style={styles.detailValue}>
-            {formatDate(adoptionRequest.requestDate)}
-          </Text>
-
-          <Text style={styles.detailLabel}>Status:</Text>
-          <Text
-            style={[
-              styles.detailValue,
-              {
-                color: adoptionRequest.isApproved
-                  ? COLORS.success
-                  : COLORS.warning,
-              },
-            ]}
-          >
-            {adoptionRequest.isApproved ? "Approved" : "Pending"}
-          </Text>
-        </View>
-
-        {!adoptionRequest.isApproved && (
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: COLORS.success }]}
-            onPress={() => handleApproveReject(true)}
-          >
-            <Text style={styles.buttonText}>Approve Request</Text>
-          </TouchableOpacity>
-        )}
-
-        {adoptionRequest.isApproved && (
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: COLORS.warning }]}
-            onPress={() => handleApproveReject(false)}
-          >
-            <Text style={styles.buttonText}>Mark as Pending</Text>
-          </TouchableOpacity>
-        )}
-
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, { flex: 1, marginRight: 5 }]}
-            onPress={() => router.push(`/adoption-requests/edit/${id}`)}
-          >
-            <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.button,
-              { flex: 1, marginLeft: 5, backgroundColor: COLORS.danger },
-            ]}
-            onPress={confirmDelete}
-          >
-            <Text style={styles.buttonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: COLORS.secondary, marginTop: 10 },
-          ]}
-          onPress={() => router.push("/adoption-requests")}
-        >
-          <Text style={styles.buttonText}>Back to List</Text>
-        </TouchableOpacity>
+  <ScrollView style={adminStyles.container}>
+      <AdminHeader title="Adoption Request Details" />
+      <View style={adminStyles.card}>
+        <DetailRow label="ID" value={adoptionRequest.id} />
+        <DetailRow label="Pet" value={adoptionRequest.petName || "-"} />
+        <DetailRow
+          label="User"
+          value={
+            adoptionRequest.userFirstName && adoptionRequest.userLastName
+              ? `${adoptionRequest.userFirstName} ${adoptionRequest.userLastName}`
+              : adoptionRequest.userName || "-"
+          }
+        />
+        <DetailRow label="Message" value={adoptionRequest.message || "No message provided"} />
+        <DetailRow label="Request Date" value={formatDate(adoptionRequest.requestDate)} />
+        <DetailRow
+          label="Status"
+          value={adoptionRequest.isApproved ? "Approved" : "Pending"}
+          valueStyle={{
+            color: adoptionRequest.isApproved ? COLORS.success : COLORS.warning,
+          }}
+        />
       </View>
+      <TouchableOpacity
+        style={[adminStyles.mainButton, { marginTop: 16 }]}
+        onPress={() => router.push("/(admin)/(adoption-requests)")}
+      >
+        <Text style={adminStyles.mainButtonText}>Back to List</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

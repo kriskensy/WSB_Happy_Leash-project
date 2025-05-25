@@ -15,6 +15,7 @@ import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import ListItem from "../(components)/ListItem";
 import COLORS from "../../../constants/colors";
+import { formatDate } from "../../../utils/dateUtils";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -96,7 +97,7 @@ export default function UserList() {
 
   return (
     <View style={adminStyles.container}>
-      <AdminHeader title="Users" showBack={false} />
+      <AdminHeader title="Users" showBack={false}/>
 
       <TouchableOpacity
         style={adminStyles.mainButton}
@@ -107,7 +108,7 @@ export default function UserList() {
         <Text style={adminStyles.mainButtonText}>Add New User</Text>
       </TouchableOpacity>
 
-      <FlatList
+      {/* <FlatList
         data={users}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
@@ -151,7 +152,48 @@ export default function UserList() {
         ListEmptyComponent={
           <Text style={adminStyles.emptyListText}>No users found</Text>
         }
-      />
+      /> */}
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item.id.toString()}
+        style={adminStyles.list}
+        renderItem={({ item }) => (
+          <ListItem
+            title={item.name}
+            subtitle={[
+              `Firstname: ${item.firstName}`,
+              `Lastname: ${item.lastName}`,
+              //TODO te pola wykomentowane bo mają być widoczne na widokacz szczegółowych
+              // `Email: ${item.email}`,
+              // `Created at: ${formatDate(item.createdAt)}`,
+              // `User type: ${item.userType}`,
+              // `Address: ${item.address}`,
+              // `City: ${item.city}`,
+              // `Country: ${item.country}`,
+              // `Login: ${item.login}`,
+              // `Phone number: ${item.phoneNumber}`,
+              // `Postal code: ${item.postalCode}`,
+              `Profile picture url: ${item.profilePictureURL}`,
+
+            ]}
+            onPress={() => router.push(`/(users)/${item.id}`)}
+            onEdit={() => handleRedirectToEdit(item.id)}
+            onDelete={() => confirmDelete(item.id, item.name)}
+            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
+            leftElement={
+              item.imageUrl && (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={{ width: 48, height: 48, borderRadius: 24 }}
+                />
+              )
+            }
+          />
+        )}
+        ListEmptyComponent={
+          <Text style={adminStyles.emptyListText}>No pets found</Text>
+        }
+      />      
 
       <TouchableOpacity
         style={adminStyles.mainButton}

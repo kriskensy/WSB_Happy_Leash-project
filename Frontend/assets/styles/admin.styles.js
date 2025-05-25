@@ -16,7 +16,7 @@ const adminStyles = StyleSheet.create({
     marginBottom: 20,
   },
   adminHeaderTitle: {
-    fontSize: 24,
+    fontSize: 36,
     fontWeight: '700',
     color: COLORS.textPrimary,
     flex: 1,
@@ -45,25 +45,32 @@ const adminStyles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 16,
   },
+
+  //TODO zmienione stylowanie wedle buttonów wychodzących poza ekran
   listItemWithActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.cardBackground,
-    borderRadius: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    padding: 15,
-  },
-  listItemContent: {
-    flex: 1,
-  },
-  listItemTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: COLORS.cardBackground,
+  borderRadius: 10,
+  marginBottom: 10,
+  borderWidth: 1,
+  borderColor: COLORS.border,
+  padding: 15,
+  width: '100%',
+  minWidth: 0,
+},
+listItemContent: {
+  flex: 1,
+  minWidth: 0,
+},
+listItemTitle: {
+  fontSize: 16,
+  fontWeight: '600',
+  color: COLORS.textPrimary,
+  flexShrink: 1,
+  flexWrap: 'wrap',
+  minWidth: 0,
+},
   emptyListText: {
     textAlign: 'center',
     marginTop: 20,
@@ -74,9 +81,8 @@ const adminStyles = StyleSheet.create({
   // Akcje (edytuj/usuń)
   actionButtons: {
     flexDirection: 'row',
-    marginLeft: 'auto',
-    // justifyContent: 'flex-end',
-    // flex: 0,
+    marginLeft: 8,
+    flexShrink: 0,
   },
   actionButton: {
     padding: 5,
