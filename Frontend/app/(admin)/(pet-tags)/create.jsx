@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import styles from "../../../assets/styles/main.styles";
 import adminStyles from "../../../assets/styles/admin.styles";
 import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
@@ -47,21 +46,11 @@ export default function CreatePetTag() {
           const petsData = await petsRes.json();
           const tagsData = await tagsRes.json();
 
-          
-          const processedPets = petsData.map((pet) => ({
-            ...pet,
-            id: Number(pet.id),
-          }));
-          const processedTags = tagsData.map((tag) => ({
-            ...tag,
-            id: Number(tag.id),
-          }));
+          setPets(petsData.map((pet) => ({ ...pet, id: String(pet.id) })));
+          setTags(tagsData.map((tag) => ({ ...tag, id: String(tag.id) })));
 
-          setPets(processedPets);
-          setTags(processedTags);
-
-          if (processedPets.length > 0) setPetId(processedPets[0].id);
-          if (processedTags.length > 0) setTagId(processedTags[0].id);
+          if (petsData.length > 0) setPetId(String(petsData[0].id));
+          if (tagsData.length > 0) setTagId(String(tagsData[0].id));
         } else {
           Alert.alert("Error", "Failed to load pets or tags");
         }
@@ -86,8 +75,8 @@ export default function CreatePetTag() {
       const token = await AsyncStorage.getItem("userToken");
 
       const payload = {
-        petId: Number(petId),
-        tagId: Number(tagId),
+        petId: parseInt(petId, 10),
+        tagId: parseInt(tagId, 10),
       };
 
       const response = await fetch("http://10.0.2.2:5000/api/PetTag", {
@@ -116,144 +105,134 @@ export default function CreatePetTag() {
   };
 
   const getPetName = (id) => {
-    const pet = pets.find((p) => Number(p.id) === Number(id));
+    const pet = pets.find((p) => p.id === id);
     return pet ? pet.name : "Select Pet";
   };
 
   const getTagName = (id) => {
-    const tag = tags.find((t) => Number(t.id) === Number(id));
+    const tag = tags.find((t) => t.id === id);
     return tag ? tag.name : "Select Tag";
   };
 
   if (fetchingData) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={[adminStyles.container, { justifyContent: "center" }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <AdminHeader title="Add Pet Tag" />
+    <ScrollView style={adminStyles.container}>
+      <AdminHeader title="Add Pet Tag" />
 
-        <Text style={styles.pickerLabel}>Pet:</Text>
-        <TouchableOpacity
-          style={styles.pickerContainer}
-          onPress={() => setShowPetModal(true)}
-          accessibilityLabel="Select pet"
-          accessible
-        >
-          <Text>{getPetName(petId)}</Text>
-        </TouchableOpacity>
-        <Modal
-          visible={showPetModal}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setShowPetModal(false)}
-        >
-          <View style={modalStyles.modalOverlay}>
-            <View style={modalStyles.modalContent}>
-              <FlatList
-                data={pets}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <Pressable
-                    onPress={() => {
-                      setPetId(item.id);
-                      setShowPetModal(false);
-                    }}
-                    style={modalStyles.modalItem}
-                    accessibilityLabel={`Select ${item.name}`}
-                    accessible
-                  >
-                    <Text>{item.name}</Text>
-                  </Pressable>
-                )}
-              />
-              <TouchableOpacity
-                onPress={() => setShowPetModal(false)}
-                style={modalStyles.modalCloseButton}
-                accessibilityLabel="Close pet selection"
-                accessible
-              >
-                <Text style={{ color: COLORS.primary }}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+      <Text style={adminStyles.pickerLabel}>Pet:</Text>
+      <TouchableOpacity
+        style={adminStyles.pickerContainer}
+        onPress={() => setShowPetModal(true)}
+        accessibilityLabel="Select pet"
+      >
+        <Text>{getPetName(petId)}</Text>
+      </TouchableOpacity>
+      <Modal
+        visible={showPetModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowPetModal(false)}
+      >
+        <View style={modalStyles.modalOverlay}>
+          <View style={modalStyles.modalContent}>
+            <FlatList
+              data={pets}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    setPetId(item.id);
+                    setShowPetModal(false);
+                  }}
+                  style={modalStyles.modalItem}
+                  accessibilityLabel={`Select ${item.name}`}
+                >
+                  <Text>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPetModal(false)}
+              style={modalStyles.modalCloseButton}
+              accessibilityLabel="Close pet selection"
+            >
+              <Text style={{ color: COLORS.primary }}>Cancel</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
+        </View>
+      </Modal>
 
-        <Text style={styles.pickerLabel}>Tag:</Text>
-        <TouchableOpacity
-          style={styles.pickerContainer}
-          onPress={() => setShowTagModal(true)}
-          accessibilityLabel="Select tag"
-          accessible
-        >
-          <Text>{getTagName(tagId)}</Text>
-        </TouchableOpacity>
-        <Modal
-          visible={showTagModal}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setShowTagModal(false)}
-        >
-          <View style={modalStyles.modalOverlay}>
-            <View style={modalStyles.modalContent}>
-              <FlatList
-                data={tags}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <Pressable
-                    onPress={() => {
-                      setTagId(item.id);
-                      setShowTagModal(false);
-                    }}
-                    style={modalStyles.modalItem}
-                    accessibilityLabel={`Select ${item.name}`}
-                    accessible
-                  >
-                    <Text>{item.name}</Text>
-                  </Pressable>
-                )}
-              />
-              <TouchableOpacity
-                onPress={() => setShowTagModal(false)}
-                style={modalStyles.modalCloseButton}
-                accessibilityLabel="Close tag selection"
-                accessible
-              >
-                <Text style={{ color: COLORS.primary }}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+      <Text style={adminStyles.pickerLabel}>Tag:</Text>
+      <TouchableOpacity
+        style={adminStyles.pickerContainer}
+        onPress={() => setShowTagModal(true)}
+        accessibilityLabel="Select tag"
+      >
+        <Text>{getTagName(tagId)}</Text>
+      </TouchableOpacity>
+      <Modal
+        visible={showTagModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowTagModal(false)}
+      >
+        <View style={modalStyles.modalOverlay}>
+          <View style={modalStyles.modalContent}>
+            <FlatList
+              data={tags}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    setTagId(item.id);
+                    setShowTagModal(false);
+                  }}
+                  style={modalStyles.modalItem}
+                  accessibilityLabel={`Select ${item.name}`}
+                >
+                  <Text>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <TouchableOpacity
+              onPress={() => setShowTagModal(false)}
+              style={modalStyles.modalCloseButton}
+              accessibilityLabel="Close tag selection"
+            >
+              <Text style={{ color: COLORS.primary }}>Cancel</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
+        </View>
+      </Modal>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSubmit}
-          disabled={loading}
-          accessibilityLabel="Add pet tag"
-          accessible
-        >
-          {loading ? (
-            <ActivityIndicator size="small" color={COLORS.white} />
-          ) : (
-            <Text style={styles.buttonText}>Add</Text>
-          )}
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={adminStyles.mainButton}
+        onPress={handleSubmit}
+        disabled={loading}
+        accessibilityLabel="Add pet tag"
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={adminStyles.mainButtonText}>Add</Text>
+        )}
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          style={adminStyles.mainButton}
-          onPress={() => router.push("/(admin)/(pet-tags)")}
-          disabled={loading}
-          accessibilityLabel="Cancel"
-          accessible
-        >
-          <Text style={adminStyles.mainButtonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={[adminStyles.mainButton, { marginTop: 10 }]}
+        onPress={() => router.push("/(admin)/(pet-tags)")}
+        disabled={loading}
+        accessibilityLabel="Cancel"
+      >
+        <Text style={adminStyles.mainButtonText}>Cancel</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

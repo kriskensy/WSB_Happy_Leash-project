@@ -127,42 +127,6 @@ export default function PetTypeList() {
         <Text style={adminStyles.mainButtonText}>Add New Pet Type</Text>
       </TouchableOpacity>
 
-      {/* <FlatList
-        data={petTypes}
-        keyExtractor={(item) => item.id.toString()}
-        style={adminStyles.list}
-        renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <Text
-              style={adminStyles.listItemTitle}
-              accessibilityLabel={item.name}
-            >
-              {item.name}
-            </Text>
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => confirmDelete(item.id, item.name)}
-                accessibilityLabel={`Delete ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No pet types found</Text>
-        }
-      /> */}
       <FlatList
         data={petTypes}
         keyExtractor={(item) => item.id.toString()}

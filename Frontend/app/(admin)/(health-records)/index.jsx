@@ -131,43 +131,6 @@ export default function HealthRecordList() {
         <Text style={adminStyles.mainButtonText}>Add New Health Record</Text>
       </TouchableOpacity>
 
-      {/* <FlatList
-        data={healthRecords}
-        keyExtractor={(item) => item.id.toString()}
-        style={adminStyles.list}
-        renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <ListItem
-              title={`${item.petName} - ${item.vetName}`}
-              subtitle={`${formatDate(item.recordDate)} - Vaccination: ${
-                item.vaccinationStatus
-              }`}
-              onPress={() => router.push(`/health-records/${item.id}`)}
-            />
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit health record for ${item.petName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => confirmDelete(item.id, item.petName)}
-                accessibilityLabel={`Delete health record for ${item.petName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No health records found</Text>
-        }
-      /> */}
       <FlatList
         data={healthRecords}
         keyExtractor={(item) => item.id.toString()}

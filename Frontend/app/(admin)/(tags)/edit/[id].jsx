@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import styles from "../../../../assets/styles/main.styles";
 import adminStyles from "../../../../assets/styles/admin.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
@@ -75,7 +74,7 @@ export default function EditTag() {
 
       if (response.ok) {
         Alert.alert("Success", "Tag updated successfully", [
-          { text: "OK", onPress: () => router.push(`/tags/${id}`) },
+          { text: "OK", onPress: () => router.push(`/(tags)/${id}`) },
         ]);
       } else {
         const errorData = await response.json();
@@ -91,45 +90,45 @@ export default function EditTag() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={[adminStyles.container, { justifyContent: "center" }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <AdminHeader title="Edit Tag" />
+    <ScrollView style={adminStyles.container}>
+      <AdminHeader title="Edit Tag" />
 
-        <FormField
-          label="Tag Name"
-          value={name}
-          onChangeText={setName}
-          placeholder="Enter tag name"
-          iconName="pricetag-outline"
-        />
+      <FormField
+        label="Tag Name"
+        value={name}
+        onChangeText={setName}
+        placeholder="Enter tag name"
+        iconName="pricetag-outline"
+      />
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSubmit}
-          disabled={saving}
-        >
-          {saving ? (
-            <ActivityIndicator size="small" color={COLORS.white} />
-          ) : (
-            <Text style={styles.buttonText}>Update Tag</Text>
-          )}
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={adminStyles.mainButton}
+        onPress={handleSubmit}
+        disabled={saving}
+        accessibilityLabel="Update tag"
+      >
+        {saving ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={adminStyles.mainButtonText}>Update Tag</Text>
+        )}
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[adminStyles.mainButton, { marginTop: 10 }]}
-          onPress={() => router.push(`/(admin)/(tags)`)}
-          disabled={saving}
-        >
-          <Text style={adminStyles.mainButtonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={[adminStyles.mainButton, { marginTop: 10 }]}
+        onPress={() => router.push(`/(admin)/(tags)`)}
+        disabled={saving}
+        accessibilityLabel="Cancel"
+      >
+        <Text style={adminStyles.mainButtonText}>Cancel</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

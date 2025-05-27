@@ -6,12 +6,14 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Modal,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Picker } from "@react-native-picker/picker";
-import styles from "../../../../assets/styles/main.styles";
 import adminStyles from "../../../../assets/styles/admin.styles";
+import modalStyles from "../../../../assets/styles/modal.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
 import COLORS from "../../../../constants/colors";
@@ -20,10 +22,10 @@ export default function EditBreed() {
   const { id } = useLocalSearchParams();
   const [name, setName] = useState("");
   const [typeId, setTypeId] = useState("");
-  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [petTypes, setPetTypes] = useState([]);
+  const [showTypeModal, setShowTypeModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,22 +33,12 @@ export default function EditBreed() {
       try {
         setLoading(true);
         const token = await AsyncStorage.getItem("userToken");
-
-        // Fetch pet types
         const typesResponse = await fetch("http://10.0.2.2:5000/api/PetType", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
-        // Fetch breed data
         const breedResponse = await fetch(
           `http://10.0.2.2:5000/api/Breed/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         if (typesResponse.ok && breedResponse.ok) {
@@ -55,8 +47,7 @@ export default function EditBreed() {
 
           setPetTypes(typesData);
           setName(breedData.name);
-          setTypeId(breedData.typeId);
-          setDescription(breedData.description || "");
+          setTypeId(String(breedData.petTypeId ?? breedData.typeId ?? "")); // obsługa różnych nazw klucza
         } else {
           Alert.alert("Error", "Failed to load required data");
           router.back();
@@ -69,7 +60,6 @@ export default function EditBreed() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [id]);
 
@@ -91,14 +81,13 @@ export default function EditBreed() {
         body: JSON.stringify({
           id,
           name,
-          typeId,
-          description,
+          petTypeId: Number(typeId),
         }),
       });
 
       if (response.ok) {
         Alert.alert("Success", "Breed updated successfully", [
-          { text: "OK", onPress: () => router.push(`/breeds/${id}`) },
+          { text: "OK", onPress: () => router.push(`/(breeds)/${id}`) },
         ]);
       } else {
         const errorData = await response.json();
@@ -112,70 +101,95 @@ export default function EditBreed() {
     }
   };
 
+  const getTypeName = (id) => {
+    const type = petTypes.find((t) => String(t.id) === String(id));
+    return type ? type.name : "Select Pet Type";
+  };
+
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={[adminStyles.container, { justifyContent: "center" }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <AdminHeader title="Edit Breed" />
+    <ScrollView style={adminStyles.container}>
+      <AdminHeader title="Edit Breed" />
 
-        <FormField
-          label="Breed Name"
-          value={name}
-          onChangeText={setName}
-          placeholder="Enter breed name"
-          iconName="paw-outline"
-        />
+      <FormField
+        label="Breed Name"
+        value={name}
+        onChangeText={setName}
+        placeholder="Enter breed name"
+        iconName="paw-outline"
+      />
 
-        <Text style={styles.pickerLabel}>Pet Type:</Text>
-        <View style={styles.pickerContainer}>
-          {/* <Picker
-            selectedValue={typeId}
-            onValueChange={(itemValue) => setTypeId(itemValue)}
-            style={styles.picker}
-          >
-            {petTypes.map((type) => (
-              <Picker.Item key={type.id} label={type.name} value={type.id} />
-            ))}
-          </Picker> */}
+      <Text style={adminStyles.pickerLabel}>Pet Type:</Text>
+      <TouchableOpacity
+        style={adminStyles.pickerContainer}
+        onPress={() => setShowTypeModal(true)}
+        accessibilityLabel="Select pet type"
+      >
+        <Text>{getTypeName(typeId)}</Text>
+      </TouchableOpacity>
+      <Modal
+        visible={showTypeModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowTypeModal(false)}
+      >
+        <View style={modalStyles.modalOverlay}>
+          <View style={modalStyles.modalContent}>
+            <FlatList
+              data={petTypes}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    setTypeId(String(item.id));
+                    setShowTypeModal(false);
+                  }}
+                  style={modalStyles.modalItem}
+                  accessibilityLabel={`Select ${item.name}`}
+                >
+                  <Text>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <TouchableOpacity
+              onPress={() => setShowTypeModal(false)}
+              style={modalStyles.modalCloseButton}
+              accessibilityLabel="Close pet type selection"
+            >
+              <Text style={{ color: COLORS.primary }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+      </Modal>
 
-        <FormField
-          label="Description"
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Enter description (optional)"
-          iconName="document-text-outline"
-          multiline={true}
-          numberOfLines={3}
-        />
+      <TouchableOpacity
+        style={adminStyles.mainButton}
+        onPress={handleSubmit}
+        disabled={saving}
+        accessibilityLabel="Update breed"
+      >
+        {saving ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={adminStyles.mainButtonText}>Update Breed</Text>
+        )}
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSubmit}
-          disabled={saving}
-        >
-          {saving ? (
-            <ActivityIndicator size="small" color={COLORS.white} />
-          ) : (
-            <Text style={styles.buttonText}>Update Breed</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[adminStyles.mainButton, { marginTop: 10 }]}
-          onPress={() => router.push(`/(admin)/(breeds)`)}
-          disabled={saving}
-        >
-          <Text style={adminStyles.mainButtonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={[adminStyles.mainButton, { marginTop: 10 }]}
+        onPress={() => router.push(`/(admin)/(breeds)`)}
+        disabled={saving}
+        accessibilityLabel="Cancel"
+      >
+        <Text style={adminStyles.mainButtonText}>Cancel</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

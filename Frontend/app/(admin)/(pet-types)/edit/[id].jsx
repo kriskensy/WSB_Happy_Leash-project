@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import styles from "../../../../assets/styles/main.styles";
 import adminStyles from "../../../../assets/styles/admin.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
@@ -87,14 +87,14 @@ export default function EditPetType() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={[adminStyles.container, { justifyContent: "center" }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={adminStyles.container}>
       <AdminHeader title="Edit Pet Type" />
 
       <FormField
@@ -106,14 +106,15 @@ export default function EditPetType() {
       />
 
       <TouchableOpacity
-        style={styles.button}
+        style={adminStyles.mainButton}
         onPress={handleSubmit}
         disabled={saving}
+        accessibilityLabel="Update pet type"
       >
         {saving ? (
           <ActivityIndicator size="small" color={COLORS.white} />
         ) : (
-          <Text style={styles.buttonText}>Update Pet Type</Text>
+          <Text style={adminStyles.mainButtonText}>Update Pet Type</Text>
         )}
       </TouchableOpacity>
 
@@ -121,9 +122,10 @@ export default function EditPetType() {
         style={[adminStyles.mainButton, { marginTop: 10 }]}
         onPress={() => router.push(`/(admin)/(pet-types)`)}
         disabled={saving}
+        accessibilityLabel="Cancel"
       >
         <Text style={adminStyles.mainButtonText}>Cancel</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }

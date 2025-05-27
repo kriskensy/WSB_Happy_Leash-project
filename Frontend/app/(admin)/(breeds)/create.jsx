@@ -75,7 +75,7 @@ export default function CreateBreed() {
         body: JSON.stringify({ name, petTypeId: typeId }),
       });
       const data = await response.json();
-      console.log(data); // upewnij się, że `id`, który wysyłasz, istnieje
+      console.log(data);
 
       if (response.ok) {
         Alert.alert("Success", "Breed created successfully", [

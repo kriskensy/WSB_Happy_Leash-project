@@ -108,51 +108,6 @@ export default function UserList() {
         <Text style={adminStyles.mainButtonText}>Add New User</Text>
       </TouchableOpacity>
 
-      {/* <FlatList
-        data={users}
-        keyExtractor={(item) => item.id.toString()}
-        style={adminStyles.list}
-        renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <ListItem
-              title={`${item.firstName} ${item.lastName}`}
-              subtitle={`Email: ${item.email} | Login: ${item.login} | Type: ${item.userType}`}
-              onPress={() => router.push(`/users/${item.id}`)}
-              leftElement={
-                item.profilePictureURL && (
-                  <Image
-                    source={{ uri: item.profilePictureURL }}
-                    style={{ width: 48, height: 48, borderRadius: 24 }}
-                  />
-                )
-              }
-            />
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit user ${item.firstName} ${item.lastName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() =>
-                  confirmDelete(item.id, `${item.firstName} ${item.lastName}`)
-                }
-                accessibilityLabel={`Delete user ${item.firstName} ${item.lastName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No users found</Text>
-        }
-      /> */}
       <FlatList
         data={users}
         keyExtractor={(item) => item.id.toString()}
@@ -163,7 +118,7 @@ export default function UserList() {
             subtitle={[
               `Firstname: ${item.firstName}`,
               `Lastname: ${item.lastName}`,
-              //TODO te pola wykomentowane bo mają być widoczne na widokacz szczegółowych
+              //TODO te pola wykomentowane bo mają być widoczne na widokach szczegółowych
               // `Email: ${item.email}`,
               // `Created at: ${formatDate(item.createdAt)}`,
               // `User type: ${item.userType}`,

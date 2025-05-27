@@ -6,12 +6,14 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Modal,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { Picker } from "@react-native-picker/picker";
-import styles from "../../../../assets/styles/main.styles";
 import adminStyles from "../../../../assets/styles/admin.styles";
+import modalStyles from "../../../../assets/styles/modal.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import COLORS from "../../../../constants/colors";
 
@@ -23,6 +25,8 @@ export default function EditPetTag() {
   const [saving, setSaving] = useState(false);
   const [pets, setPets] = useState([]);
   const [tags, setTags] = useState([]);
+  const [showPetModal, setShowPetModal] = useState(false);
+  const [showTagModal, setShowTagModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,10 +47,10 @@ export default function EditPetTag() {
           const petsData = await petsRes.json();
           const tagsData = await tagsRes.json();
           const petTagData = await petTagRes.json();
-          setPets(petsData);
-          setTags(tagsData);
-          setPetId(petTagData.petId);
-          setTagId(petTagData.tagId);
+          setPets(petsData.map((pet) => ({ ...pet, id: String(pet.id) })));
+          setTags(tagsData.map((tag) => ({ ...tag, id: String(tag.id) })));
+          setPetId(String(petTagData.petId));
+          setTagId(String(petTagData.tagId));
         } else {
           Alert.alert("Error", "Failed to load data");
           router.back();
@@ -75,14 +79,19 @@ export default function EditPetTag() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ id, petId, tagId }),
+        body: JSON.stringify({
+          id,
+          petId: parseInt(petId, 10),
+          tagId: parseInt(tagId, 10),
+        }),
       });
       if (response.ok) {
         Alert.alert("Success", "Pet tag updated", [
-          { text: "OK", onPress: () => router.push(`/pet-tags/${id}`) },
+          { text: "OK", onPress: () => router.push(`/(admin)/(pet-tags)`) },
         ]);
       } else {
-        Alert.alert("Error", "Failed to update pet-tag relation");
+        const errorData = await response.json();
+        Alert.alert("Error", errorData.message || "Failed to update pet-tag relation");
       }
     } catch {
       Alert.alert("Error", "An unexpected error occurred");
@@ -91,57 +100,135 @@ export default function EditPetTag() {
     }
   };
 
+  const getPetName = (id) => {
+    const pet = pets.find((p) => p.id === id);
+    return pet ? pet.name : "Select Pet";
+  };
+
+  const getTagName = (id) => {
+    const tag = tags.find((t) => t.id === id);
+    return tag ? tag.name : "Select Tag";
+  };
+
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={[adminStyles.container, { justifyContent: "center" }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <AdminHeader title="Edit Pet Tag" />
-        <Text style={styles.pickerLabel}>Pet:</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={petId}
-            onValueChange={setPetId}
-            style={styles.picker}
-          >
-            {pets.map((pet) => (
-              <Picker.Item key={pet.id} label={pet.name} value={pet.id} />
-            ))}
-          </Picker>
+    <ScrollView style={adminStyles.container}>
+      <AdminHeader title="Edit Pet Tag" />
+
+      <Text style={adminStyles.pickerLabel}>Pet:</Text>
+      <TouchableOpacity
+        style={adminStyles.pickerContainer}
+        onPress={() => setShowPetModal(true)}
+        accessibilityLabel="Select pet"
+      >
+        <Text>{getPetName(petId)}</Text>
+      </TouchableOpacity>
+      <Modal
+        visible={showPetModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowPetModal(false)}
+      >
+        <View style={modalStyles.modalOverlay}>
+          <View style={modalStyles.modalContent}>
+            <FlatList
+              data={pets}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    setPetId(item.id);
+                    setShowPetModal(false);
+                  }}
+                  style={modalStyles.modalItem}
+                  accessibilityLabel={`Select ${item.name}`}
+                >
+                  <Text>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPetModal(false)}
+              style={modalStyles.modalCloseButton}
+              accessibilityLabel="Close pet selection"
+            >
+              <Text style={{ color: COLORS.primary }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <Text style={styles.pickerLabel}>Tag:</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={tagId}
-            onValueChange={setTagId}
-            style={styles.picker}
-          >
-            {tags.map((tag) => (
-              <Picker.Item key={tag.id} label={tag.name} value={tag.id} />
-            ))}
-          </Picker>
+      </Modal>
+
+      <Text style={adminStyles.pickerLabel}>Tag:</Text>
+      <TouchableOpacity
+        style={adminStyles.pickerContainer}
+        onPress={() => setShowTagModal(true)}
+        accessibilityLabel="Select tag"
+      >
+        <Text>{getTagName(tagId)}</Text>
+      </TouchableOpacity>
+      <Modal
+        visible={showTagModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowTagModal(false)}
+      >
+        <View style={modalStyles.modalOverlay}>
+          <View style={modalStyles.modalContent}>
+            <FlatList
+              data={tags}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    setTagId(item.id);
+                    setShowTagModal(false);
+                  }}
+                  style={modalStyles.modalItem}
+                  accessibilityLabel={`Select ${item.name}`}
+                >
+                  <Text>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <TouchableOpacity
+              onPress={() => setShowTagModal(false)}
+              style={modalStyles.modalCloseButton}
+              accessibilityLabel="Close tag selection"
+            >
+              <Text style={{ color: COLORS.primary }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSubmit}
-          disabled={saving}
-        >
-          <Text style={styles.buttonText}>Update</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[adminStyles.mainButton, { marginTop: 10 }]}
-          onPress={() => router.push(`/(admin)/(pet-tags)`)}
-          disabled={saving}
-        >
-          <Text style={adminStyles.mainButtonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
+      </Modal>
+
+      <TouchableOpacity
+        style={adminStyles.mainButton}
+        onPress={handleSubmit}
+        disabled={saving}
+        accessibilityLabel="Update pet tag"
+      >
+        {saving ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={adminStyles.mainButtonText}>Update</Text>
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[adminStyles.mainButton, { marginTop: 10 }]}
+        onPress={() => router.push("/(admin)/(pet-tags)")}
+        disabled={saving}
+        accessibilityLabel="Cancel"
+      >
+        <Text style={adminStyles.mainButtonText}>Cancel</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

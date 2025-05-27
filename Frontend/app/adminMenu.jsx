@@ -10,9 +10,6 @@ import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
 
 export default function AdminMenu() {
-  // const [token, setToken] = useState(null);
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
   const [user, setUser] = useState({ firstName: "", lastName: "" });
   const router = useRouter();
   const menuItems = [

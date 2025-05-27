@@ -125,41 +125,6 @@ export default function BreedList() {
         <Text style={adminStyles.mainButtonText}>Add New Breed</Text>
       </TouchableOpacity>
 
-      {/* <FlatList
-        data={breeds}
-        keyExtractor={(item) => item.id.toString()}
-        style={adminStyles.list}
-        renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <ListItem
-              title={item.name}
-              subtitle={`Type: ${item.petTypeName}`}
-              onPress={() => router.push(`/breeds/${item.id}`)}
-            />
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit breed ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => confirmDelete(item.id, item.name)}
-                accessibilityLabel={`Delete breed ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No breeds found</Text>
-        }
-      /> */}
       <FlatList
         data={breeds}
         keyExtractor={(item) => item.id.toString()}

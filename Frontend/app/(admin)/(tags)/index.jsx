@@ -129,41 +129,6 @@ export default function TagList() {
         <Text style={adminStyles.mainButtonText}>Add New Tag</Text>
       </TouchableOpacity>
 
-      {/* <FlatList
-        data={tags}
-        keyExtractor={(item) => item.id.toString()}
-        style={adminStyles.list}
-        renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <ListItem
-              title={item.name}
-              subtitle={`Created: ${formatDate(item.createdDate)}`}
-              onPress={() => router.push(`/tags/${item.id}`)}
-            />
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit tag ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => confirmDelete(item.id, item.name)}
-                accessibilityLabel={`Delete tag ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No tags found</Text>
-        }
-      /> */}
       <FlatList
         data={tags}
         keyExtractor={(item) => item.id.toString()}

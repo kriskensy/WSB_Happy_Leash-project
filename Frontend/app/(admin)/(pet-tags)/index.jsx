@@ -119,45 +119,6 @@ export default function PetTagList() {
         <Text style={adminStyles.mainButtonText}>Add Pet Tag</Text>
       </TouchableOpacity>
 
-      {/* <FlatList
-        data={petTags}
-        keyExtractor={(item) => item.id.toString()}
-        style={adminStyles.list}
-        renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <ListItem
-              title={item.petName}
-              subtitle={`Tag: ${item.tagName}`}
-              onPress={() => router.push(`/pet-tags/${item.id}`)}
-            />
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit tag for ${item.petName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() =>
-                  confirmDelete(item.id, item.petName, item.tagName)
-                }
-                accessibilityLabel={`Delete tag for ${item.petName}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>
-            No pet-tag relations found
-          </Text>
-        }
-      /> */}
       <FlatList
         data={petTags}
         keyExtractor={(item) => item.id.toString()}

@@ -107,52 +107,6 @@ export default function PetList() {
         <Text style={adminStyles.mainButtonText}>Add New Pet</Text>
       </TouchableOpacity>
 
-      {/* <FlatList
-        data={pets}
-        keyExtractor={(item) => item.id.toString()}
-        style={adminStyles.list}
-        renderItem={({ item }) => (
-          <View style={adminStyles.listItemWithActions}>
-            <ListItem
-              title={item.name}
-              subtitle={`Type: ${item.petTypeName} | Breed: ${
-                item.breedName
-              } | Adopted: ${item.adopted ? "Yes" : "No"}`}
-              onPress={() => router.push(`/pets/${item.id}`)}
-              leftElement={
-                item.imageUrl && (
-                  <Image
-                    source={{ uri: item.imageUrl }}
-                    style={{ width: 48, height: 48, borderRadius: 24 }}
-                  />
-                )
-              }
-            />
-            <View style={adminStyles.actionButtons}>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => handleRedirectToEdit(item.id)}
-                accessibilityLabel={`Edit pet ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="pencil" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={adminStyles.actionButton}
-                onPress={() => confirmDelete(item.id, item.name)}
-                accessibilityLabel={`Delete pet ${item.name}`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="trash" size={20} color={COLORS.danger} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No pets found</Text>
-        }
-      /> */}
-
       <FlatList
         data={pets}
         keyExtractor={(item) => item.id.toString()}

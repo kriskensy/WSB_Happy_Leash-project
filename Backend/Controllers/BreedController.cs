@@ -34,6 +34,7 @@ namespace Backend.Controllers
                 {
                     Id = b.Id,
                     Name = b.Name,
+                    PetTypeId = b.PetTypeId, //TODO dodane mapowanie pola
                     PetTypeName = b.PetType != null ? b.PetType.Name : "Unknown"
                 })
                 .ToListAsync();
@@ -66,6 +67,7 @@ namespace Backend.Controllers
                 {
                     Id = b.Id,
                     Name = b.Name,
+                    PetTypeId = b.PetTypeId, //TODO dodane mapowanie pola
                     PetTypeName = b.PetType != null ? b.PetType.Name : "Unknown",
                 })
                 .FirstOrDefaultAsync();
