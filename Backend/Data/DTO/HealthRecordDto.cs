@@ -12,7 +12,7 @@ namespace WSB_Happy_Leash_project.Data.DTO
 
         public string VetName { get; set; } = string.Empty;
 
-        // tylko do odczytu
+        //tylko do odczytu
         public string? PetName { get; set; }
     }
 }

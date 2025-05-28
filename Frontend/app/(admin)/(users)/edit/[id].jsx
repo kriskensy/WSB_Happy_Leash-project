@@ -4,18 +4,23 @@ import {
   Text,
   TouchableOpacity,
   Alert,
+  Modal,
   ActivityIndicator,
   ScrollView,
   Image,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import * as ImagePicker from "expo-image-picker";
 import styles from "../../../../assets/styles/main.styles";
 import adminStyles from "../../../../assets/styles/admin.styles";
+import modalStyles from "../../../../assets/styles/modal.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
 import COLORS from "../../../../constants/colors";
+import DetailRow from "../../../../components/DetailRow";
 
 export default function EditUser() {
   const { id } = useLocalSearchParams();
@@ -32,7 +37,16 @@ export default function EditUser() {
   const [profilePictureURL, setProfilePictureURL] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   const router = useRouter();
+
+    // User type options
+  const userTypes = [
+    { id: 0, name: "Admin" },
+    { id: 1, name: "User" },
+    { id: 2, name: "Guest" },
+  ];
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -134,6 +148,11 @@ export default function EditUser() {
     );
   }
 
+  const getUserTypeName = (id) => {
+    const type = userTypes.find(t => t.id === id);
+    return type ? type.name : "Select User Type";
+  };
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
@@ -167,14 +186,62 @@ export default function EditUser() {
           placeholder="Enter login"
           iconName="person-circle-outline"
         />
-        <FormField
+        {/* <FormField
           label="User Type"
           value={userType}
           onChangeText={setUserType}
           placeholder="Enter user type (number)"
           iconName="people-outline"
           keyboardType="numeric"
-        />
+        /> */}
+        <DetailRow label="User Type" value={
+        <TouchableOpacity
+          style={styles.pickerContainer}
+          onPress={() => setShowUserTypeModal(true)}
+          accessibilityLabel="Select user type"
+          accessible
+        >
+          <Text>{getUserTypeName(userType)}</Text>
+        </TouchableOpacity>
+        }/>
+
+        <Modal
+          visible={showUserTypeModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowUserTypeModal(false)}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <FlatList
+                data={userTypes}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setUserType(item.id);
+                      setShowUserTypeModal(false);
+                    }}
+                    style={modalStyles.modalItem}
+                    accessibilityLabel={`Select ${item.name}`}
+                    accessible
+                  >
+                    <Text>{item.name}</Text>
+                  </Pressable>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setShowUserTypeModal(false)}
+                style={modalStyles.modalCloseButton}
+                accessibilityLabel="Close user type selection"
+                accessible
+              >
+                <Text style={{ color: COLORS.primary }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <FormField
           label="Address"
           value={address}

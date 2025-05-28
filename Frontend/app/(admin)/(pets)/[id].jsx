@@ -77,6 +77,14 @@ export default function PetDetails() {
         <DetailRow label="Gender" value={pet.genderName} />
         <DetailRow label="Notes" value={pet.notes} />
         <DetailRow label="Adopted" value={pet.adopted ? "Yes" : "No"} />
+        <DetailRow
+          label="Tags"
+          value={
+            pet.tags && pet.tags.length > 0
+              ? pet.tags.map(t => t.name).join(", ")
+              : "-"
+          }
+        />
       </View>
       <TouchableOpacity
         style={[adminStyles.mainButton, { marginTop: 16 }]}

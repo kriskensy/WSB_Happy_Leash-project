@@ -65,6 +65,14 @@ export default function TagDetails() {
       <View style={adminStyles.card}>
         <DetailRow label="ID" value={tag.id} />
         <DetailRow label="Name" value={tag.name} />
+        <DetailRow
+          label="Pets"
+          value={
+            tag.pets && tag.pets.length > 0
+              ? tag.pets.map(p => p.name).join(", ")
+              : "-"
+          }
+        />
       </View>
       <TouchableOpacity
         style={[adminStyles.mainButton, { marginTop: 16 }]}

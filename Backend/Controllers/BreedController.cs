@@ -43,25 +43,12 @@ namespace Backend.Controllers
         }
 
         // // GET: api/Breed/5
-        // [HttpGet("{id}")]
-        // public async Task<ActionResult<Breed>> GetBreed(int id)
-        // {
-        //     var breed = await _context.Breeds.FindAsync(id);
-
-        //     if (breed == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return breed;
-        // }
-
         //TODO dodane poprawne mapowanie do dto
         [HttpGet("{id}")]
         public async Task<ActionResult<BreedDto>> GetBreed(int id)
         {
             var breed = await _context.Breeds
-                .Include(b => b.PetType) // pobierz powiązany typ zwierzaka
+                .Include(b => b.PetType) //pobiera powiązany typ zwierzaka
                 .Where(b => b.Id == id)
                 .Select(b => new BreedDto
                 {

@@ -64,7 +64,12 @@ namespace Backend.Controllers
                     PictureURL = p.PictureURL,
                     BreedId = p.BreedId,
                     BreedName = p.Breed != null ? p.Breed.Name : string.Empty,
-                    PetTypeName = p.Breed != null && p.Breed.PetType != null ? p.Breed.PetType.Name : string.Empty
+                    PetTypeName = p.Breed != null && p.Breed.PetType != null ? p.Breed.PetType.Name : string.Empty,
+                    Tags = p.PetTags.Select(pt => new TagDto //TODO mapowanie tagów
+                    {
+                        Id = pt.Tag.Id,
+                        Name = pt.Tag.Name
+                    }).ToList()
                 })
                 .FirstOrDefaultAsync();
 
@@ -103,6 +108,16 @@ namespace Backend.Controllers
             _context.Pets.Add(pet);
             await _context.SaveChangesAsync();
 
+            //TODO dodane powiązania z tagami
+            if (dto.TagIds != null && dto.TagIds.Any())
+            {
+                foreach (var tagId in dto.TagIds)
+                {
+                    _context.PetTags.Add(new PetTag { PetId = pet.Id, TagId = tagId });
+                }
+                await _context.SaveChangesAsync();
+            }
+
             return CreatedAtAction(nameof(GetPet), new { id = pet.Id }, null);
         }
 
@@ -113,7 +128,11 @@ namespace Backend.Controllers
             if (dto.Id != null && id != dto.Id)
                 return BadRequest("Mismatched ID");
 
-            var pet = await _context.Pets.FindAsync(id);
+            var pet = await _context.Pets
+                .Include(p => p.PetTags)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+
             if (pet == null)
                 return NotFound();
 
@@ -134,6 +153,20 @@ namespace Backend.Controllers
                 await Picture.CopyToAsync(stream);
                 pet.PictureURL = $"/uploads/{fileName}";
             }
+
+            //TODO usunięcie starego powiązania tagów i dodanie nowego
+            var existingTags = _context.PetTags.Where(pt => pt.PetId == id);
+            _context.PetTags.RemoveRange(existingTags);
+
+            //nowe powiązanie
+            if (dto.TagIds != null && dto.TagIds.Any())
+            {
+                foreach (var tagId in dto.TagIds)
+                {
+                    _context.PetTags.Add(new PetTag { PetId = id, TagId = tagId });
+                }
+            }
+
 
             await _context.SaveChangesAsync();
             return NoContent();

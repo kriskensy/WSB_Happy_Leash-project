@@ -19,6 +19,7 @@ import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
+import DetailRow from "../../../components/DetailRow";
 
 export default function CreatePet() {
   const [name, setName] = useState("");
@@ -29,11 +30,14 @@ export default function CreatePet() {
   const [breedId, setBreedId] = useState("");
   const [pictureURL, setPictureURL] = useState("");
   const [typeId, setTypeId] = useState("");
+  const [adopted, setAdopted] = useState(false);
+  const [selectedTagIds, setSelectedTagIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [petTypes, setPetTypes] = useState([]);
   const [breeds, setBreeds] = useState([]);
   const [filteredBreeds, setFilteredBreeds] = useState([]);
+  const [tags, setTags] = useState([]);
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [showBreedModal, setShowBreedModal] = useState(false);
   const [showGenderModal, setShowGenderModal] = useState(false);
@@ -56,28 +60,31 @@ export default function CreatePet() {
         const breedsRes = await fetch("http://10.0.2.2:5000/api/Breed", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (typesRes.ok && breedsRes.ok) {
+        const tagsRes = await fetch("http://10.0.2.2:5000/api/Tag", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (typesRes.ok && breedsRes.ok && tagsRes.ok) {
           const typesData = await typesRes.json();
           const breedsData = await breedsRes.json();
+          const tagsData = await tagsRes.json();
           setPetTypes(typesData);
           setBreeds(breedsData);
+          setTags(tagsData.map((tag) => ({ ...tag, id: String(tag.id) })));
           if (typesData.length > 0) {
             const firstTypeId = String(typesData[0].id);
-            setTypeId(String(typesData[0].id));
+            setTypeId(firstTypeId);
             const initialFilteredBreeds = breedsData.filter(
-              (breed) => String(breed.petTypeId) === String(typesData[0].id)
+              (breed) => String(breed.petTypeId) === firstTypeId
             );
-            console.log('initialFilteredBreeds: ', initialFilteredBreeds);
             setFilteredBreeds(initialFilteredBreeds);
             if (initialFilteredBreeds.length > 0) {
               setBreedId(String(initialFilteredBreeds[0].id));
             } else {
               setBreedId("");
             }
-            console.log('filteredBreeds: ', filteredBreeds);
           }
         } else {
-          Alert.alert("Error", "Failed to load pet types or breeds");
+          Alert.alert("Error", "Failed to load pet types, breeds or tags");
         }
       } catch (error) {
         Alert.alert("Error", "An unexpected error occurred");
@@ -115,6 +122,12 @@ export default function CreatePet() {
     if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
       setPictureURL(pickerResult.assets[0].uri);
     }
+  };
+
+  const toggleTag = (id) => {
+    setSelectedTagIds((prev) =>
+      prev.includes(id) ? prev.filter((tid) => tid !== id) : [...prev, id]
+    );
   };
 
   const handleSubmit = async () => {
@@ -158,6 +171,12 @@ export default function CreatePet() {
       formData.append("GenderName", genderOptions.find(g => g.id === gender)?.name || "");
       formData.append("Notes", notes);
       formData.append("BreedId", parseInt(breedId, 10));
+      formData.append("Adopted", adopted);
+
+      //TODO dodanie tagów jako tablicę do API
+      selectedTagIds.forEach((tagId) => {
+        formData.append("TagIds", parseInt(tagId, 10));
+      });
 
       if (pictureURL) {
         formData.append("Picture", {
@@ -225,14 +244,18 @@ export default function CreatePet() {
         iconName="paw-outline"
       />
 
-      <Text style={adminStyles.pickerLabel}>Type:</Text>
-      <TouchableOpacity
-        style={adminStyles.pickerContainer}
-        onPress={() => setShowTypeModal(true)}
-        accessibilityLabel="Select pet type"
-      >
-        <Text>{getTypeName(typeId)}</Text>
-      </TouchableOpacity>
+      <DetailRow
+        label="Type"
+        value={
+          <TouchableOpacity
+            style={adminStyles.pickerContainer}
+            onPress={() => setShowTypeModal(true)}
+            accessibilityLabel="Select pet type"
+          >
+            <Text>{getTypeName(typeId)}</Text>
+          </TouchableOpacity>
+        }
+      />
       <Modal
         visible={showTypeModal}
         transparent
@@ -268,14 +291,18 @@ export default function CreatePet() {
         </View>
       </Modal>
 
-      <Text style={adminStyles.pickerLabel}>Breed:</Text>
-      <TouchableOpacity
-        style={adminStyles.pickerContainer}
-        onPress={() => setShowBreedModal(true)}
-        accessibilityLabel="Select pet breed"
-      >
-        <Text>{getBreedName(breedId)}</Text>
-      </TouchableOpacity>
+      <DetailRow
+        label="Breed"
+        value={
+          <TouchableOpacity
+            style={adminStyles.pickerContainer}
+            onPress={() => setShowBreedModal(true)}
+            accessibilityLabel="Select pet breed"
+          >
+            <Text>{getBreedName(breedId)}</Text>
+          </TouchableOpacity>
+        }
+      />
       <Modal
         visible={showBreedModal}
         transparent
@@ -334,14 +361,18 @@ export default function CreatePet() {
         keyboardType="numeric"
       />
 
-      <Text style={adminStyles.pickerLabel}>Gender:</Text>
-      <TouchableOpacity
-        style={adminStyles.pickerContainer}
-        onPress={() => setShowGenderModal(true)}
-        accessibilityLabel="Select gender"
-      >
-        <Text>{getGenderName(gender)}</Text>
-      </TouchableOpacity>
+      <DetailRow
+        label="Gender"
+        value={
+          <TouchableOpacity
+            style={adminStyles.pickerContainer}
+            onPress={() => setShowGenderModal(true)}
+            accessibilityLabel="Select gender"
+          >
+            <Text>{getGenderName(gender)}</Text>
+          </TouchableOpacity>
+        }
+      />
       <Modal
         visible={showGenderModal}
         transparent
@@ -385,6 +416,53 @@ export default function CreatePet() {
         iconName="document-text-outline"
         multiline={true}
         numberOfLines={3}
+      />
+
+      <DetailRow
+        label="Tags"
+        value={
+          <View style={{ flex: 1 }}>
+            {tags.map((tag) => (
+              <TouchableOpacity
+                key={tag.id}
+                style={[
+                  adminStyles.checkboxContainer,
+                  {
+                    marginLeft: -8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  },
+                ]}
+                onPress={() => toggleTag(tag.id)}
+                accessibilityLabel={`Toggle ${tag.name}`}
+              >
+                <View style={adminStyles.checkbox}>
+                  {selectedTagIds.includes(tag.id) && (
+                    <View style={adminStyles.checkboxInner} />
+                  )}
+                </View>
+                <Text style={adminStyles.checkboxLabel}>{tag.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        }
+      />
+
+      <DetailRow
+        label="Adopted"
+        value={
+          <TouchableOpacity
+            style={[adminStyles.checkboxContainer, { marginLeft: -8 }]}
+            onPress={() => setAdopted((prev) => !prev)}
+            accessibilityLabel="Toggle adopted"
+          >
+            <View style={adminStyles.checkbox}>
+              {adopted && <View style={adminStyles.checkboxInner} />}
+            </View>
+            <Text style={adminStyles.checkboxLabel}>Adopted</Text>
+          </TouchableOpacity>
+        }
       />
 
       {pictureURL ? (

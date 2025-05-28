@@ -17,6 +17,7 @@ import modalStyles from "../../../../assets/styles/modal.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
 import COLORS from "../../../../constants/colors";
+import DetailRow from "../../../../components/DetailRow";
 
 export default function EditAdoptionRequest() {
   const { id } = useLocalSearchParams();
@@ -152,7 +153,7 @@ export default function EditAdoptionRequest() {
     <ScrollView style={adminStyles.container}>
       <AdminHeader title="Edit Adoption Request" />
 
-      <Text style={adminStyles.pickerLabel}>Pet:</Text>
+      <DetailRow label="Pet" value={
       <TouchableOpacity
         style={adminStyles.pickerContainer}
         onPress={() => setShowPetModal(true)}
@@ -160,6 +161,8 @@ export default function EditAdoptionRequest() {
       >
         <Text>{getPetName(petId)}</Text>
       </TouchableOpacity>
+      }/>
+
       <Modal
         visible={showPetModal}
         transparent
@@ -200,14 +203,16 @@ export default function EditAdoptionRequest() {
         </View>
       </Modal>
 
-      <Text style={adminStyles.pickerLabel}>User:</Text>
-      <TouchableOpacity
+      <DetailRow label="User" value={
+        <TouchableOpacity
         style={adminStyles.pickerContainer}
         onPress={() => setShowUserModal(true)}
         accessibilityLabel="Select user"
       >
         <Text>{getUserName(userId)}</Text>
       </TouchableOpacity>
+      }/>
+      
       <Modal
         visible={showUserModal}
         transparent

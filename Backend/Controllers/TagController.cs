@@ -38,40 +38,65 @@ namespace Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TagDto>> GetTag(int id)
         {
-            var tag = await _context.Tags.FindAsync(id);
+            var tag = await _context.Tags
+                .Include(t => t.PetTags)
+                    .ThenInclude(pt => pt.Pet)
+                .Where(t => t.Id == id)
+                .Select(t => new TagDto
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Pets = t.PetTags.Select(pt => new PetShortDto
+                    {
+                        Id = pt.Pet.Id,
+                        Name = pt.Pet.Name
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
 
             if (tag == null)
                 return NotFound();
 
-            var dto = new TagDto
-            {
-                Id = tag.Id,
-                Name = tag.Name
-            };
-
-            return Ok(dto);
+            return Ok(tag);
         }
+
 
         // PUT: api/Tag/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTag(int id, [FromBody] TagDto dto)
+        public async Task<IActionResult> PutTag(int id, [FromForm] TagDto dto)
         {
             if (dto.Id != null && dto.Id != id)
                 return BadRequest("Mismatched ID");
 
-            var tag = await _context.Tags.FindAsync(id);
+            var tag = await _context.Tags
+                .Include(t => t.PetTags)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (tag == null)
                 return NotFound();
 
             tag.Name = dto.Name;
-            await _context.SaveChangesAsync();
 
+            //usuwa stare powiązania
+            _context.PetTags.RemoveRange(tag.PetTags);
+
+            //dodaje nowe powiązania
+            if (dto.PetIds != null && dto.PetIds.Any())
+            {
+                foreach (var petId in dto.PetIds)
+                {
+                    _context.PetTags.Add(new PetTag { PetId = petId, TagId = id });
+                }
+            }
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
+
         // POST: api/Tag
         [HttpPost]
-        public async Task<IActionResult> PostTag([FromBody] TagDto dto)
+        public async Task<IActionResult> PostTag([FromForm] TagDto dto)
         {
             var newTag = new Tag
             {
@@ -81,8 +106,18 @@ namespace Backend.Controllers
             _context.Tags.Add(newTag);
             await _context.SaveChangesAsync();
 
+            if (dto.PetIds != null && dto.PetIds.Any())
+            {
+                foreach (var petId in dto.PetIds)
+                {
+                    _context.PetTags.Add(new PetTag { PetId = petId, TagId = newTag.Id });
+                }
+                await _context.SaveChangesAsync();
+            }
+
             return CreatedAtAction(nameof(GetTag), new { id = newTag.Id }, null);
         }
+
 
         // DELETE: api/Tag/5
         [HttpDelete("{id}")]

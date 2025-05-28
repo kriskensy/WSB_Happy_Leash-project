@@ -118,7 +118,7 @@ export default function UserList() {
             subtitle={[
               `Firstname: ${item.firstName}`,
               `Lastname: ${item.lastName}`,
-              //TODO te pola wykomentowane bo mają być widoczne na widokach szczegółowych
+              //TODO te pola wykomentowane bo mają być widoczne tylko na widokach szczegółowych
               // `Email: ${item.email}`,
               // `Created at: ${formatDate(item.createdAt)}`,
               // `User type: ${item.userType}`,

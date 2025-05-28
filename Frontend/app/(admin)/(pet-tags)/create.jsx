@@ -16,6 +16,7 @@ import adminStyles from "../../../assets/styles/admin.styles";
 import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import COLORS from "../../../constants/colors";
+import DetailRow from "../../../components/DetailRow";
 
 export default function CreatePetTag() {
   const [petId, setPetId] = useState("");
@@ -126,14 +127,16 @@ export default function CreatePetTag() {
     <ScrollView style={adminStyles.container}>
       <AdminHeader title="Add Pet Tag" />
 
-      <Text style={adminStyles.pickerLabel}>Pet:</Text>
-      <TouchableOpacity
+      <DetailRow label="Pet" value={
+        <TouchableOpacity
         style={adminStyles.pickerContainer}
         onPress={() => setShowPetModal(true)}
         accessibilityLabel="Select pet"
       >
         <Text>{getPetName(petId)}</Text>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      }/>
+
       <Modal
         visible={showPetModal}
         transparent
@@ -169,14 +172,16 @@ export default function CreatePetTag() {
         </View>
       </Modal>
 
-      <Text style={adminStyles.pickerLabel}>Tag:</Text>
-      <TouchableOpacity
+      <DetailRow label="Tag" value={
+        <TouchableOpacity
         style={adminStyles.pickerContainer}
         onPress={() => setShowTagModal(true)}
         accessibilityLabel="Select tag"
       >
         <Text>{getTagName(tagId)}</Text>
       </TouchableOpacity>
+      }/>
+
       <Modal
         visible={showTagModal}
         transparent

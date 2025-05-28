@@ -2,14 +2,11 @@ import { StyleSheet } from 'react-native';
 import COLORS from '../../constants/colors';
 
 const adminStyles = StyleSheet.create({
-  // Kontener główny
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
     padding: 20,
   },
-
-  // Nagłówek
   adminHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -25,8 +22,6 @@ const adminStyles = StyleSheet.create({
   backButton: {
     padding: 5,
   },
-
-  // Przycisk główny
   mainButton: {
     backgroundColor: COLORS.primary,
     paddingVertical: 14,
@@ -40,7 +35,6 @@ const adminStyles = StyleSheet.create({
     fontSize: 16,
   },
 
-  // Lista i elementy listy
   list: {
     marginTop: 8,
     marginBottom: 16,
@@ -58,27 +52,25 @@ const adminStyles = StyleSheet.create({
   padding: 15,
   width: '100%',
   minWidth: 0,
-},
-listItemContent: {
-  flex: 1,
-  minWidth: 0,
-},
-listItemTitle: {
-  fontSize: 16,
-  fontWeight: '600',
-  color: COLORS.textPrimary,
-  flexShrink: 1,
-  flexWrap: 'wrap',
-  minWidth: 0,
-},
+  },
+  listItemContent: {
+    flex: 1,
+    minWidth: 0,
+  },
+  listItemTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    minWidth: 0,
+  },
   emptyListText: {
     textAlign: 'center',
     marginTop: 20,
     color: COLORS.textSecondary,
     fontSize: 16,
   },
-
-  // Akcje (edytuj/usuń)
   actionButtons: {
     flexDirection: 'row',
     marginLeft: 8,
@@ -92,15 +84,11 @@ listItemTitle: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  // Loader
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  // Grid menu admina
   adminMenuGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -137,6 +125,34 @@ listItemTitle: {
     fontSize: 14,
     color: COLORS.textSecondary,
     textAlign: 'center',
+  },
+
+  //TODO checkboxy
+  checkboxContainer: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 8,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+    borderRadius: 4,
+    marginRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  checkboxInner: {
+    width: 12,
+    height: 12,
+    backgroundColor: COLORS.primary,
+    borderRadius: 2,
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    color: COLORS.text,
   },
 });
 

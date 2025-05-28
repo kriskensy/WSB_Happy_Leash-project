@@ -19,6 +19,7 @@ import modalStyles from "../../../../assets/styles/modal.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
 import COLORS from "../../../../constants/colors";
+import DetailRow from "../../../../components/DetailRow";
 
 export default function EditHealthRecord() {
   const { id } = useLocalSearchParams();
@@ -145,14 +146,15 @@ export default function EditHealthRecord() {
     <ScrollView style={adminStyles.container}>
       <AdminHeader title="Edit Health Record" />
 
-      <Text style={adminStyles.pickerLabel}>Pet:</Text>
-      <TouchableOpacity
+      <DetailRow label="Pet" value={
+        <TouchableOpacity
         style={adminStyles.pickerContainer}
         onPress={() => setShowPetModal(true)}
         accessibilityLabel="Select pet"
       >
         <Text>{getPetName(petId)}</Text>
       </TouchableOpacity>
+      }/>
 
       <Modal
         visible={showPetModal}
@@ -189,14 +191,16 @@ export default function EditHealthRecord() {
         </View>
       </Modal>
 
-      <Text style={adminStyles.pickerLabel}>Record Date:</Text>
-      <TouchableOpacity
+      <DetailRow label="Record Date" value={
+        <TouchableOpacity
         style={adminStyles.pickerContainer}
         onPress={() => setShowDatePicker(true)}
         accessibilityLabel="Select record date"
       >
         <Text>{recordDate.toLocaleDateString()}</Text>
       </TouchableOpacity>
+      }/>
+
       <DateTimePickerModal
         isVisible={showDatePicker}
         mode="date"

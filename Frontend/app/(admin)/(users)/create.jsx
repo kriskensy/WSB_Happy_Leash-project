@@ -20,6 +20,7 @@ import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
+import DetailRow from "../../../components/DetailRow";
 
 export default function CreateUser() {
   const [firstName, setFirstName] = useState("");
@@ -179,7 +180,7 @@ export default function CreateUser() {
           secureTextEntry={true}
         />
         
-        <Text style={styles.pickerLabel}>User Type *</Text>
+        <DetailRow label="User Type" value={
         <TouchableOpacity
           style={styles.pickerContainer}
           onPress={() => setShowUserTypeModal(true)}
@@ -188,7 +189,8 @@ export default function CreateUser() {
         >
           <Text>{getUserTypeName(userType)}</Text>
         </TouchableOpacity>
-        
+        }/>
+
         <Modal
           visible={showUserTypeModal}
           transparent

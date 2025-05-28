@@ -14,12 +14,12 @@ import {
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import styles from "../../../assets/styles/main.styles";
 import adminStyles from "../../../assets/styles/admin.styles";
 import modalStyles from "../../../assets/styles/modal.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import FormField from "../(components)/FormField";
 import COLORS from "../../../constants/colors";
+import DetailRow from "../../../components/DetailRow";
 
 export default function CreateHealthRecord() {
   const [petId, setPetId] = useState("");
@@ -44,8 +44,8 @@ export default function CreateHealthRecord() {
         });
         if (petsResponse.ok) {
           const petsData = await petsResponse.json();
-          setPets(petsData);
-          if (petsData.length > 0) setPetId(petsData[0].id);
+          setPets(petsData.map((pet) => ({ ...pet, id: String(pet.id) })));
+          if (petsData.length > 0) setPetId(String(petsData[0].id));
         } else {
           Alert.alert("Error", "Failed to load pets");
         }
@@ -65,7 +65,6 @@ export default function CreateHealthRecord() {
   };
 
   const handleSubmit = async () => {
-    //petId w ten sposób aby również Id = 0 było poprawnie obsłużone
     if (
       petId === null ||
       petId === undefined ||
@@ -87,7 +86,7 @@ export default function CreateHealthRecord() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          petId,
+          petId: parseInt(petId, 10),
           recordDate: recordDate,
           description,
           vetName,
@@ -120,123 +119,123 @@ export default function CreateHealthRecord() {
 
   if (fetchingData) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
+      <View style={[adminStyles.container, { justifyContent: "center" }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <AdminHeader title="Create Health Record" />
+    <ScrollView style={adminStyles.container}>
+      <AdminHeader title="Create Health Record" />
 
-        <Text style={styles.pickerLabel}>Pet:</Text>
-        <TouchableOpacity
-          style={styles.pickerContainer}
-          onPress={() => setShowPetModal(true)}
-          accessibilityLabel="Select pet"
-          accessible
-        >
-          <Text>{getPetName(petId)}</Text>
-        </TouchableOpacity>
-        <Modal
-          visible={showPetModal}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setShowPetModal(false)}
-        >
-          <View style={modalStyles.modalOverlay}>
-            <View style={modalStyles.modalContent}>
-              <FlatList
-                data={pets}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <Pressable
-                    onPress={() => {
-                      setPetId(item.id);
-                      setShowPetModal(false);
-                    }}
-                    style={modalStyles.modalItem}
-                    accessibilityLabel={`Select ${item.name}`}
-                    accessible
-                  >
-                    <Text>{item.name}</Text>
-                  </Pressable>
-                )}
-              />
-              <TouchableOpacity
-                onPress={() => setShowPetModal(false)}
-                style={modalStyles.modalCloseButton}
-                accessibilityLabel="Close pet selection"
-                accessible
-              >
-                <Text style={{ color: COLORS.primary }}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+      <DetailRow
+        label="Pet"
+        value={
+          <TouchableOpacity
+            style={adminStyles.pickerContainer}
+            onPress={() => setShowPetModal(true)}
+            accessibilityLabel="Select pet"
+          >
+            <Text>{getPetName(petId)}</Text>
+          </TouchableOpacity>
+        }
+      />
+      <Modal
+        visible={showPetModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowPetModal(false)}
+      >
+        <View style={modalStyles.modalOverlay}>
+          <View style={modalStyles.modalContent}>
+            <FlatList
+              data={pets}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    setPetId(item.id);
+                    setShowPetModal(false);
+                  }}
+                  style={modalStyles.modalItem}
+                  accessibilityLabel={`Select ${item.name}`}
+                >
+                  <Text>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPetModal(false)}
+              style={modalStyles.modalCloseButton}
+              accessibilityLabel="Close pet selection"
+            >
+              <Text style={{ color: COLORS.primary }}>Cancel</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
+        </View>
+      </Modal>
 
-        <Text style={styles.pickerLabel}>Record Date:</Text>
-        <TouchableOpacity
-          style={styles.dateInput}
-          onPress={() => setShowDatePicker(true)}
-          accessibilityLabel="Select record date"
-          accessible
-        >
-          <Text>{recordDate.toLocaleDateString()}</Text>
-        </TouchableOpacity>
-        <DateTimePickerModal
-          isVisible={showDatePicker}
-          mode="date"
-          date={recordDate}
-          onConfirm={handleDateConfirm}
-          onCancel={() => setShowDatePicker(false)}
-          display={Platform.OS === "ios" ? "inline" : "default"}
-        />
+      <DetailRow
+        label="Record Date"
+        value={
+          <TouchableOpacity
+            style={adminStyles.pickerContainer}
+            onPress={() => setShowDatePicker(true)}
+            accessibilityLabel="Select record date"
+          >
+            <Text>{recordDate.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+        }
+      />
+      <DateTimePickerModal
+        isVisible={showDatePicker}
+        mode="date"
+        date={recordDate}
+        onConfirm={handleDateConfirm}
+        onCancel={() => setShowDatePicker(false)}
+        display={Platform.OS === "ios" ? "inline" : "default"}
+      />
 
-        <FormField
-          label="Description"
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Enter health record details"
-          iconName="document-text-outline"
-          multiline={true}
-          numberOfLines={4}
-        />
+      <FormField
+        label="Description"
+        value={description}
+        onChangeText={setDescription}
+        placeholder="Enter health record details"
+        iconName="document-text-outline"
+        multiline={true}
+        numberOfLines={4}
+      />
 
-        <FormField
-          label="Vet Name"
-          value={vetName}
-          onChangeText={setVetName}
-          placeholder="Enter vet name"
-          iconName="person-outline"
-        />
+      <FormField
+        label="Vet Name"
+        value={vetName}
+        onChangeText={setVetName}
+        placeholder="Enter vet name"
+        iconName="person-outline"
+      />
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSubmit}
-          disabled={loading}
-          accessibilityLabel="Create health record"
-          accessible
-        >
-          {loading ? (
-            <ActivityIndicator size="small" color={COLORS.white} />
-          ) : (
-            <Text style={styles.buttonText}>Create Health Record</Text>
-          )}
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={adminStyles.mainButton}
+        onPress={handleSubmit}
+        disabled={loading}
+        accessibilityLabel="Create health record"
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={adminStyles.mainButtonText}>Create Health Record</Text>
+        )}
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          style={adminStyles.mainButton}
-          onPress={() => router.push("/(admin)/(health-records)")}
-          disabled={loading}
-          accessibilityLabel="Cancel"
-          accessible
-        >
-          <Text style={adminStyles.mainButtonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={[adminStyles.mainButton, { marginTop: 10 }]}
+        onPress={() => router.push("/(admin)/(health-records)")}
+        disabled={loading}
+        accessibilityLabel="Cancel"
+      >
+        <Text style={adminStyles.mainButtonText}>Cancel</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
