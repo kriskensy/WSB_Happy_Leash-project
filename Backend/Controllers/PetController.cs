@@ -79,6 +79,39 @@ namespace Backend.Controllers
             return Ok(pet);
         }
 
+        // GET: /api/Pet/type/{typeId}
+        [HttpGet("type/{typeId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<PetDto>>> GetPetsByType(int typeId)
+        {
+            var pets = await _context.Pets
+                .Include(p => p.Breed)
+                .ThenInclude(b => b.PetType)
+                .Where(p => p.Breed != null && p.Breed.PetTypeId == typeId)
+                .Select(p => new PetDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Age = p.Age,
+                    Weight = p.Weight,
+                    Gender = p.Gender,
+                    GenderName = p.Gender.ToString(),
+                    Notes = p.Notes,
+                    PictureURL = p.PictureURL,
+                    BreedId = p.BreedId,
+                    BreedName = p.Breed != null ? p.Breed.Name : string.Empty,
+                    PetTypeName = p.Breed != null && p.Breed.PetType != null ? p.Breed.PetType.Name : string.Empty,
+                    Tags = p.PetTags.Select(pt => new TagDto
+                    {
+                        Id = pt.Tag.Id,
+                        Name = pt.Tag.Name
+                    }).ToList()
+                })
+                .ToListAsync();
+
+            return Ok(pets);
+        }
+
         // POST: api/Pet
         [HttpPost]
         public async Task<ActionResult> PostPet([FromForm] PetDto dto, IFormFile? Picture)

@@ -9,6 +9,7 @@ import {
 import styles from "../assets/styles/main.styles";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AdoptCatList() {
   const [allCats, setAllCats] = useState([]);
@@ -21,10 +22,36 @@ export default function AdoptCatList() {
   };
 
   // Pobiera koty z API
+  // const fetchCats = async () => {
+  //   try {
+  //     const response = await fetch("http://10.0.2.2:5000/api/Pet/type/3"); // 3 = koty
+  //     const data = await response.json();
+  //     setAllCats(data);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error("Error fetching pets:", error);
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchCats = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/pet/type/3"); // 3 = koty
-      const data = await response.json();
+      const token = await AsyncStorage.getItem("userToken");
+      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/3", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      const text = await response.text();
+      if (!text) {
+        setAllCats([]);
+        setLoading(false);
+        return;
+      }
+      const data = JSON.parse(text);
       setAllCats(data);
       setLoading(false);
     } catch (error) {
