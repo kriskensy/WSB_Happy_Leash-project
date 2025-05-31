@@ -97,7 +97,7 @@ export default function UserList() {
 
   return (
     <View style={adminStyles.container}>
-      <AdminHeader title="Users" showBack={false}/>
+      <AdminHeader title="Users" showBack={false} />
 
       <TouchableOpacity
         style={adminStyles.mainButton}
@@ -129,7 +129,6 @@ export default function UserList() {
               // `Phone number: ${item.phoneNumber}`,
               // `Postal code: ${item.postalCode}`,
               `Profile picture url: ${item.profilePictureURL}`,
-
             ]}
             onPress={() => router.push(`/(users)/${item.id}`)}
             onEdit={() => handleRedirectToEdit(item.id)}
@@ -138,7 +137,7 @@ export default function UserList() {
             leftElement={
               item.imageUrl && (
                 <Image
-                  source={{ uri: item.imageUrl }}
+                  source={{ uri: item.profilePictureURL }}
                   style={{ width: 48, height: 48, borderRadius: 24 }}
                 />
               )
@@ -148,7 +147,7 @@ export default function UserList() {
         ListEmptyComponent={
           <Text style={adminStyles.emptyListText}>No pets found</Text>
         }
-      />      
+      />
 
       <TouchableOpacity
         style={adminStyles.mainButton}

@@ -83,6 +83,54 @@ namespace Backend.Controllers
 
             return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, new { message = "User created successfully" });
         }
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromForm] UserDto dto, IFormFile? Picture)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Login) ||
+                string.IsNullOrWhiteSpace(dto.Password) ||
+                string.IsNullOrWhiteSpace(dto.FirstName) ||
+                string.IsNullOrWhiteSpace(dto.LastName) ||
+                string.IsNullOrWhiteSpace(dto.Email))
+            {
+                return BadRequest(new { message = "All required fields must be provided" });
+            }
+
+            var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Login == dto.Login || x.Email == dto.Email);
+            if (existingUser != null)
+                return Conflict(new { message = "User with this login or email already exists" });
+
+            var newUser = new User
+            {
+                Login = dto.Login,
+                PasswordHash = HashPassword(dto.Password!),
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                Address = dto.Address,
+                City = dto.City,
+                PostalCode = dto.PostalCode,
+                Country = dto.Country,
+                CreatedAt = DateTime.UtcNow,
+                UserType = dto.UserType ?? UserType.User,
+            };
+
+            if (Picture != null && Picture.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(Picture.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                Directory.CreateDirectory(path);
+                var filePath = Path.Combine(path, fileName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await Picture.CopyToAsync(stream);
+                newUser.ProfilePictureURL = $"/uploads/{fileName}";
+            }
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, new { message = "User created succesfully!" });
+        }
 
         [HttpGet("user/{id}")]
         public async Task<ActionResult<UserDto>> GetUser(int id)
@@ -158,7 +206,7 @@ namespace Backend.Controllers
             Country = user.Country,
             ProfilePictureURL = user.ProfilePictureURL,
             CreatedAt = user.CreatedAt,
-            UserType = user.UserType.ToString()
+            UserType = user.UserType
         };
 
         private string HashPassword(string password)

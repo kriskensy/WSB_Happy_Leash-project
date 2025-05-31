@@ -27,7 +27,7 @@ export default function EditUser() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [userType, setUserType] = useState("0");
+  const [userType, setUserType] = useState(1);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
@@ -40,13 +40,18 @@ export default function EditUser() {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   const router = useRouter();
 
-    // User type options
+  // User type options
+  const userTypeNameToId = {
+    Admin: 0,
+    User: 1,
+    Guest: 2,
+  };
+
   const userTypes = [
     { id: 0, name: "Admin" },
     { id: 1, name: "User" },
     { id: 2, name: "Guest" },
   ];
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -60,11 +65,16 @@ export default function EditUser() {
           }
         );
         if (response.ok) {
+          console.log("User data fetched successfully");
+          console.log("Response status:", response.status);
+
           const user = await response.json();
           setFirstName(user.firstName);
           setLastName(user.lastName);
           setEmail(user.email);
-          setUserType(user.userType?.toString() || "0");
+          // ustawianie userType
+          setUserType(user.userType ?? 1);
+          //setUserType(user.userType?.toString() || "0");
           setAddress(user.address || "");
           setCity(user.city || "");
           setCountry(user.country || "");
@@ -76,8 +86,8 @@ export default function EditUser() {
           Alert.alert("Error", "Failed to load user details");
           router.back();
         }
-      } catch {
-        Alert.alert("Error", "An unexpected error occurred");
+      } catch (error) {
+        Alert.alert("Error", "An unexpected error occurred: " + error.message);
         router.back();
       } finally {
         setLoading(false);
@@ -149,7 +159,7 @@ export default function EditUser() {
   }
 
   const getUserTypeName = (id) => {
-    const type = userTypes.find(t => t.id === id);
+    const type = userTypes.find((t) => t.id === id);
     return type ? type.name : "Select User Type";
   };
 
@@ -194,16 +204,19 @@ export default function EditUser() {
           iconName="people-outline"
           keyboardType="numeric"
         /> */}
-        <DetailRow label="User Type" value={
-        <TouchableOpacity
-          style={styles.pickerContainer}
-          onPress={() => setShowUserTypeModal(true)}
-          accessibilityLabel="Select user type"
-          accessible
-        >
-          <Text>{getUserTypeName(userType)}</Text>
-        </TouchableOpacity>
-        }/>
+        <DetailRow
+          label="User Type"
+          value={
+            <TouchableOpacity
+              style={styles.pickerContainer}
+              onPress={() => setShowUserTypeModal(true)}
+              accessibilityLabel="Select user type"
+              accessible
+            >
+              <Text>{getUserTypeName(userType)}</Text>
+            </TouchableOpacity>
+          }
+        />
 
         <Modal
           visible={showUserTypeModal}

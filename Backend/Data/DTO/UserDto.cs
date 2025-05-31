@@ -19,6 +19,6 @@ namespace WSB_Happy_Leash_project.Data.DTO
         public string? ProfilePictureURL { get; set; }
 
         public DateTime? CreatedAt { get; set; }
-        public string? UserType { get; set; }
+        public UserType? UserType { get; set; }
     }
 }
