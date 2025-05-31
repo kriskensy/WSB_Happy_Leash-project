@@ -100,9 +100,6 @@ export default function AdminMenu() {
         router.push("/login");
         return;
       }
-
-      console.log("przekierowanie na:", item.finalDestination);
-      console.log("Prubuję wziąść dane z :", item.dataRoute);
       const response = await fetch(`http://10.0.2.2:5000/${item.dataRoute}`, {
         headers: {
           "Content-Type": "application/json",
@@ -110,17 +107,10 @@ export default function AdminMenu() {
         },
       });
 
-      console.log(`Status: ${response.status}, OK: ${response.ok}`);
-
       if (!response.ok) {
         Alert.alert("Error!", "Failed to retrieve data.");
         return;
       }
-
-      console.log("Dane pochodzą z:", item.dataRoute);
-      const data = await response.json();
-      console.log("Response data:", data);
-
       router.push(item.finalDestination);
     } catch (error) {
       console.error("Error details:", error);

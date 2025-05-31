@@ -14,7 +14,7 @@ import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import COLORS from "../../../constants/colors";
 import { formatDate } from "../../../utils/dateUtils";
-import DetailRow from '../../../components/DetailRow';
+import DetailRow from "../../../components/DetailRow";
 
 export default function UserDetails() {
   const { id } = useLocalSearchParams();
@@ -30,7 +30,7 @@ export default function UserDetails() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch(`http://10.0.2.2:5000/api/User/${id}`, {
+      const response = await fetch(`http://10.0.2.2:5000/api/auth/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) setUser(await response.json());
@@ -59,11 +59,15 @@ export default function UserDetails() {
       <AdminHeader title="User Details" />
       {user.profilePictureURL ? (
         <Image
-          source={{ uri: user.profilePictureURL }}
+          source={{
+            uri: user.profilePictureURL.startsWith("file://")
+              ? user.profilePictureURL
+              : `http://10.0.2.2:5000${user.profilePictureURL}`,
+          }}
           style={{
-            width: 120,
-            height: 120,
-            borderRadius: 60,
+            width: 200,
+            height: 200,
+            borderRadius: 20,
             marginBottom: 10,
             alignSelf: "center",
           }}

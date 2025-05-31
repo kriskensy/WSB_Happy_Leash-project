@@ -127,7 +127,6 @@ export default function UserList() {
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
         renderItem={({ item }) => {
-          console.log("Image URL:", item.profilePictureURL);
           return (
             <View style={{ marginBottom: 20 }}>
               <ListItem
