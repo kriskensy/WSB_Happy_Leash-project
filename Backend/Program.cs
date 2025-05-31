@@ -1,21 +1,19 @@
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-
 using WSB_Happy_Leash_project.Data.Context;
 using System.Text;
-using System.Text.Json;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 //TODO czy corsy są poprawnie napisane?
-builder.Services.AddCors(options => 
+builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ReactNativePolicy", policy => 
+    options.AddPolicy("ReactNativePolicy", policy =>
     {
         policy.WithOrigins(
             "http://localhost:8081",    // iOS Simulator
@@ -47,6 +45,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // lub builder.Services.AddOpenApi();
 builder.Services.AddScoped<JwtService>();
 
+
+
 DotNetEnv.Env.Load();
 
 var app = builder.Build();
@@ -62,5 +62,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
-
+app.UseStaticFiles();
 app.Run();

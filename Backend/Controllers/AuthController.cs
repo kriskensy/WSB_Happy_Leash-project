@@ -15,6 +15,9 @@ namespace Backend.Controllers
         private readonly AppDbContext _context;
         private readonly JwtService _jwtService;
 
+        private const string FileType = "img/png";
+
+
         public AuthController(AppDbContext context, JwtService jwtService)
         {
             _context = context;
@@ -143,7 +146,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("edit/{id}")]
-        public async Task<IActionResult> Edit([FromForm] int id, [FromForm] UserDto dto)
+        public async Task<IActionResult> Edit([FromForm] int id, [FromForm] UserDto dto, IFormFile? Picture)
         {
             if (string.IsNullOrWhiteSpace(dto.Login) ||
                 string.IsNullOrWhiteSpace(dto.FirstName) ||
@@ -155,7 +158,7 @@ namespace Backend.Controllers
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
-                return NotFound(new { message = "User not found" });
+                return NotFound(new { message = "User with id " + id + " not found" });
 
             var duplicate = await _context.Users.FirstOrDefaultAsync(x =>
                 (x.Login == dto.Login || x.Email == dto.Email) && x.Id != id);
@@ -171,14 +174,37 @@ namespace Backend.Controllers
             user.City = dto.City;
             user.PostalCode = dto.PostalCode;
             user.Country = dto.Country;
-            user.ProfilePictureURL = dto.ProfilePictureURL;
 
-            if (!string.IsNullOrWhiteSpace(dto.Password))
-                user.PasswordHash = HashPassword(dto.Password);
+            if (Picture != null && Picture.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(user.ProfilePictureURL))
+                {
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.ProfilePictureURL.TrimStart('/'));
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+                }
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(Picture.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                Directory.CreateDirectory(path);
+                var filePath = Path.Combine(path, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await Picture.CopyToAsync(stream);
+
+                user.ProfilePictureURL = $"/uploads/{fileName}";
+            }
+
+            // NIE NADPISUJ! Usuń to:
+            // user.ProfilePictureURL = dto.ProfilePictureURL;
+
 
             await _context.SaveChangesAsync();
             return Ok(new { message = "User updated successfully" });
         }
+
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -192,22 +218,28 @@ namespace Backend.Controllers
             return Ok(new { message = "User deleted successfully" });
         }
 
-        private UserDto ToDto(User user) => new UserDto
+        private UserDto ToDto(User user)
         {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Login = user.Login,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
-            Address = user.Address,
-            City = user.City,
-            PostalCode = user.PostalCode,
-            Country = user.Country,
-            ProfilePictureURL = user.ProfilePictureURL,
-            CreatedAt = user.CreatedAt,
-            UserType = user.UserType
-        };
+            var dto = new UserDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Login = user.Login,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+                City = user.City,
+                PostalCode = user.PostalCode,
+                Country = user.Country,
+                ProfilePictureURL = user.ProfilePictureURL,
+                CreatedAt = user.CreatedAt,
+                UserType = user.UserType
+            };
+
+
+            return dto;
+        }
 
         private string HashPassword(string password)
         {

@@ -112,40 +112,35 @@ export default function UserList() {
         data={users}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
-        renderItem={({ item }) => (
-          <ListItem
-            title={item.name}
-            subtitle={[
-              `Firstname: ${item.firstName}`,
-              `Lastname: ${item.lastName}`,
-              //TODO te pola wykomentowane bo mają być widoczne tylko na widokach szczegółowych
-              // `Email: ${item.email}`,
-              // `Created at: ${formatDate(item.createdAt)}`,
-              // `User type: ${item.userType}`,
-              // `Address: ${item.address}`,
-              // `City: ${item.city}`,
-              // `Country: ${item.country}`,
-              // `Login: ${item.login}`,
-              // `Phone number: ${item.phoneNumber}`,
-              // `Postal code: ${item.postalCode}`,
-              `Profile picture url: ${item.profilePictureURL}`,
-            ]}
-            onPress={() => router.push(`/(users)/${item.id}`)}
-            onEdit={() => handleRedirectToEdit(item.id)}
-            onDelete={() => confirmDelete(item.id, item.name)}
-            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
-            leftElement={
-              item.imageUrl && (
-                <Image
-                  source={{ uri: item.profilePictureURL }}
-                  style={{ width: 48, height: 48, borderRadius: 24 }}
-                />
-              )
-            }
-          />
-        )}
+        renderItem={({ item }) => {
+          console.log("Image URL:", item.profilePictureURL);
+          return (
+            <View style={{ marginBottom: 20 }}>
+              <ListItem
+                title={item.name}
+                subtitle={[
+                  `Firstname: ${item.firstName}`,
+                  `Lastname: ${item.lastName}`,
+                ]}
+                onPress={() => router.push(`/(users)/${item.id}`)}
+                onEdit={() => handleRedirectToEdit(item.id)}
+                onDelete={() => confirmDelete(item.id, item.name)}
+                leftImage={
+                  item.profilePictureURL && (
+                    <Image
+                      source={{
+                        uri: `http://10.0.2.2:5000${item.profilePictureURL}`,
+                      }}
+                      style={{ width: 50, height: 50, borderRadius: 8 }}
+                    />
+                  )
+                }
+              />
+            </View>
+          );
+        }}
         ListEmptyComponent={
-          <Text style={adminStyles.emptyListText}>No pets found</Text>
+          <Text style={adminStyles.emptyListText}>No users found</Text>
         }
       />
 

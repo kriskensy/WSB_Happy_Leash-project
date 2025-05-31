@@ -11,19 +11,30 @@ export default function ListItem({
   onDelete,
   showEdit = true,
   showDelete = true,
+  leftImage, // <--- dodaj
 }) {
   return (
-    <View style={adminStyles.listItemWithActions}>
+    <View
+      style={[
+        adminStyles.listItemWithActions,
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        },
+      ]}
+    >
+      {/* Zdjęcie po lewej */}
+      {leftImage && <View style={{ marginRight: 10 }}>{leftImage}</View>}
+
+      {/* Tekst w środku */}
       <TouchableOpacity
-        style={adminStyles.listItemContent}
+        style={{ flex: 1 }}
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={title}
       >
-        <Text
-          style={adminStyles.listItemTitle}
-          numberOfLines={2}
-        >
+        <Text style={adminStyles.listItemTitle} numberOfLines={2}>
           {title}
         </Text>
         {Array.isArray(subtitle)
@@ -42,6 +53,8 @@ export default function ListItem({
               </Text>
             )}
       </TouchableOpacity>
+
+      {/* Ikony po prawej */}
       <View style={adminStyles.actionButtons}>
         {showEdit && (
           <TouchableOpacity

@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from "expo-image-picker";
 import styles from "../../../../assets/styles/main.styles";
 import adminStyles from "../../../../assets/styles/admin.styles";
 import modalStyles from "../../../../assets/styles/modal.styles";
@@ -40,13 +40,6 @@ export default function EditUser() {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   const router = useRouter();
 
-  // User type options
-  const userTypeNameToId = {
-    Admin: 0,
-    User: 1,
-    Guest: 2,
-  };
-
   const userTypes = [
     { id: 0, name: "Admin" },
     { id: 1, name: "User" },
@@ -64,17 +57,13 @@ export default function EditUser() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        if (response.ok) {
-          console.log("User data fetched successfully");
-          console.log("Response status:", response.status);
 
+        if (response.ok) {
           const user = await response.json();
           setFirstName(user.firstName);
           setLastName(user.lastName);
           setEmail(user.email);
-          // ustawianie userType
           setUserType(user.userType ?? 1);
-          //setUserType(user.userType?.toString() || "0");
           setAddress(user.address || "");
           setCity(user.city || "");
           setCountry(user.country || "");
@@ -93,6 +82,7 @@ export default function EditUser() {
         setLoading(false);
       }
     };
+
     fetchUser();
   }, [id]);
 
@@ -102,52 +92,76 @@ export default function EditUser() {
       allowsEditing: true,
       quality: 1,
     });
+
     if (!result.canceled && result.assets.length > 0) {
       setProfilePictureURL(result.assets[0].uri);
     }
   };
 
   const handleSubmit = async () => {
-    if (!firstName || !lastName || !email || !login || !profilePictureURL) {
-      Alert.alert("Error", "All required fields must be filled");
+    if (!firstName) {
+      Alert.alert("Error", "Name is required");
       return;
     }
+
     try {
       setSaving(true);
       const token = await AsyncStorage.getItem("userToken");
+
+      const formData = new FormData();
+      formData.append("Id", id);
+      formData.append("FirstName", firstName);
+      formData.append("LastName", lastName);
+      formData.append("Email", email);
+      formData.append("Login", login);
+      formData.append("UserType", userType.toString());
+      formData.append("Address", address || "");
+      formData.append("City", city || "");
+      formData.append("Country", country || "");
+      formData.append("PhoneNumber", phoneNumber || "");
+      formData.append("PostalCode", postalCode || "");
+      formData.append("ProfilePictureURL", profilePictureURL || "");
+
+      if (profilePictureURL && profilePictureURL.startsWith("file://")) {
+        const uriParts = profilePictureURL.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+        formData.append("Picture", {
+          uri: profilePictureURL,
+          name: `profile.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      }
+
       const response = await fetch(`http://10.0.2.2:5000/api/auth/edit/${id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          id,
-          firstName,
-          lastName,
-          email,
-          userType: parseInt(userType, 10),
-          address,
-          city,
-          country,
-          login,
-          phoneNumber,
-          postalCode,
-          profilePictureURL,
-        }),
+        body: formData,
       });
+
       if (response.ok) {
-        Alert.alert("Success", "User updated", [
-          { text: "OK", onPress: () => router.push(`/users/${id}`) },
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {};
+        Alert.alert("Success", data.message || "User updated", [
+          { text: "OK", onPress: () => router.push("/(admin)/(users)") },
         ]);
       } else {
-        Alert.alert("Error", "Failed to update user");
+        const errorText = await response.text();
+        const errorData = errorText ? JSON.parse(errorText) : {};
+        Alert.alert("Error", errorData.message || "Failed to update user");
       }
-    } catch {
+    } catch (error) {
+      console.error("Error during update user:", error);
       Alert.alert("Error", "An unexpected error occurred");
     } finally {
       setSaving(false);
     }
+  };
+
+  const getUserTypeName = (id) => {
+    const type = userTypes.find((t) => t.id === id);
+    return type ? type.name : "Select User Type";
   };
 
   if (loading) {
@@ -158,15 +172,11 @@ export default function EditUser() {
     );
   }
 
-  const getUserTypeName = (id) => {
-    const type = userTypes.find((t) => t.id === id);
-    return type ? type.name : "Select User Type";
-  };
-
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
         <AdminHeader title="Edit User" />
+
         <FormField
           label="First Name"
           value={firstName}
@@ -196,22 +206,13 @@ export default function EditUser() {
           placeholder="Enter login"
           iconName="person-circle-outline"
         />
-        {/* <FormField
-          label="User Type"
-          value={userType}
-          onChangeText={setUserType}
-          placeholder="Enter user type (number)"
-          iconName="people-outline"
-          keyboardType="numeric"
-        /> */}
+
         <DetailRow
           label="User Type"
           value={
             <TouchableOpacity
               style={styles.pickerContainer}
               onPress={() => setShowUserTypeModal(true)}
-              accessibilityLabel="Select user type"
-              accessible
             >
               <Text>{getUserTypeName(userType)}</Text>
             </TouchableOpacity>
@@ -236,8 +237,6 @@ export default function EditUser() {
                       setShowUserTypeModal(false);
                     }}
                     style={modalStyles.modalItem}
-                    accessibilityLabel={`Select ${item.name}`}
-                    accessible
                   >
                     <Text>{item.name}</Text>
                   </Pressable>
@@ -246,8 +245,6 @@ export default function EditUser() {
               <TouchableOpacity
                 onPress={() => setShowUserTypeModal(false)}
                 style={modalStyles.modalCloseButton}
-                accessibilityLabel="Close user type selection"
-                accessible
               >
                 <Text style={{ color: COLORS.primary }}>Cancel</Text>
               </TouchableOpacity>
@@ -291,15 +288,14 @@ export default function EditUser() {
           placeholder="Enter postal code"
           iconName="mail-open-outline"
         />
-        <TouchableOpacity
-          style={styles.imagePickerButton}
-          onPress={handleImagePick}
-        >
-          <Text style={styles.buttonText}>Pick Profile Picture</Text>
-        </TouchableOpacity>
+
         {profilePictureURL ? (
           <Image
-            source={{ uri: profilePictureURL }}
+            source={{
+              uri: profilePictureURL.startsWith("file://")
+                ? profilePictureURL
+                : `http://10.0.2.2:5000${profilePictureURL}`,
+            }}
             style={{
               width: 100,
               height: 100,
@@ -308,6 +304,15 @@ export default function EditUser() {
             }}
           />
         ) : null}
+
+        <TouchableOpacity
+          style={adminStyles.mainButton}
+          onPress={handleImagePick}
+          accessibilityLabel="Pick Profile Image"
+        >
+          <Text style={adminStyles.mainButtonText}>Pick Profile Image</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
@@ -315,9 +320,10 @@ export default function EditUser() {
         >
           <Text style={styles.buttonText}>Update User</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[adminStyles.mainButton, { marginTop: 10 }]}
-          onPress={() => router.push(`/(admin)/(users)`)}
+          onPress={() => router.push("/(admin)/(users)")}
           disabled={saving}
         >
           <Text style={adminStyles.mainButtonText}>Cancel</Text>
