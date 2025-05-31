@@ -196,11 +196,6 @@ namespace Backend.Controllers
 
                 user.ProfilePictureURL = $"/uploads/{fileName}";
             }
-
-            // NIE NADPISUJ! Usuń to:
-            // user.ProfilePictureURL = dto.ProfilePictureURL;
-
-
             await _context.SaveChangesAsync();
             return Ok(new { message = "User updated successfully" });
         }
@@ -213,8 +208,18 @@ namespace Backend.Controllers
             if (user == null)
                 return NotFound(new { message = "User not found" });
 
+            if (!string.IsNullOrEmpty(user.ProfilePictureURL))
+            {
+                var picturePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.ProfilePictureURL.TrimStart('/'));
+                if (System.IO.File.Exists(picturePath))
+                {
+                    System.IO.File.Delete(picturePath);
+                }
+            }
+
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+
             return Ok(new { message = "User deleted successfully" });
         }
 

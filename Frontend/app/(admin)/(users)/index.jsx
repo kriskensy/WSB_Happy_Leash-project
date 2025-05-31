@@ -65,14 +65,28 @@ export default function UserList() {
   const handleDeleteUser = async (id) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch(`http://10.0.2.2:5000/api/User/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) fetchUsers();
-      else Alert.alert("Error", "Failed to delete user");
-    } catch {
+      const response = await fetch(
+        `http://10.0.2.2:5000/api/auth/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json(); // <=== najważniejsze!
+        fetchUsers();
+        Alert.alert("Success", data.message); // teraz działa!
+      } else {
+        const errorText = await response.text();
+        Alert.alert(
+          "Error",
+          `Failed to delete user ${response.status}: ${errorText}`
+        );
+      }
+    } catch (err) {
       Alert.alert("Error", "An unexpected error occurred");
+      console.error(err);
     }
   };
 
@@ -124,7 +138,7 @@ export default function UserList() {
                 ]}
                 onPress={() => router.push(`/(users)/${item.id}`)}
                 onEdit={() => handleRedirectToEdit(item.id)}
-                onDelete={() => confirmDelete(item.id, item.name)}
+                onDelete={() => confirmDelete(item.id, item.firstName)}
                 leftImage={
                   item.profilePictureURL && (
                     <Image

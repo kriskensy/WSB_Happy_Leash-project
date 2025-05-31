@@ -11,7 +11,7 @@ export default function ListItem({
   onDelete,
   showEdit = true,
   showDelete = true,
-  leftImage, // <--- dodaj
+  leftImage,
 }) {
   return (
     <View
@@ -24,10 +24,8 @@ export default function ListItem({
         },
       ]}
     >
-      {/* Zdjęcie po lewej */}
       {leftImage && <View style={{ marginRight: 10 }}>{leftImage}</View>}
 
-      {/* Tekst w środku */}
       <TouchableOpacity
         style={{ flex: 1 }}
         onPress={onPress}
@@ -54,7 +52,6 @@ export default function ListItem({
             )}
       </TouchableOpacity>
 
-      {/* Ikony po prawej */}
       <View style={adminStyles.actionButtons}>
         {showEdit && (
           <TouchableOpacity
