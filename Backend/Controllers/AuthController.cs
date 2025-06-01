@@ -44,6 +44,16 @@ namespace Backend.Controllers
             });
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            return Ok(new
+            {
+                message = "Good Bye!",
+                userToken = "",
+            });
+        }
+
         [HttpGet("users")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
