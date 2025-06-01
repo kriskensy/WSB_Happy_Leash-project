@@ -81,7 +81,7 @@ export default function EditPet() {
           setWeight(petData.weight?.toString() || "");
           setNotes(petData.notes || "");
           setAdopted(petData.adopted);
-          setImageUrl(petData.imageUrl || "");
+          setImageUrl(petData.pictureURL || "");
           setGender(String(petData.gender));
           //TODO inicjalizacja tagów
           setSelectedTagIds(
@@ -179,7 +179,10 @@ export default function EditPet() {
       formData.append("Age", parseInt(age, 10));
       formData.append("Weight", parseFloat(weight));
       formData.append("Gender", parseInt(gender, 10));
-      formData.append("GenderName", genderOptions.find(g => g.id === gender)?.name || "");
+      formData.append(
+        "GenderName",
+        genderOptions.find((g) => g.id === gender)?.name || ""
+      );
       formData.append("Notes", notes);
       formData.append("Adopted", adopted);
 
@@ -212,8 +215,8 @@ export default function EditPet() {
         const errorText = await response.text();
         Alert.alert("Error", errorText || "Failed to update pet");
       }
-    } catch {
-      Alert.alert("Error", "An unexpected error occurred");
+    } catch (error) {
+      Alert.alert("Error", "An unexpected error occurred" + error.message);
     } finally {
       setSaving(false);
     }
@@ -476,16 +479,19 @@ export default function EditPet() {
       />
 
       {imageUrl ? (
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Image
-            source={{ uri: imageUrl }}
-            style={{
-              width: 120,
-              height: 120,
-              borderRadius: 8,
-            }}
-          />
-        </View>
+        <Image
+          source={{
+            uri: imageUrl.startsWith("file://")
+              ? imageUrl
+              : `http://10.0.2.2:5000${imageUrl}`,
+          }}
+          style={{
+            width: 100,
+            height: 100,
+            marginVertical: 10,
+            borderRadius: 8,
+          }}
+        />
       ) : null}
 
       <TouchableOpacity

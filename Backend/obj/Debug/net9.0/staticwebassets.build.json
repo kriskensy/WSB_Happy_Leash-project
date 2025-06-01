@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "c1lCzEcTNOoMD+WbrHGYPUdNp3PqQzdlwXKFeLpVx2s=",
+  "Hash": "1ryJH+Q128+t/ldAEm0+wq+YC0sQvPscSEErReYsrCQ=",
   "Source": "Backend",
   "BasePath": "_content/Backend",
   "Mode": "Default",
@@ -59,27 +59,6 @@
       "OriginalItemSpec": "wwwroot\\uploads\\2ae8c0c6-9a11-4ece-8695-2f9c18f89622.jpeg"
     },
     {
-      "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\40240c4e-7455-44bd-9062-ce085df140da.jpeg",
-      "SourceId": "Backend",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\",
-      "BasePath": "_content/Backend",
-      "RelativePath": "uploads/40240c4e-7455-44bd-9062-ce085df140da#[.{fingerprint}]?.jpeg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "6ye96zl62x",
-      "Integrity": "EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\uploads\\40240c4e-7455-44bd-9062-ce085df140da.jpeg"
-    },
-    {
       "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\8e0ba55f-df23-4e5a-b960-4faf285ded7d.jpeg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
@@ -99,6 +78,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\8e0ba55f-df23-4e5a-b960-4faf285ded7d.jpeg"
+    },
+    {
+      "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\9675da17-c5c5-463c-be02-576f94ffd6ff.jpg",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "uploads/9675da17-c5c5-463c-be02-576f94ffd6ff#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "6ye96zl62x",
+      "Integrity": "EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\9675da17-c5c5-463c-be02-576f94ffd6ff.jpg"
     },
     {
       "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\b3a32fac-ccdd-4af4-97c5-a8bd52d0d28d.jpg",
@@ -122,12 +122,12 @@
       "OriginalItemSpec": "wwwroot\\uploads\\b3a32fac-ccdd-4af4-97c5-a8bd52d0d28d.jpg"
     },
     {
-      "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\d716ca57-aa2a-49f7-a5f5-966b40acb815.jpeg",
+      "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\bc746aef-8c7b-4f24-8a1c-63144ac1cc46.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
-      "RelativePath": "uploads/d716ca57-aa2a-49f7-a5f5-966b40acb815#[.{fingerprint}]?.jpeg",
+      "RelativePath": "uploads/bc746aef-8c7b-4f24-8a1c-63144ac1cc46#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -140,7 +140,7 @@
       "Integrity": "AKdkYgSxeOqDCikYw6zqrEJenXeY7KzmQ6BHMDxNCMI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\uploads\\d716ca57-aa2a-49f7-a5f5-966b40acb815.jpeg"
+      "OriginalItemSpec": "wwwroot\\uploads\\bc746aef-8c7b-4f24-8a1c-63144ac1cc46.jpg"
     },
     {
       "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\e81ec528-e7a0-4428-8f72-429e8ea3221f.jpeg",
@@ -330,88 +330,6 @@
       ]
     },
     {
-      "Route": "uploads/40240c4e-7455-44bd-9062-ce085df140da.6ye96zl62x.jpeg",
-      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\40240c4e-7455-44bd-9062-ce085df140da.jpeg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "6986633"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 29 May 2025 08:32:10 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "6ye96zl62x"
-        },
-        {
-          "Name": "label",
-          "Value": "uploads/40240c4e-7455-44bd-9062-ce085df140da.jpeg"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/40240c4e-7455-44bd-9062-ce085df140da.jpeg",
-      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\40240c4e-7455-44bd-9062-ce085df140da.jpeg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "6986633"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 29 May 2025 08:32:10 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A="
-        }
-      ]
-    },
-    {
       "Route": "uploads/8e0ba55f-df23-4e5a-b960-4faf285ded7d.jpeg",
       "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\8e0ba55f-df23-4e5a-b960-4faf285ded7d.jpeg",
       "Selectors": [],
@@ -490,6 +408,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-Vk4JlV3fObNC0uE/ZyEImNiwCERj8qbY1+1bMpa4cp4="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/9675da17-c5c5-463c-be02-576f94ffd6ff.6ye96zl62x.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\9675da17-c5c5-463c-be02-576f94ffd6ff.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6986633"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 01 Jun 2025 10:15:37 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6ye96zl62x"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/9675da17-c5c5-463c-be02-576f94ffd6ff.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/9675da17-c5c5-463c-be02-576f94ffd6ff.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\9675da17-c5c5-463c-be02-576f94ffd6ff.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6986633"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 01 Jun 2025 10:15:37 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-EkoDI7Bf5hux30/SuhQ3byPKJAZDM7HjLmMs5vHaV4A="
         }
       ]
     },
@@ -576,8 +576,8 @@
       ]
     },
     {
-      "Route": "uploads/d716ca57-aa2a-49f7-a5f5-966b40acb815.jpeg",
-      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\d716ca57-aa2a-49f7-a5f5-966b40acb815.jpeg",
+      "Route": "uploads/bc746aef-8c7b-4f24-8a1c-63144ac1cc46.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\bc746aef-8c7b-4f24-8a1c-63144ac1cc46.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -598,7 +598,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 31 May 2025 16:56:37 GMT"
+          "Value": "Sun, 01 Jun 2025 11:09:05 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -613,8 +613,8 @@
       ]
     },
     {
-      "Route": "uploads/d716ca57-aa2a-49f7-a5f5-966b40acb815.ww2hclnz7m.jpeg",
-      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\d716ca57-aa2a-49f7-a5f5-966b40acb815.jpeg",
+      "Route": "uploads/bc746aef-8c7b-4f24-8a1c-63144ac1cc46.ww2hclnz7m.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\bc746aef-8c7b-4f24-8a1c-63144ac1cc46.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -635,7 +635,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 31 May 2025 16:56:37 GMT"
+          "Value": "Sun, 01 Jun 2025 11:09:05 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -649,7 +649,7 @@
         },
         {
           "Name": "label",
-          "Value": "uploads/d716ca57-aa2a-49f7-a5f5-966b40acb815.jpeg"
+          "Value": "uploads/bc746aef-8c7b-4f24-8a1c-63144ac1cc46.jpg"
         },
         {
           "Name": "integrity",

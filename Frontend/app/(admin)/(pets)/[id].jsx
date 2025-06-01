@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import adminStyles from "../../../assets/styles/admin.styles";
 import AdminHeader from "../(components)/AdminHeader";
 import COLORS from "../../../constants/colors";
-import DetailRow from '../../../components/DetailRow';
+import DetailRow from "../../../components/DetailRow";
 
 export default function PetDetails() {
   const { id } = useLocalSearchParams();
@@ -56,13 +56,17 @@ export default function PetDetails() {
   return (
     <ScrollView style={adminStyles.container}>
       <AdminHeader title="Pet Details" />
-      {pet.imageUrl ? (
+      {pet.pictureURL ? (
         <Image
-          source={{ uri: pet.imageUrl }}
+          source={{
+            uri: pet.pictureURL.startsWith("file://")
+              ? pet.pictureURL
+              : `http://10.0.2.2:5000${pet.pictureURL}`,
+          }}
           style={{
-            width: 150,
-            height: 150,
-            borderRadius: 12,
+            width: 200,
+            height: 200,
+            borderRadius: 20,
             marginBottom: 10,
             alignSelf: "center",
           }}
@@ -81,7 +85,7 @@ export default function PetDetails() {
           label="Tags"
           value={
             pet.tags && pet.tags.length > 0
-              ? pet.tags.map(t => t.name).join(", ")
+              ? pet.tags.map((t) => t.name).join(", ")
               : "-"
           }
         />

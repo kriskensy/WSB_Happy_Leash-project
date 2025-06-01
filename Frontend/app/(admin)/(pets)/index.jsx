@@ -111,28 +111,31 @@ export default function PetList() {
         data={pets}
         keyExtractor={(item) => item.id.toString()}
         style={adminStyles.list}
-        renderItem={({ item }) => (
-          <ListItem
-            title={item.name}
-            subtitle={[
-              `Type: ${item.petTypeName}`,
-              `Breed: ${item.breedName}`,
-              `Adopted: ${item.adopted ? "Yes" : "No"}`
-            ]}
-            onPress={() => router.push(`/(pets)/${item.id}`)}
-            onEdit={() => handleRedirectToEdit(item.id)}
-            onDelete={() => confirmDelete(item.id, item.name)}
-            //dodatkowo jeśli np byłoby jakieś foto dla rekordu
-            leftElement={
-              item.imageUrl && (
-                <Image
-                  source={{ uri: item.imageUrl }}
-                  style={{ width: 48, height: 48, borderRadius: 24 }}
-                />
-              )
-            }
-          />
-        )}
+        renderItem={({ item }) => {
+          return (
+            <View style={{ marginBottom: 20 }}>
+              <ListItem
+                title={item.name}
+                subtitle={[
+                  `Type: ${item.petTypeName}`,
+                  `Breed: ${item.breedName}`,
+                  `Adopted: ${item.adopted ? "Yes" : "No"}`,
+                ]}
+                onPress={() => router.push(`/(pets)/${item.id}`)}
+                onEdit={() => handleRedirectToEdit(item.id)}
+                onDelete={() => confirmDelete(item.id, item.name)}
+                leftImage={
+                  item.pictureURL && (
+                    <Image
+                      source={{ uri: `http://10.0.2.2:5000${item.pictureURL}` }}
+                      style={{ width: 50, height: 50, borderRadius: 8 }}
+                    />
+                  )
+                }
+              />
+            </View>
+          );
+        }}
         ListEmptyComponent={
           <Text style={adminStyles.emptyListText}>No pets found</Text>
         }

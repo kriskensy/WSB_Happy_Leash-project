@@ -168,7 +168,10 @@ export default function CreatePet() {
       formData.append("Age", parseInt(age, 10));
       formData.append("Weight", parseFloat(weight));
       formData.append("Gender", parseInt(gender, 10));
-      formData.append("GenderName", genderOptions.find(g => g.id === gender)?.name || "");
+      formData.append(
+        "GenderName",
+        genderOptions.find((g) => g.id === gender)?.name || ""
+      );
       formData.append("Notes", notes);
       formData.append("BreedId", parseInt(breedId, 10));
       formData.append("Adopted", adopted);
@@ -203,7 +206,7 @@ export default function CreatePet() {
         Alert.alert("Error", errorText || "Failed to create pet");
       }
     } catch (error) {
-      Alert.alert("Error", "An unexpected error occurred");
+      Alert.alert("Error", "An unexpected error occurred" + error.message);
     } finally {
       setLoading(false);
     }
