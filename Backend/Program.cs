@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using WSB_Happy_Leash_project.Data.Context;
 using System.Text;
+using WSB_Happy_Leash_project.Backend.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // lub builder.Services.AddOpenApi();
 builder.Services.AddScoped<JwtService>();
 
+var emailConfig = builder.Configuration
+                          .GetSection("EmailConfiguration")
+                          .Get<WSB_Happy_Leash_project.Data.Models.EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
 DotNetEnv.Env.Load();

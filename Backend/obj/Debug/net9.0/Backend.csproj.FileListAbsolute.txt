@@ -560,3 +560,7 @@ C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\Backend.staticwebassets.runtime.json
+C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\MailKit.dll
+C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\MimeKit.dll
+C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\NETCore.MailKit.dll
+C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\BouncyCastle.Crypto.dll

@@ -5,6 +5,7 @@ using WSB_Happy_Leash_project.Data.DTO;
 using WSB_Happy_Leash_project.Data.Models;
 using Backend.Services;
 using System.Security.Cryptography;
+using WSB_Happy_Leash_project.Backend.Interfaces;
 
 namespace Backend.Controllers
 {
@@ -14,14 +15,16 @@ namespace Backend.Controllers
     {
         private readonly AppDbContext _context;
         private readonly JwtService _jwtService;
+        private readonly IEmailSender _emailSender;
 
         private const string FileType = "img/png";
 
 
-        public AuthController(AppDbContext context, JwtService jwtService)
+        public AuthController(AppDbContext context, JwtService jwtService, IEmailSender emailSender)
         {
             _context = context;
             _jwtService = jwtService;
+            _emailSender = emailSender;
         }
 
         [HttpPost("login")]
@@ -83,6 +86,7 @@ namespace Backend.Controllers
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
+            SendEmail(newUser.Email, newUser.FirstName, newUser.LastName);
 
             return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, new { message = "User created successfully" });
         }
@@ -131,6 +135,7 @@ namespace Backend.Controllers
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
+            SendEmail(newUser.Email, newUser.FirstName, newUser.LastName);
 
             return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, new { message = "User created succesfully!" });
         }
@@ -252,5 +257,14 @@ namespace Backend.Controllers
             var bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(bytes);
         }
+
+        private void SendEmail(string to, string userName, string userSurname)
+        {
+            var message = new Message(new string[] { to }, "Welcome to Happy Leash " + userName + " " + userSurname, $"Thank you for registering with Happy Leash!\n\n" +
+                "We are excited to have you on board. If you have any questions or need assistance, feel free to reach out to us.\n\n" +
+                "Best regards,\nHappy Leash Team");
+            _emailSender.SendEmailAsync(message);
+        }
+
     }
 }
