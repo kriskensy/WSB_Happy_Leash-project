@@ -31,7 +31,9 @@ export default function AdoptOtherAnimalList() {
     <AdoptListItem
       petName={item.name}
       image={`http://10.0.2.2:5000${item.pictureURL}`}
-      onPress={() => router.push(`/(pets)/${item.id}`)}
+      onPress={() =>
+        router.push({ pathname: "/(pets)/adopt/[id]", params: { id: item.id } })
+      }
     />
   );
 
