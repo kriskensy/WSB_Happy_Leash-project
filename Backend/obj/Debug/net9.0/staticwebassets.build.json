@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "jrksOYo9SXTvImTa/sw+XHK8cnMJq9P/bgcB7+vgLkw=",
+  "Hash": "rgKAbIYZCcJrHKxcHlKdDsm5P0JUurr9eEag1gum+g8=",
   "Source": "Backend",
   "BasePath": "_content/Backend",
   "Mode": "Default",
@@ -57,6 +57,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\2ae8c0c6-9a11-4ece-8695-2f9c18f89622.jpeg"
+    },
+    {
+      "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\30cdd590-cb44-48ba-8d2a-87ca258bd9a9.jpg",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "uploads/30cdd590-cb44-48ba-8d2a-87ca258bd9a9#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "4dzx7cca6s",
+      "Integrity": "SIj0Oq5pgGlE+RxsoBt1qUMxLErirWV1C0EEvWjcvng=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\30cdd590-cb44-48ba-8d2a-87ca258bd9a9.jpg"
     },
     {
       "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\4eff3a65-1fb9-4da2-9551-c9cba346e700.jpg",
@@ -326,6 +347,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-D0Rv+zn1evjZQOtjsX/vGFy6YVPM6EHWAKh14xk1R6o="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/30cdd590-cb44-48ba-8d2a-87ca258bd9a9.4dzx7cca6s.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\30cdd590-cb44-48ba-8d2a-87ca258bd9a9.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5744140"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"SIj0Oq5pgGlE+RxsoBt1qUMxLErirWV1C0EEvWjcvng=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 01 Jun 2025 17:21:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4dzx7cca6s"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/30cdd590-cb44-48ba-8d2a-87ca258bd9a9.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-SIj0Oq5pgGlE+RxsoBt1qUMxLErirWV1C0EEvWjcvng="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/30cdd590-cb44-48ba-8d2a-87ca258bd9a9.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\30cdd590-cb44-48ba-8d2a-87ca258bd9a9.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5744140"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"SIj0Oq5pgGlE+RxsoBt1qUMxLErirWV1C0EEvWjcvng=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 01 Jun 2025 17:21:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SIj0Oq5pgGlE+RxsoBt1qUMxLErirWV1C0EEvWjcvng="
         }
       ]
     },

@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import styles from "../assets/styles/main.styles";
 import { Image } from "expo-image";
+import AdoptListItem from "./(admin)/(components)/AdoptlistItem";
+import { useRouter } from "expo-router";
 
 export default function AdoptOtherAnimalList() {
   const [allAnimals, setAllAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // Fetch other animals (e.g. rabbits, snakes)
   const fetchOtherAnimals = async () => {
@@ -25,10 +28,11 @@ export default function AdoptOtherAnimalList() {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.petContainer}>
-      <Image style={styles.petImage} source={{ uri: item.pictureURL }} />
-      <Text style={styles.subtitle}>{item.name}</Text>
-    </View>
+    <AdoptListItem
+      petName={item.name}
+      image={`http://10.0.2.2:5000${item.pictureURL}`}
+      onPress={() => router.push(`/(pets)/${item.id}`)}
+    />
   );
 
   return (

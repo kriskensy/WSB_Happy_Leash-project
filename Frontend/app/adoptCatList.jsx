@@ -9,7 +9,8 @@ import {
 import styles from "../assets/styles/main.styles";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AdoptListItem from "./(admin)/(components)/AdoptlistItem";
 
 export default function AdoptCatList() {
   const [allCats, setAllCats] = useState([]);
@@ -20,19 +21,6 @@ export default function AdoptCatList() {
   const handlePetDetails = (id) => {
     router.push({ pathname: "/petDetails", params: { petId: id } });
   };
-
-  // Pobiera koty z API
-  // const fetchCats = async () => {
-  //   try {
-  //     const response = await fetch("http://10.0.2.2:5000/api/Pet/type/3"); // 3 = koty
-  //     const data = await response.json();
-  //     setAllCats(data);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error("Error fetching pets:", error);
-  //     setLoading(false);
-  //   }
-  // };
 
   const fetchCats = async () => {
     try {
@@ -65,16 +53,11 @@ export default function AdoptCatList() {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.petContainer}>
-      <Image style={styles.petImage} source={{ uri: item.pictureURL }} />
-      <Text style={styles.subtitle}>{item.name}</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handlePetDetails(item.id)}
-      >
-        <Text style={styles.buttonText}>More Info About ME!</Text>
-      </TouchableOpacity>
-    </View>
+    <AdoptListItem
+      petName={item.name}
+      image={`http://10.0.2.2:5000${item.pictureURL}`}
+      onPress={() => router.push(`/(pets)/${item.id}`)}
+    />
   );
 
   return (
