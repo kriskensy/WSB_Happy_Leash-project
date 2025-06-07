@@ -13,7 +13,7 @@ export default function AdoptDogList() {
   // Fetch data from the API
   const fetchDogs = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/5"); // 5 = psy
+      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/1?adopted=false"); // 1 = psy
       const data = await response.json();
 
       console.log("Odpowiedź z API:", data);

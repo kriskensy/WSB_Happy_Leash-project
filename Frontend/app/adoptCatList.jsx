@@ -25,7 +25,7 @@ export default function AdoptCatList() {
   const fetchCats = async () => {
     try {
       const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/3", {
+      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/3?adopted=false", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

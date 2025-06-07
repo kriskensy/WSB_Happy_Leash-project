@@ -13,7 +13,7 @@ export default function AdoptOtherAnimalList() {
   // Fetch other animals (e.g. rabbits, snakes)
   const fetchOtherAnimals = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/2"); // 2 = inne zwierzęta
+      const response = await fetch("http://10.0.2.2:5000/api/Pet/type/2?adopted=false"); // 2 = inne zwierzęta
       const data = await response.json();
       setAllAnimals(data);
       setLoading(false);

@@ -70,7 +70,8 @@ namespace Backend.Controllers
                     {
                         Id = pt.Tag.Id,
                         Name = pt.Tag.Name
-                    }).ToList()
+                    }).ToList(),
+                    Adopted = _context.AdoptionRequests.Any(ar => ar.PetId == p.Id && ar.IsApproved)
                 })
                 .FirstOrDefaultAsync();
 

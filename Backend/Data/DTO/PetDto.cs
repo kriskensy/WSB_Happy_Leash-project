@@ -16,5 +16,6 @@ public class PetDto
     public string? PetTypeName { get; set; }
     public List<TagDto> Tags { get; set; } = new(); //TODO dodana lista tagów (do odczytu)
     public List<int> TagIds { get; set; } = new(); //(do zapisu)
+    public bool Adopted { get; set; }
 
 }
