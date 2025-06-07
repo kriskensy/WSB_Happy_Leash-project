@@ -17,6 +17,7 @@ import modalStyles from "../../../../assets/styles/modal.styles";
 import AdminHeader from "../../(components)/AdminHeader";
 import FormField from "../../(components)/FormField";
 import COLORS from "../../../../constants/colors";
+import DetailRow from "../../../../components/DetailRow";
 
 export default function EditBreed() {
   const { id } = useLocalSearchParams();
@@ -126,7 +127,7 @@ export default function EditBreed() {
         iconName="paw-outline"
       />
 
-      <Text style={adminStyles.pickerLabel}>Pet Type:</Text>
+      <DetailRow label="Pet type" value={
       <TouchableOpacity
         style={adminStyles.pickerContainer}
         onPress={() => setShowTypeModal(true)}
@@ -134,6 +135,8 @@ export default function EditBreed() {
       >
         <Text>{getTypeName(typeId)}</Text>
       </TouchableOpacity>
+      }/>
+
       <Modal
         visible={showTypeModal}
         transparent

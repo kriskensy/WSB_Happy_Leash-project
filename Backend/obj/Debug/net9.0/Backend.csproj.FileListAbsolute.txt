@@ -307,12 +307,6 @@ C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets.build.json
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets.development.json
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets\msbuild.Backend.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets\msbuild.Backend.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets\msbuild.build.Backend.props
-C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.Backend.props
-C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.Backend.props
-C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets.pack.json
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\Backend.csproj.Up2Date
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\Backend.dll
 C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\refint\Backend.dll
@@ -564,3 +558,9 @@ C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug
 C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\MimeKit.dll
 C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\NETCore.MailKit.dll
 C:\Users\wojew\OneDrive\Pulpit\mobilne\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\BouncyCastle.Crypto.dll
+C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\Backend.staticwebassets.runtime.json
+C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\MailKit.dll
+C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\MimeKit.dll
+C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\NETCore.MailKit.dll
+C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\bin\Debug\net9.0\BouncyCastle.Crypto.dll
+C:\Programming\_Studia WSB-NLU\dotNET courses\Mobile Aplications\WSB_Happy_Leash-project\Backend\obj\Debug\net9.0\staticwebassets.build.json.cache

@@ -83,12 +83,27 @@ namespace Backend.Controllers
         // GET: /api/Pet/type/{typeId}
         [HttpGet("type/{typeId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<PetDto>>> GetPetsByType(int typeId)
+        public async Task<ActionResult<IEnumerable<PetDto>>> GetPetsByType(int typeId, [FromQuery] bool? adopted = null)
         {
-            var pets = await _context.Pets
+            var petsQuery = _context.Pets
                 .Include(p => p.Breed)
                 .ThenInclude(b => b.PetType)
-                .Where(p => p.Breed != null && p.Breed.PetTypeId == typeId)
+                .Where(p => p.Breed != null && p.Breed.PetTypeId == typeId);
+
+            //TODO tu dodane filtrowanie po braku zaakceptowanych wniosków adopcyjnych
+            if (adopted.HasValue)
+            {
+                if (adopted == false)
+                {
+                    petsQuery = petsQuery.Where(p => !_context.AdoptionRequests.Any(ar => ar.PetId == p.Id && ar.IsApproved)); //tylko te BEZ potwierdzonej adopcji
+                }
+                if (adopted.Value == true)
+                {
+                    petsQuery = petsQuery.Where(p => _context.AdoptionRequests.Any(ar => ar.PetId == p.Id && ar.IsApproved)); //tylko te Z potwierdzoną adopcją
+                }
+            }
+
+                var pets = await petsQuery
                 .Select(p => new PetDto
                 {
                     Id = p.Id,

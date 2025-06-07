@@ -61,13 +61,6 @@ export default function MainMenu() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleNavigate("/(auth)/register")}
-      >
-        <Text style={styles.buttonText}>Education</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
         onPress={() => handleNavigate("/aboutTeam")}
       >
         <Text style={styles.buttonText}>About our team</Text>
