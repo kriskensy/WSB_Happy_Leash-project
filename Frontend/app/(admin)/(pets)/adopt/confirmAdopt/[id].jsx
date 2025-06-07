@@ -7,13 +7,14 @@ import {
   ScrollView,
   Image,
   Text,
+  TextInput,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import adminStyles from "../../../../assets/styles/admin.styles";
-import AdminHeader from "../../(components)/AdminHeader";
-import COLORS from "../../../../constants/colors";
-import DetailRow from "../../../../components/DetailRow";
+import adminStyles from "../../../../../assets/styles/admin.styles";
+import AdminHeader from "../../../(components)/AdminHeader";
+import COLORS from "../../../../../constants/colors";
+import DetailRow from "../../../../../components/DetailRow";
 
 export default function Adopt() {
   const { id } = useLocalSearchParams();
@@ -34,7 +35,7 @@ export default function Adopt() {
       });
       if (response.ok) setPet(await response.json());
       else {
-        Alert.alert("Error", "Failed to load pet details id was: " + id);
+        Alert.alert("Error", "Failed to load pet details");
         router.back();
       }
     } catch {
@@ -44,6 +45,26 @@ export default function Adopt() {
       setLoading(false);
     }
   };
+
+  const handleAdoption = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+
+      const formData = new FormData();
+      formData.append("PetId", id);
+
+      const response = await fetch(`http://10.0.2.2:5000/api/Pet/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) fetchPets();
+      else Alert.alert("Error", "Failed to adopt pet");
+    } catch (error) {
+      console.error("Error details:", error);
+      Alert.alert("Error!", error.message || "Unknown error.");
+    }
+  };
+
   if (loading || !pet) {
     return (
       <View style={[adminStyles.container, { justifyContent: "center" }]}>
@@ -51,16 +72,10 @@ export default function Adopt() {
       </View>
     );
   }
-  const handleAdoption = async (id) => {
-    router.push({
-      pathname: "/(pets)/adopt/confirmAdopt/[id]",
-      params: { id: id },
-    });
-  };
 
   return (
     <ScrollView style={adminStyles.container}>
-      <AdminHeader title="Pet Details" />
+      <AdminHeader title="Tell us more about you" />
       {pet.pictureURL ? (
         <Image
           source={{
@@ -78,28 +93,26 @@ export default function Adopt() {
         />
       ) : null}
       <View style={adminStyles.card}>
-        <DetailRow label="Name" value={pet.name} />
-        <DetailRow label="Type" value={pet.petTypeName} />
-        <DetailRow label="Breed" value={pet.breedName} />
-        <DetailRow label="Age" value={pet.age} />
-        <DetailRow label="Weight" value={pet.weight} />
-        <DetailRow label="Gender" value={pet.genderName} />
-        <DetailRow label="Notes" value={pet.notes} />
-        <DetailRow label="Adopted" value={pet.adopted ? "Yes" : "No"} />
-        <DetailRow
-          label="Tags"
-          value={
-            pet.tags && pet.tags.length > 0
-              ? pet.tags.map((t) => t.name).join(", ")
-              : "-"
-          }
+        <DetailRow label="Why we should give you " value={pet.name} />
+        <TextInput
+          name="adoptionReason"
+          placeholder="Write your reason here"
+          multiline={true}
+          numberOfLines={10}
+          style={{
+            height: 200,
+            textAlignVertical: "top",
+            borderColor: COLORS.primary,
+            borderWidth: 1,
+            backgroundColor: COLORS.white,
+          }}
         />
       </View>
       <TouchableOpacity
         style={[adminStyles.mainButton, { marginTop: 16 }]}
-        onPress={() => handleAdoption(id)}
+        onPress={() => handleAdoption}
       >
-        <Text style={adminStyles.mainButtonText}>Adopt Me!!!</Text>
+        <Text style={adminStyles.mainButtonText}>Send Adoption Request</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[adminStyles.mainButton, { marginTop: 16 }]}

@@ -45,6 +45,7 @@ namespace Backend.Controllers
         }
 
         // GET: api/Pet/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<PetDto>> GetPet(int id)
         {

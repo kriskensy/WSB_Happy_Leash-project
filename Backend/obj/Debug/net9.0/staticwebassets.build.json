@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "rgKAbIYZCcJrHKxcHlKdDsm5P0JUurr9eEag1gum+g8=",
+  "Hash": "OvIz4z5KmhYZezsmyYij75EXpMrsMKTSyrZMG4hcEqI=",
   "Source": "Backend",
   "BasePath": "_content/Backend",
   "Mode": "Default",
@@ -183,6 +183,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\e81ec528-e7a0-4428-8f72-429e8ea3221f.jpeg"
+    },
+    {
+      "Identity": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\f0d8524c-c944-437c-a2c9-277fc2c0d8cf.jpg",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "uploads/f0d8524c-c944-437c-a2c9-277fc2c0d8cf#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "6bz33aw36u",
+      "Integrity": "guBULlULGqReGimeJIG6K+b5fwjA9195ra8pEzxXKns=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\f0d8524c-c944-437c-a2c9-277fc2c0d8cf.jpg"
     }
   ],
   "Endpoints": [
@@ -829,6 +850,88 @@
         {
           "Name": "Last-Modified",
           "Value": "Sat, 31 May 2025 16:42:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-guBULlULGqReGimeJIG6K+b5fwjA9195ra8pEzxXKns="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/f0d8524c-c944-437c-a2c9-277fc2c0d8cf.6bz33aw36u.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\f0d8524c-c944-437c-a2c9-277fc2c0d8cf.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6379552"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"guBULlULGqReGimeJIG6K+b5fwjA9195ra8pEzxXKns=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Jun 2025 14:19:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6bz33aw36u"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/f0d8524c-c944-437c-a2c9-277fc2c0d8cf.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-guBULlULGqReGimeJIG6K+b5fwjA9195ra8pEzxXKns="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/f0d8524c-c944-437c-a2c9-277fc2c0d8cf.jpg",
+      "AssetFile": "C:\\Users\\wojew\\OneDrive\\Pulpit\\mobilne\\WSB_Happy_Leash-project\\Backend\\wwwroot\\uploads\\f0d8524c-c944-437c-a2c9-277fc2c0d8cf.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6379552"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"guBULlULGqReGimeJIG6K+b5fwjA9195ra8pEzxXKns=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Jun 2025 14:19:05 GMT"
         },
         {
           "Name": "Cache-Control",
