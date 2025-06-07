@@ -74,9 +74,9 @@ export default function UserList() {
       );
 
       if (response.ok) {
-        const data = await response.json(); // <=== najważniejsze!
+        const data = await response.json();
         fetchUsers();
-        Alert.alert("Success", data.message); // teraz działa!
+        Alert.alert("Success", data.message);
       } else {
         const errorText = await response.text();
         Alert.alert(
