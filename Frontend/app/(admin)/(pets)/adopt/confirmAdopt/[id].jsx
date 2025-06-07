@@ -20,6 +20,7 @@ export default function Adopt() {
   const { id } = useLocalSearchParams();
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userReason, setUserReason] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -46,19 +47,28 @@ export default function Adopt() {
     }
   };
 
-  const handleAdoption = async (id) => {
+  const handleAdoption = async () => {
     try {
       const token = await AsyncStorage.getItem("userToken");
 
       const formData = new FormData();
       formData.append("PetId", id);
+      formData.append("Message", userReason);
 
-      const response = await fetch(`http://10.0.2.2:5000/api/Pet/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await fetch("http://10.0.2.2:5000/api/AdoptionRequest", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      if (response.ok) fetchPets();
-      else Alert.alert("Error", "Failed to adopt pet");
+
+      if (response.ok) {
+        Alert.alert("Success", "Adoption request sent!");
+        router.push("/adoptionPanelMenu");
+      } else {
+        Alert.alert("Error", "Failed to send adoption request");
+      }
     } catch (error) {
       console.error("Error details:", error);
       Alert.alert("Error!", error.message || "Unknown error.");
@@ -95,7 +105,8 @@ export default function Adopt() {
       <View style={adminStyles.card}>
         <DetailRow label="Why we should give you " value={pet.name} />
         <TextInput
-          name="adoptionReason"
+          value={userReason}
+          onChangeText={setUserReason}
           placeholder="Write your reason here"
           multiline={true}
           numberOfLines={10}
@@ -110,7 +121,7 @@ export default function Adopt() {
       </View>
       <TouchableOpacity
         style={[adminStyles.mainButton, { marginTop: 16 }]}
-        onPress={() => handleAdoption}
+        onPress={() => handleAdoption()}
       >
         <Text style={adminStyles.mainButtonText}>Send Adoption Request</Text>
       </TouchableOpacity>

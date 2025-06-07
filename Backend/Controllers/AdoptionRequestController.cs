@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,26 +69,36 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AdoptionRequestDto>> PostAdoptionRequest(AdoptionRequestDto dto)
+        public async Task<ActionResult<AdoptionRequestDto>> PostAdoptionRequest([FromForm] AdoptionRequestDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null)
+                return Unauthorized("User ID not found in token");
+
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+                return Unauthorized("Invalid user ID in token");
+
             var adoptionRequest = new AdoptionRequest
             {
                 PetId = dto.PetId,
-                UserId = dto.UserId,
+                UserId = userId,
                 Message = dto.Message,
                 RequestDate = DateTime.UtcNow,
-                IsApproved = dto.IsApproved
+                IsApproved = false
             };
 
             _context.AdoptionRequests.Add(adoptionRequest);
             await _context.SaveChangesAsync();
 
             dto.Id = adoptionRequest.Id;
+            dto.UserId = userId;
+
             return CreatedAtAction(nameof(GetAdoptionRequest), new { id = adoptionRequest.Id }, dto);
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAdoptionRequest(int id, AdoptionRequestDto dto)
